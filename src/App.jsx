@@ -13,17 +13,29 @@ import Profile from "./pages/Profile/Profile";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import NotFound from "./pages/NotFound/NotFound";
 
+// Layout
+import MainLayout from "./layouts/MainLayout";
+
+import Categories from "./pages/Categories/Categories";
+import Contact from "./pages/Contact/Contact";
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/products/:id" element={<ProductDetails />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/wishlist" element={<Wishlist />} />
-        <Route path="/checkout" element={<Checkout />} />
+        <Route element={<MainLayout />}>
+          {/* Public Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/:id" element={<ProductDetails />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/categories" element={<Categories />} />
+          <Route path="/contact" element={<Contact />} />
+        </Route>
+
+        {/* Authentication Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
@@ -35,6 +47,9 @@ function App() {
 
         {/* 404 */}
         <Route path="*" element={<NotFound />} />
+        {/* temorary Pages */}
+        <Route path="/categories" element={<Categories />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
     </BrowserRouter>
   );
