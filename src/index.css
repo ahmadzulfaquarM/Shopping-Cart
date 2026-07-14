@@ -1,26 +1,12 @@
 @import "tailwindcss";
 
-/* =========================
-   Theme Variables
-========================= */
+/* --------------------------
+   Global Reset
+--------------------------- */
 
-:root {
-  --color-primary: #2563eb;
-  --color-secondary: #1e293b;
-  --color-accent: #f59e0b;
-  --color-background: #f8fafc;
-  --color-text: #0f172a;
-
-  --radius: 12px;
-}
-
-/* =========================
-   CSS Reset
-========================= */
-
-* {
-  margin: 0;
-  padding: 0;
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -29,17 +15,24 @@ html {
 }
 
 body {
-  background: var(--color-background);
-  color: var(--color-text);
+  margin: 0;
+  padding: 0;
   font-family: Inter, system-ui, sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+  overflow-x: hidden;
 }
 
-/* =========================
-   Custom Scrollbar
-========================= */
+#root {
+  min-height: 100vh;
+}
+
+/* --------------------------
+   Scrollbar
+--------------------------- */
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -48,43 +41,14 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: #2563eb;
-  border-radius: 20px;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #1d4ed8;
 }
 
-/* Firefox */
-
 * {
   scrollbar-width: thin;
   scrollbar-color: #2563eb #e5e7eb;
-}
-
-/* =========================
-   Utility Classes
-========================= */
-
-.container-custom {
-  max-width: 1280px;
-  margin-inline: auto;
-  padding-inline: 1rem;
-}
-
-.section {
-  padding: 4rem 0;
-}
-
-.heading {
-  font-size: 2rem;
-  font-weight: 700;
-}
-
-.text-muted {
-  color: #64748b;
-}
-
-.transition-default {
-  transition: all 0.3s ease;
 }
