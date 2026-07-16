@@ -44,7 +44,7 @@ const products = [
     rating: 4.7,
     reviews: 204,
     badge: "Trending",
-    isNew: false,
+    isNew: true,
     inStock: true,
   },
 
@@ -86,7 +86,7 @@ const products = [
     rating: 4.9,
     reviews: 63,
     badge: "Premium",
-    isNew: true,
+    isNew: false,
     inStock: true,
   },
 ];
