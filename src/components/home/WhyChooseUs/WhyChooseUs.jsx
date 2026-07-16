@@ -15,12 +15,12 @@ const WhyChooseUs = () => {
                         Why Choose Us
                     </span>
 
-                   <h2 className="mt-6 text-4xl font-extrabold text-gray-900 md:text-5xl">
-    Shopping Made{" "}
-    <span className="text-blue-600">
-        Better
-    </span>
-</h2>
+                    <h2 className="mt-6 text-4xl font-extrabold text-gray-900 md:text-5xl">
+                        Shopping Made{" "}
+                        <span className="text-blue-600">
+                            Better
+                        </span>
+                    </h2>
 
                     <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-gray-600">
                         We provide a premium shopping experience with fast delivery,

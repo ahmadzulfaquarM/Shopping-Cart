@@ -1,6 +1,10 @@
+import avatar1 from "../assets/images/testimonials/avatar-1.png";
+import avatar2 from "../assets/images/testimonials/avatar-2.png";
+import avatar3 from "../assets/images/testimonials/avatar-3.png";
 const testimonials = [
     {
         id: 1,
+        image: avatar1,
         name: "Sarah Johnson",
         role: "Fashion Enthusiast",
         rating: 5,
@@ -9,6 +13,7 @@ const testimonials = [
     },
     {
         id: 2,
+        image: avatar2,
         name: "Michael Lee",
         role: "Tech Lover",
         rating: 5,
@@ -17,6 +22,7 @@ const testimonials = [
     },
     {
         id: 3,
+        image: avatar3,
         name: "Emily Davis",
         role: "Verified Buyer",
         rating: 5,

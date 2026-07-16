@@ -4,6 +4,8 @@ import FeaturedProducts from "../../components/home/FeaturedProducts";
 import PromotionalBanner from "../../components/home/PromotionalBanner";
 import WhyChooseUs from "../../components/home/WhyChooseUs";
 import NewArrivals from "../../components/home/NewArrivals";
+import Testimonials from "../../components/home/Testimonials";
+import Newsletter from "../../components/home/Newsletter";
 
 const Home = () => {
     return (
@@ -14,6 +16,8 @@ const Home = () => {
             <PromotionalBanner />
             <WhyChooseUs />
             <NewArrivals/>
+            <Testimonials/>
+            <Newsletter/>
         </>
     );
 };
