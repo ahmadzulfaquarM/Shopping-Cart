@@ -39,6 +39,8 @@ const ProductCard = ({ product }) => {
 
                 </div>
 
+                {/* Product Image */}
+
                 <Link to={`/products/${product.id}`}>
 
                     <img
@@ -55,76 +57,84 @@ const ProductCard = ({ product }) => {
 
             <div className="p-6">
 
+                {/* NEW Badge */}
+
+                {product.isNew && (
+                    <span className="mb-3 inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                        NEW
+                    </span>
+                )}
+
+                {/* Category */}
+
+                <p className="text-sm font-semibold uppercase tracking-wide text-blue-600">
+                    {product.category}
+                </p>
+
+                {/* Product Name */}
+
                 <Link to={`/products/${product.id}`}>
 
-                    {product.isNew && (
-                        <span className="mb-3 inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
-                            NEW
-                        </span>
-                    )}
-
-                    <p className="text-sm font-semibold uppercase tracking-wide text-blue-600">
-                        {product.category}
-                    </p>
-
-                    <h3 className="mt-2 text-xl font-bold text-gray-900 transition-colors duration-300 group-hover:text-blue-600">
+                    <h3 className="mt-2 text-xl font-bold text-gray-900 transition-colors duration-300 hover:text-blue-600">
                         {product.name}
                     </h3>
 
-                    {/* Rating */}
-
-                    <div className="mt-3 flex items-center gap-2">
-
-                        <div className="flex items-center gap-1">
-
-                            {[...Array(5)].map((_, index) => (
-                                <FaStar
-                                    key={index}
-                                    className={
-                                        index < Math.floor(product.rating)
-                                            ? "text-yellow-400"
-                                            : "text-gray-300"
-                                    }
-                                />
-                            ))}
-
-                        </div>
-
-                        <span className="text-sm text-gray-500">
-                            {product.rating} ({product.reviews})
-                        </span>
-
-                    </div>
-
-                    {/* Price */}
-
-                    <div className="mt-5 flex items-center gap-3">
-
-                        <span className="text-2xl font-bold text-gray-900">
-                            ₹{product.price}
-                        </span>
-
-                        <span className="text-gray-400 line-through">
-                            ₹{product.originalPrice}
-                        </span>
-
-                    </div>
-
-                    {/* Stock */}
-
-                    <p
-                        className={`mt-2 text-sm font-medium ${
-                            product.inStock
-                                ? "text-green-600"
-                                : "text-red-600"
-                        }`}
-                    >
-                        {product.inStock ? "In Stock" : "Out of Stock"}
-                    </p>
-
                 </Link>
 
-                {/* Add to Cart */}
+                {/* Rating */}
+
+                <div className="mt-3 flex items-center gap-2">
+
+                    <div className="flex items-center gap-1">
+
+                        {[...Array(5)].map((_, index) => (
+
+                            <FaStar
+                                key={index}
+                                className={
+                                    index < Math.floor(product.rating)
+                                        ? "text-yellow-400"
+                                        : "text-gray-300"
+                                }
+                            />
+
+                        ))}
+
+                    </div>
+
+                    <span className="text-sm text-gray-500">
+                        {product.rating} ({product.reviews})
+                    </span>
+
+                </div>
+
+                {/* Price */}
+
+                <div className="mt-5 flex items-center gap-3">
+
+                    <span className="text-2xl font-bold text-gray-900">
+                        ₹{product.price}
+                    </span>
+
+                    <span className="text-gray-400 line-through">
+                        ₹{product.originalPrice}
+                    </span>
+
+                </div>
+
+                {/* Stock */}
+
+                <p
+                    className={`mt-2 text-sm font-medium ${
+                        product.inStock
+                            ? "text-green-600"
+                            : "text-red-600"
+                    }`}
+                >
+                    {product.inStock ? "In Stock" : "Out of Stock"}
+                </p>
+
+                {/* Add To Cart */}
 
                 <button className="mt-6 flex w-full items-center justify-center gap-3 rounded-2xl bg-blue-600 py-4 font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:bg-blue-700 active:scale-95">
 
