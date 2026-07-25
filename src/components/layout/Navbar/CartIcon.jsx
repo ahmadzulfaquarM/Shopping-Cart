@@ -1,9 +1,10 @@
 import { NavLink } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
+import { useCart } from "../../../context/CartContext";
 
 const CartIcon = () => {
-    // Temporary count
-    const cartCount = 0;
+    
+    const { cartCount } = useCart();
 
     return (
         <NavLink

@@ -1,3 +1,4 @@
+import { useCart } from "../../../context/CartContext";
 import { Link } from "react-router-dom";
 import {
     FaHeart,
@@ -7,6 +8,7 @@ import {
 } from "react-icons/fa";
 
 const ProductCard = ({ product }) => {
+    const { addToCart } = useCart();
     return (
         <div className="group overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-all duration-500 hover:-translate-y-3 hover:border-blue-200 hover:shadow-[0_20px_50px_rgba(37,99,235,0.15)]">
 
@@ -136,7 +138,7 @@ const ProductCard = ({ product }) => {
 
                 {/* Add To Cart */}
 
-                <button className="mt-6 flex w-full items-center justify-center gap-3 rounded-2xl bg-blue-600 py-4 font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:bg-blue-700 active:scale-95">
+                <button className="mt-6 flex w-full items-center justify-center gap-3 rounded-2xl bg-blue-600 py-4 font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:bg-blue-700 active:scale-95"  onClick={() => addToCart(product)}>
 
                     <FaShoppingCart />
 
