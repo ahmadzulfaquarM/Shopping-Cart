@@ -1,4 +1,5 @@
-import bcrypt from "bcryptjs"
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 
 export const registerUser = async (req, res) => {
@@ -71,10 +72,21 @@ export const loginUser = async (req, res) => {
             })
         }
 
+        const token=jwt.sign(
+
+            {
+                id:user._id,
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "7d",
+            }
+        )
+
         return res.status(200).json({
             success: true,
             message: "Login Successful",
-
+            token,
             user,
         });
     } catch (error) {
