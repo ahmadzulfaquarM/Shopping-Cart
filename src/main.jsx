@@ -1,3 +1,4 @@
+import { AuthProvider } from './context/AuthContext.jsx'
 import { Toaster } from "react-hot-toast";
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
@@ -7,6 +8,7 @@ import { CartProvider } from './context/CartContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+    <AuthProvider>
     <CartProvider>
       <App />
       <Toaster
@@ -14,6 +16,7 @@ createRoot(document.getElementById('root')).render(
         reverseOrder={false}
       />
     </CartProvider>
+    </AuthProvider>
 
   </StrictMode>,
 )
