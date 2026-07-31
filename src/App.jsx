@@ -1,3 +1,5 @@
+import GuestRoute from "./components/auth/GuestRoutes";
+import ProtectedRoute from "./components/auth/ProtectedRoutes";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Pages
@@ -36,11 +38,15 @@ function App() {
         </Route>
 
         {/* Authentication Routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route element={<GuestRoute />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
 
         {/* User */}
-        <Route path="/profile" element={<Profile />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/profile" element={<Profile />} />
+        </Route>
 
         {/* Admin */}
         <Route path="/dashboard" element={<Dashboard />} />

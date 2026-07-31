@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { loginUser } from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate=useNavigate();
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,6 +17,9 @@ const Login = () => {
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
+      
+      login(data.user);
+      navigate("/");
 
       console.log("Login response:", data);
       

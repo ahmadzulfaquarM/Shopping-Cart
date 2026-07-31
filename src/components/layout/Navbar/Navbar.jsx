@@ -1,3 +1,4 @@
+import { useAuth } from "../../../context/AuthContext";
 import Logo from "../../common/Logo/Logo";
 import NavLinks from "./NavLinks";
 import SearchBar from "./SearchBar";
@@ -7,6 +8,7 @@ import UserMenu from "./UserMenu";
 import MobileMenu from "./MobileMenu";
 
 const Navbar = () => {
+    const {user,logout}=useAuth();
     return (
         <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/95 shadow-sm backdrop-blur-md">
             <div className="w-full px-4 md:px-8 lg:px-12 xl:px-16">
@@ -26,7 +28,7 @@ const Navbar = () => {
                         <SearchBar />
                         <WishlistIcon />
                         <CartIcon />
-                        <UserMenu />
+                       <UserMenu user={user} logout={logout} />
                     </div>
 
                     {/* Mobile Menu */}
