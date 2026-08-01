@@ -11,9 +11,20 @@ const Products = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
+    //Pagination
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
+    const limit = 10; // Number of products per page
+
 
     // Search
+    const [searchInput, setSearchInput] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
+
+    const handleSearch = () => {
+        setSearchTerm(searchInput);
+    };
 
     // Sorting
     const [sortOption, setSortOption] = useState("featured");
@@ -26,9 +37,20 @@ const Products = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const data = await getProducts();
+                setLoading(true);
+                setError("");
+                const data = await getProducts({
+                    search: searchTerm,
+                    category: selectedCategories[0] || "",
+                    price: selectedPrice,
+                    inStock: inStockOnly.toString(),
+                    sort: sortOption,
+                    page,
+                    limit,
+                });
 
                 setProducts(data.products);
+                setTotalPages(data.totalPages);
             } catch (error) {
                 console.error("Failed to fetch products:", error);
 
@@ -42,8 +64,14 @@ const Products = () => {
         };
 
         fetchProducts();
-    }, []);
-
+    }, [
+        searchTerm,
+        selectedCategories,
+        selectedPrice,
+        inStockOnly,
+        sortOption,
+        page,
+    ]);
 
     if (loading) {
         return (
@@ -107,8 +135,9 @@ const Products = () => {
                         {/* Toolbar */}
 
                         <ProductToolbar
-                            searchTerm={searchTerm}
-                            setSearchTerm={setSearchTerm}
+                            searchInput={searchInput}
+                            setSearchInput={setSearchInput}
+                            handleSearch={handleSearch}
                             productCount={products.length}
                             sortOption={sortOption}
                             setSortOption={setSortOption}
@@ -121,6 +150,45 @@ const Products = () => {
                             <ProductGrid
                                 products={products}
                             />
+
+                            {totalPages > 1 && (
+                                <div className="mt-10 flex items-center justify-center gap-2">
+
+                                    <button
+                                        onClick={() => setPage((prev) => prev - 1)}
+                                        disabled={page === 1}
+                                        className="rounded-xl border border-gray-200 bg-white px-4 py-2 font-medium transition hover:border-blue-600 hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                                    >
+                                        ← Previous
+                                    </button>
+
+                                    {[...Array(totalPages)].map((_, index) => {
+                                        const pageNumber = index + 1;
+
+                                        return (
+                                            <button
+                                                key={pageNumber}
+                                                onClick={() => setPage(pageNumber)}
+                                                className={`h-10 w-10 rounded-xl font-semibold transition ${page === pageNumber
+                                                        ? "bg-blue-600 text-white"
+                                                        : "border border-gray-200 bg-white hover:border-blue-600 hover:text-blue-600"
+                                                    }`}
+                                            >
+                                                {pageNumber}
+                                            </button>
+                                        );
+                                    })}
+
+                                    <button
+                                        onClick={() => setPage((prev) => prev + 1)}
+                                        disabled={page === totalPages}
+                                        className="rounded-xl border border-gray-200 bg-white px-4 py-2 font-medium transition hover:border-blue-600 hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                                    >
+                                        Next →
+                                    </button>
+
+                                </div>
+                            )}
 
                         </div>
 

@@ -1,8 +1,9 @@
 import { FaSearch } from "react-icons/fa";
 
 const ProductToolbar = ({
-    searchTerm,
-    setSearchTerm,
+    searchInput,
+    setSearchInput,
+    handleSearch,
     productCount,
     sortOption,
     setSortOption,
@@ -19,10 +20,23 @@ const ProductToolbar = ({
                 <input
                     type="text"
                     placeholder="Search products..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full rounded-2xl border border-gray-200 py-3 pl-12 pr-4 outline-none transition-all duration-300 focus:border-blue-600"
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            handleSearch();
+                        }
+                    }}
+                    className="w-full rounded-2xl border border-gray-200 py-3 pl-12 pr-24 outline-none transition-all duration-300 focus:border-blue-600"
                 />
+
+                <button
+                    type="button"
+                    onClick={handleSearch}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+                >
+                    Search
+                </button>
 
             </div>
 
