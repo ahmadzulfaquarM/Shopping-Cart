@@ -1,12 +1,17 @@
-import { useMemo, useState } from "react";
-
-import products from "../../data/products";
+import { useEffect, useState } from "react";
+import { getProducts } from "../../services/productService";
 
 import ProductFilters from "../../components/products/ProductFilters";
 import ProductGrid from "../../components/products/ProductGrid";
 import ProductToolbar from "../../components/products/ProductToolbar";
 
 const Products = () => {
+
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+
     // Search
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -18,83 +23,43 @@ const Products = () => {
     const [selectedPrice, setSelectedPrice] = useState("");
     const [inStockOnly, setInStockOnly] = useState(false);
 
-    const filteredProducts = useMemo(() => {
-        const filtered = products.filter((product) => {
-            // Search
-            const keyword = searchTerm.toLowerCase();
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const data = await getProducts();
 
-            const matchesSearch =
-                product.name.toLowerCase().includes(keyword) ||
-                product.category.toLowerCase().includes(keyword);
+                setProducts(data.products);
+            } catch (error) {
+                console.error("Failed to fetch products:", error);
 
-            // Category
-            const matchesCategory =
-                selectedCategories.length === 0 ||
-                selectedCategories.includes(product.category);
-
-            // Price
-            const matchesPrice =
-                !selectedPrice ||
-
-                (selectedPrice === "under500" &&
-                    product.price < 500) ||
-
-                (selectedPrice === "500-2000" &&
-                    product.price >= 500 &&
-                    product.price <= 2000) ||
-
-                (selectedPrice === "2000-5000" &&
-                    product.price > 2000 &&
-                    product.price <= 5000) ||
-
-                (selectedPrice === "5000+" &&
-                    product.price > 5000);
-
-            // Stock
-            const matchesStock =
-                !inStockOnly ||
-                product.inStock;
-
-            return (
-                matchesSearch &&
-                matchesCategory &&
-                matchesPrice &&
-                matchesStock
-            );
-        });
-
-        // Sorting
-        switch (sortOption) {
-            case "price-low":
-                return [...filtered].sort(
-                    (a, b) => a.price - b.price
+                setError(
+                    error.response?.data?.message ||
+                    "Failed to load products"
                 );
+            } finally {
+                setLoading(false);
+            }
+        };
 
-            case "price-high":
-                return [...filtered].sort(
-                    (a, b) => b.price - a.price
-                );
+        fetchProducts();
+    }, []);
 
-            case "rating":
-                return [...filtered].sort(
-                    (a, b) => b.rating - a.rating
-                );
 
-            case "newest":
-                return [...filtered].sort(
-                    (a, b) => b.id - a.id
-                );
+    if (loading) {
+        return (
+            <div className="py-20 text-center">
+                Loading products...
+            </div>
+        );
+    }
 
-            default:
-                return filtered;
-        }
-    }, [
-        searchTerm,
-        sortOption,
-        selectedCategories,
-        selectedPrice,
-        inStockOnly,
-    ]);
+    if (error) {
+        return (
+            <div className="py-20 text-center text-red-500">
+                {error}
+            </div>
+        );
+    }
 
     return (
         <section className="bg-slate-50 py-16">
@@ -144,7 +109,7 @@ const Products = () => {
                         <ProductToolbar
                             searchTerm={searchTerm}
                             setSearchTerm={setSearchTerm}
-                            productCount={filteredProducts.length}
+                            productCount={products.length}
                             sortOption={sortOption}
                             setSortOption={setSortOption}
                         />
@@ -154,7 +119,7 @@ const Products = () => {
                         <div className="mt-8">
 
                             <ProductGrid
-                                products={filteredProducts}
+                                products={products}
                             />
 
                         </div>

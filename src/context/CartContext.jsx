@@ -15,26 +15,22 @@ export const CartProvider = ({ children }) => {
 
 
     const addToCart = (product) => {
-
         setCartItems((prevItems) => {
 
             const existingItem = prevItems.find(
-                (item) => item.id === product.id
+                (item) => item._id === product._id
             );
 
             if (existingItem) {
-
                 return prevItems.map((item) =>
-                    item.id === product.id
+                    item._id === product._id
                         ? {
                             ...item,
                             quantity: item.quantity + 1,
                         }
                         : item
                 );
-
             }
-
 
             return [
                 ...prevItems,
@@ -43,18 +39,15 @@ export const CartProvider = ({ children }) => {
                     quantity: 1,
                 },
             ];
-
         });
 
         toast.success("Added to cart");
-
     };
 
     const increaseQuantity = (id) => {
-
         setCartItems((prevItems) =>
             prevItems.map((item) =>
-                item.id === id
+                item._id === id
                     ? {
                         ...item,
                         quantity: item.quantity + 1,
@@ -62,14 +55,12 @@ export const CartProvider = ({ children }) => {
                     : item
             )
         );
-
     };
 
     const decreaseQuantity = (id) => {
-
         setCartItems((prevItems) =>
             prevItems.map((item) =>
-                item.id === id
+                item._id === id
                     ? {
                         ...item,
                         quantity:
@@ -80,17 +71,14 @@ export const CartProvider = ({ children }) => {
                     : item
             )
         );
-
     };
 
     const removeFromCart = (id) => {
-
         setCartItems((prevItems) =>
-            prevItems.filter((item) => item.id !== id)
+            prevItems.filter((item) => item._id !== id)
         );
 
-          toast.success("Removed from cart");
-
+        toast.success("Removed from cart");
     };
 
     useEffect(() => {

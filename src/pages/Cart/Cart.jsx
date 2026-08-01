@@ -74,7 +74,7 @@ const Cart = () => {
             {cartItems.map((item) => (
 
               <div
-                key={item.id}
+                key={item._id}
                 className="flex items-center gap-6 rounded-3xl border border-gray-200 bg-white p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-2xl"
               >
 
@@ -109,7 +109,7 @@ const Cart = () => {
                   <div className="flex items-center overflow-hidden rounded-xl border">
 
                     <button
-                      onClick={() => decreaseQuantity(item.id)}
+                      onClick={() => decreaseQuantity(item._id)}
                       className="px-4 py-2 font-bold transition-all duration-300 hover:bg-blue-600 hover:text-white active:scale-95"
                     >
                       −
@@ -120,7 +120,7 @@ const Cart = () => {
                     </span>
 
                     <button
-                      onClick={() => increaseQuantity(item.id)}
+                      onClick={() => increaseQuantity(item._id)}
                       className="px-4 py-2 font-bold transition-all duration-300 hover:bg-blue-600 hover:text-white active:scale-95"
                     >
                       +
@@ -143,7 +143,7 @@ const Cart = () => {
                 </div>
 
                 <button
-                  onClick={() => removeFromCart(item.id)}
+                  onClick={() => removeFromCart(item._id)}
                   className="flex items-center gap-2 rounded-xl border border-red-500 px-4 py-2 font-medium text-red-600 transition-all duration-300 hover:scale-105 hover:bg-red-500 hover:text-white active:scale-95"
                 >
                   <FaTrash />

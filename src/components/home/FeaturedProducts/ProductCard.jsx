@@ -18,14 +18,11 @@ const ProductCard = ({ product }) => {
 
                 {/* Discount Badge */}
 
-                <span className="absolute left-5 top-5 rounded-full bg-blue-600 px-4 py-1 text-xs font-bold text-white">
-                    {Math.round(
-                        ((product.originalPrice - product.price) /
-                            product.originalPrice) *
-                            100
-                    )}
-                    % OFF
-                </span>
+                {product.discount > 0 && (
+                    <span className="absolute left-5 top-5 rounded-full bg-blue-600 px-4 py-1 text-xs font-bold text-white">
+                        {product.discount}% OFF
+                    </span>
+                )}
 
                 {/* Wishlist & Quick View */}
 
@@ -43,7 +40,7 @@ const ProductCard = ({ product }) => {
 
                 {/* Product Image */}
 
-                <Link to={`/products/${product.id}`}>
+                <Link to={`/products/${product._id}`}>
 
                     <img
                         src={product.image}
@@ -61,11 +58,11 @@ const ProductCard = ({ product }) => {
 
                 {/* NEW Badge */}
 
-                {product.isNew && (
+                {/* {product.isNew && (
                     <span className="mb-3 inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
                         NEW
                     </span>
-                )}
+                )} */}
 
                 {/* Category */}
 
@@ -75,7 +72,7 @@ const ProductCard = ({ product }) => {
 
                 {/* Product Name */}
 
-                <Link to={`/products/${product.id}`}>
+                <Link to={`/products/${product._id}`}>
 
                     <h3 className="mt-2 text-xl font-bold text-gray-900 transition-colors duration-300 hover:text-blue-600">
                         {product.name}
@@ -105,7 +102,7 @@ const ProductCard = ({ product }) => {
                     </div>
 
                     <span className="text-sm text-gray-500">
-                        {product.rating} ({product.reviews})
+                        {product.rating} ({product.numReviews})
                     </span>
 
                 </div>
@@ -118,27 +115,31 @@ const ProductCard = ({ product }) => {
                         ₹{product.price}
                     </span>
 
-                    <span className="text-gray-400 line-through">
-                        ₹{product.originalPrice}
-                    </span>
+                    {product.discount > 0 && (
+                        <span className="text-gray-400 line-through">
+                            ₹
+                            {Math.round(
+                                product.price / (1 - product.discount / 100)
+                            )}
+                        </span>
+                    )}
 
                 </div>
 
                 {/* Stock */}
 
                 <p
-                    className={`mt-2 text-sm font-medium ${
-                        product.inStock
-                            ? "text-green-600"
-                            : "text-red-600"
-                    }`}
+                    className={`mt-2 text-sm font-medium ${product.stock > 0
+                        ? "text-green-600"
+                        : "text-red-600"
+                        }`}
                 >
-                    {product.inStock ? "In Stock" : "Out of Stock"}
+                    {product.stock > 0 ? "In Stock" : "Out of Stock"}
                 </p>
 
                 {/* Add To Cart */}
 
-                <button className="mt-6 flex w-full items-center justify-center gap-3 rounded-2xl bg-blue-600 py-4 font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:bg-blue-700 active:scale-95"  onClick={() => addToCart(product)}>
+                <button className="mt-6 flex w-full items-center justify-center gap-3 rounded-2xl bg-blue-600 py-4 font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:bg-blue-700 active:scale-95" onClick={() => addToCart(product)}>
 
                     <FaShoppingCart />
 

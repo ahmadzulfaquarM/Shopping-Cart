@@ -1,3 +1,4 @@
+import { useCart } from "../../context/CartContext";
 import {
     FaStar,
     FaCheckCircle,
@@ -10,11 +11,8 @@ import {
 import QuantitySelector from "./QuantitySelector";
 
 const ProductInfo = ({ product }) => {
-    const discount = Math.round(
-        ((product.originalPrice - product.price) /
-            product.originalPrice) *
-            100
-    );
+    const { addToCart } = useCart();
+    const discount = product.discount || 0;
 
     return (
         <div>
@@ -53,7 +51,7 @@ const ProductInfo = ({ product }) => {
                 </div>
 
                 <span className="text-gray-600">
-                    {product.rating} ({product.reviews} Reviews)
+                    {product.rating} ({product.numReviews} Reviews)
                 </span>
 
             </div>
@@ -66,13 +64,20 @@ const ProductInfo = ({ product }) => {
                     ₹{product.price}
                 </span>
 
-                <span className="text-2xl text-gray-400 line-through">
-                    ₹{product.originalPrice}
-                </span>
+                {product.discount > 0 && (
+                    <span className="text-2xl text-gray-400 line-through">
+                        ₹
+                        {Math.round(
+                            product.price / (1 - product.discount / 100)
+                        )}
+                    </span>
+                )}
 
-                <span className="rounded-full bg-blue-100 px-4 py-2 text-sm font-bold text-blue-700">
-                    {discount}% OFF
-                </span>
+                {product.discount > 0 && (
+                    <span className="rounded-full bg-blue-100 px-4 py-2 text-sm font-bold text-blue-700">
+                        {product.discount}% OFF
+                    </span>
+                )}
 
             </div>
 
@@ -80,10 +85,23 @@ const ProductInfo = ({ product }) => {
 
             <div className="mt-8 flex items-center gap-3">
 
-                <FaCheckCircle className="text-green-600" />
+                <FaCheckCircle
+                    className={
+                        product.stock > 0
+                            ? "text-green-600"
+                            : "text-red-600"
+                    }
+                />
 
-                <span className="font-semibold text-green-600">
-                    In Stock
+                <span
+                    className={`font-semibold ${product.stock > 0
+                        ? "text-green-600"
+                        : "text-red-600"
+                        }`}
+                >
+                    {product.stock > 0
+                        ? `${product.stock} In Stock`
+                        : "Out of Stock"}
                 </span>
 
             </div>
@@ -100,10 +118,11 @@ const ProductInfo = ({ product }) => {
 
             <div className="mt-8 space-y-4">
 
-                <button className="w-full rounded-2xl bg-blue-600 py-4 text-lg font-semibold text-white transition hover:bg-blue-700">
-
+                <button
+                    className="w-full rounded-2xl bg-blue-600 py-4 text-lg font-semibold text-white transition hover:bg-blue-700"
+                    onClick={() => addToCart(product)}
+                >
                     Add To Cart
-
                 </button>
 
                 <button className="w-full rounded-2xl border-2 border-blue-600 py-4 text-lg font-semibold text-blue-600 transition hover:bg-blue-600 hover:text-white">

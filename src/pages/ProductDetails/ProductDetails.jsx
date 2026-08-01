@@ -1,4 +1,8 @@
-import products from "../../data/products";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
+import { getProductById } from "../../services/productService";
+
 import {
     ProductBreadcrumb,
     ProductGallery,
@@ -6,25 +10,55 @@ import {
     ProductTabs,
     RelatedProducts,
 } from "../../components/productDetails";
-import { useParams } from "react-router-dom";
 
 const ProductDetails = () => {
     const { id } = useParams();
 
-    const product = products.find(
-        (item) => item.id === Number(id)
-    );
-    if (!product) {
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const data = await getProductById(id);
+
+                setProduct(data.product);
+            } catch (error) {
+                console.error("Failed to fetch product:", error);
+
+                setError(
+                    error.response?.data?.message ||
+                    "Product not found"
+                );
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProduct();
+    }, [id]);
+
+    if (loading) {
         return (
             <div className="flex h-screen items-center justify-center">
-
-                <h1 className="text-3xl font-bold text-red-600">
-                    Product Not Found
+                <h1 className="text-2xl font-bold text-gray-600">
+                    Loading product...
                 </h1>
-
             </div>
         );
     }
+
+    if (error || !product) {
+        return (
+            <div className="flex h-screen items-center justify-center">
+                <h1 className="text-3xl font-bold text-red-600">
+                    {error || "Product Not Found"}
+                </h1>
+            </div>
+        );
+    }
+
     return (
         <section className="bg-slate-50 py-14">
 
@@ -41,15 +75,11 @@ const ProductDetails = () => {
                 </div>
 
                 <div className="mt-20">
-
                     <ProductTabs />
-
                 </div>
 
                 <div className="mt-20">
-
-                    <RelatedProducts product={product}/>
-
+                    <RelatedProducts product={product} />
                 </div>
 
             </div>
