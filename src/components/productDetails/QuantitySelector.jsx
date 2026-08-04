@@ -1,17 +1,15 @@
-import { useState } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
 
-const QuantitySelector = () => {
-    const [quantity, setQuantity] = useState(1);
+const QuantitySelector = ({ quantity, setQuantity, maxStock }) => {
 
     const decrease = () => {
-        if (quantity > 1) {
-            setQuantity(quantity - 1);
-        }
+        setQuantity((prev) => Math.max(1, prev - 1));
     };
 
     const increase = () => {
-        setQuantity(quantity + 1);
+        setQuantity((prev) =>
+            Math.min(maxStock, prev + 1)
+        );
     };
 
     return (
@@ -25,7 +23,8 @@ const QuantitySelector = () => {
 
                 <button
                     onClick={decrease}
-                    className="flex h-12 w-12 items-center justify-center transition hover:bg-blue-600 hover:text-white"
+                    disabled={quantity <= 1}
+                    className="flex h-12 w-12 items-center justify-center transition hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
                 >
                     <FaMinus size={14} />
                 </button>
@@ -36,12 +35,17 @@ const QuantitySelector = () => {
 
                 <button
                     onClick={increase}
-                    className="flex h-12 w-12 items-center justify-center transition hover:bg-blue-600 hover:text-white"
+                    disabled={quantity >= maxStock}
+                    className="flex h-12 w-12 items-center justify-center transition hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
                 >
                     <FaPlus size={14} />
                 </button>
 
             </div>
+
+            <p className="mt-2 text-sm text-gray-500">
+                {maxStock} available
+            </p>
 
         </div>
     );

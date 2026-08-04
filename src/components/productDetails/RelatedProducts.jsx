@@ -1,18 +1,56 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import products from "../../data/products";
+
+import { getProducts } from "../../services/productService";
 import ProductCard from "../home/FeaturedProducts/ProductCard";
 
 const RelatedProducts = ({ product }) => {
 
-    const relatedProducts = products
-        .filter(
-            (item) =>
-                item.category === product.category &&
-                item.id !== product.id
-        )
-        .slice(0, 4);
+    const [relatedProducts, setRelatedProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    if (relatedProducts.length === 0) return null;
+    useEffect(() => {
+
+        const fetchRelatedProducts = async () => {
+
+            try {
+
+                const data = await getProducts({
+                    category: product.category,
+                    limit: 4,
+                });
+
+                const filteredProducts = data.products
+                    .filter(
+                        (item) => item._id !== product._id
+                    )
+                    .slice(0, 4);
+
+                setRelatedProducts(filteredProducts);
+
+            } catch (error) {
+
+                console.error(
+                    "Failed to fetch related products:",
+                    error
+                );
+
+            } finally {
+
+                setLoading(false);
+
+            }
+        };
+
+        if (product?.category) {
+            fetchRelatedProducts();
+        }
+
+    }, [product]);
+
+    if (loading || relatedProducts.length === 0) {
+        return null;
+    }
 
     return (
         <section>
@@ -45,7 +83,7 @@ const RelatedProducts = ({ product }) => {
                 {relatedProducts.map((item) => (
 
                     <ProductCard
-                        key={item.id}
+                        key={item._id}
                         product={item}
                     />
 

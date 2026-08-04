@@ -21,6 +21,9 @@ const ProductDetails = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
+                setLoading(true);
+                setError("");
+
                 const data = await getProductById(id);
 
                 setProduct(data.product);
@@ -29,7 +32,7 @@ const ProductDetails = () => {
 
                 setError(
                     error.response?.data?.message ||
-                    "Product not found"
+                    "Failed to load product"
                 );
             } finally {
                 setLoading(false);
@@ -39,22 +42,30 @@ const ProductDetails = () => {
         fetchProduct();
     }, [id]);
 
+    // Loading
     if (loading) {
         return (
-            <div className="flex h-screen items-center justify-center">
-                <h1 className="text-2xl font-bold text-gray-600">
+            <div className="flex min-h-screen items-center justify-center">
+                <p className="text-xl font-semibold text-gray-600">
                     Loading product...
-                </h1>
+                </p>
             </div>
         );
     }
 
+    // Error / Product not found
     if (error || !product) {
         return (
-            <div className="flex h-screen items-center justify-center">
-                <h1 className="text-3xl font-bold text-red-600">
-                    {error || "Product Not Found"}
-                </h1>
+            <div className="flex min-h-screen items-center justify-center">
+                <div className="text-center">
+                    <h1 className="text-3xl font-bold text-red-600">
+                        Product Not Found
+                    </h1>
+
+                    <p className="mt-3 text-gray-500">
+                        {error || "The requested product does not exist."}
+                    </p>
+                </div>
             </div>
         );
     }

@@ -1,8 +1,10 @@
 import { NavLink } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
+import { useWishlist } from "../../../context/WishlistContext";
 
 const WishlistIcon = () => {
-    const wishlistCount = 0;
+
+    const { wishlistCount } = useWishlist();
 
     return (
         <NavLink
@@ -12,9 +14,11 @@ const WishlistIcon = () => {
         >
             <FaHeart />
 
-            <span className="absolute -top-2 -right-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-xs font-semibold text-white">
-                {wishlistCount}
-            </span>
+            {wishlistCount > 0 && (
+                <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-xs font-semibold text-white">
+                    {wishlistCount}
+                </span>
+            )}
         </NavLink>
     );
 };

@@ -1,3 +1,4 @@
+import { useWishlist } from "../../../context/WishlistContext";
 import { useCart } from "../../../context/CartContext";
 import { Link } from "react-router-dom";
 import {
@@ -9,6 +10,14 @@ import {
 
 const ProductCard = ({ product }) => {
     const { addToCart } = useCart();
+
+    const {
+        addToWishlist,
+        removeFromWishlist,
+        isInWishlist,
+    } = useWishlist();
+
+    const wishlisted = isInWishlist(product._id);
     return (
         <div className="group overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-all duration-500 hover:-translate-y-3 hover:border-blue-200 hover:shadow-[0_20px_50px_rgba(37,99,235,0.15)]">
 
@@ -28,7 +37,19 @@ const ProductCard = ({ product }) => {
 
                 <div className="absolute right-5 top-5 flex flex-col gap-3 opacity-0 transition-all duration-300 group-hover:opacity-100">
 
-                    <button className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-all duration-300 hover:scale-110 hover:bg-blue-600 hover:text-white">
+                    <button
+                        onClick={() => {
+                            if (wishlisted) {
+                                removeFromWishlist(product._id);
+                            } else {
+                                addToWishlist(product);
+                            }
+                        }}
+                        className={`flex h-11 w-11 items-center justify-center rounded-full border shadow-md transition-all duration-300 hover:scale-110 ${wishlisted
+                                ? "border-red-500 bg-red-500 text-white"
+                                : "border-gray-200 bg-white hover:bg-red-500 hover:text-white"
+                            }`}
+                    >
                         <FaHeart />
                     </button>
 

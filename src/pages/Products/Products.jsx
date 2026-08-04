@@ -23,6 +23,7 @@ const Products = () => {
     const [searchTerm, setSearchTerm] = useState("");
 
     const handleSearch = () => {
+        setPage(1);
         setSearchTerm(searchInput);
     };
 

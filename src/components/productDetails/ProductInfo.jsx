@@ -1,4 +1,7 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import { useWishlist } from "../../context/WishlistContext";
 import {
     FaStar,
     FaCheckCircle,
@@ -11,6 +14,14 @@ import {
 import QuantitySelector from "./QuantitySelector";
 
 const ProductInfo = ({ product }) => {
+    const {
+        addToWishlist,
+        removeFromWishlist,
+        isInWishlist,
+    } = useWishlist();
+    const wishlisted = isInWishlist(product._id);
+    const navigate = useNavigate();
+    const [quantity, setQuantity] = useState(1);
     const { addToCart } = useCart();
     const discount = product.discount || 0;
 
@@ -112,7 +123,11 @@ const ProductInfo = ({ product }) => {
 
             {/* Quantity */}
 
-            <QuantitySelector />
+            <QuantitySelector
+                quantity={quantity}
+                setQuantity={setQuantity}
+                maxStock={product.stock}
+            />
 
             {/* Buttons */}
 
@@ -120,23 +135,41 @@ const ProductInfo = ({ product }) => {
 
                 <button
                     className="w-full rounded-2xl bg-blue-600 py-4 text-lg font-semibold text-white transition hover:bg-blue-700"
-                    onClick={() => addToCart(product)}
+                    onClick={() => addToCart(product, quantity)}
+                    disabled={product.stock <= 0}
                 >
                     Add To Cart
                 </button>
 
-                <button className="w-full rounded-2xl border-2 border-blue-600 py-4 text-lg font-semibold text-blue-600 transition hover:bg-blue-600 hover:text-white">
-
+                <button
+                    onClick={() => {
+                        addToCart(product, quantity);
+                        navigate("/cart");
+                    }}
+                    disabled={product.stock <= 0}
+                    className="w-full rounded-2xl border-2 border-blue-600 py-4 text-lg font-semibold text-blue-600 transition hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-400 disabled:hover:bg-transparent"
+                >
                     Buy Now
-
                 </button>
 
-                <button className="flex w-full items-center justify-center gap-3 rounded-2xl border border-gray-300 py-4 font-semibold transition hover:border-blue-600 hover:text-blue-600">
-
+                <button
+                    onClick={() => {
+                        if (wishlisted) {
+                            removeFromWishlist(product._id);
+                        } else {
+                            addToWishlist(product);
+                        }
+                    }}
+                    className={`flex w-full items-center justify-center gap-3 rounded-2xl border py-4 font-semibold transition ${wishlisted
+                            ? "border-red-500 bg-red-500 text-white"
+                            : "border-gray-300 hover:border-red-500 hover:text-red-500"
+                        }`}
+                >
                     <FaHeart />
 
-                    Add To Wishlist
-
+                    {wishlisted
+                        ? "Remove From Wishlist"
+                        : "Add To Wishlist"}
                 </button>
 
             </div>

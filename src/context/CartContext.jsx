@@ -14,35 +14,45 @@ export const CartProvider = ({ children }) => {
     });
 
 
-    const addToCart = (product) => {
-        setCartItems((prevItems) => {
+    const addToCart = (product, quantity = 1) => {
 
-            const existingItem = prevItems.find(
-                (item) => item._id === product._id
+    setCartItems((prevItems) => {
+
+        const existingItem = prevItems.find(
+            (item) => item._id === product._id
+        );
+
+        if (existingItem) {
+
+            const newQuantity =
+                existingItem.quantity + quantity;
+
+            return prevItems.map((item) =>
+                item._id === product._id
+                    ? {
+                        ...item,
+                        quantity: Math.min(
+                            newQuantity,
+                            product.stock
+                        ),
+                    }
+                    : item
             );
+        }
 
-            if (existingItem) {
-                return prevItems.map((item) =>
-                    item._id === product._id
-                        ? {
-                            ...item,
-                            quantity: item.quantity + 1,
-                        }
-                        : item
-                );
-            }
+        return [
+            ...prevItems,
+            {
+                ...product,
+                quantity,
+            },
+        ];
+    });
 
-            return [
-                ...prevItems,
-                {
-                    ...product,
-                    quantity: 1,
-                },
-            ];
-        });
-
-        toast.success("Added to cart");
-    };
+    toast.success(
+        `${quantity} ${quantity === 1 ? "item" : "items"} added to cart`
+    );
+};
 
     const increaseQuantity = (id) => {
         setCartItems((prevItems) =>
