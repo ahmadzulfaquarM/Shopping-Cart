@@ -121,7 +121,12 @@ const Cart = () => {
 
                     <button
                       onClick={() => increaseQuantity(item._id)}
-                      className="px-4 py-2 font-bold transition-all duration-300 hover:bg-blue-600 hover:text-white active:scale-95"
+                      disabled={item.quantity >= item.stock}
+                      className={`px-4 py-2 font-bold transition-all duration-300
+                      ${item.quantity >= item.stock
+                          ? "cursor-not-allowed bg-gray-200 text-gray-400"
+                          : "hover:bg-blue-600 hover:text-white active:scale-95"
+                        }`}
                     >
                       +
                     </button>

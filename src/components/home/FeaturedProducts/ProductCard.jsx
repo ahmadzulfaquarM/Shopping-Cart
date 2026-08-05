@@ -35,25 +35,32 @@ const ProductCard = ({ product }) => {
 
                 {/* Wishlist & Quick View */}
 
-                <div className="absolute right-5 top-5 flex flex-col gap-3 opacity-0 transition-all duration-300 group-hover:opacity-100">
+                <div className="absolute right-5 top-5 z-50 flex flex-col gap-3 opacity-0 transition-all duration-300 group-hover:opacity-100">
 
                     <button
-                        onClick={() => {
+                        type="button"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+
                             if (wishlisted) {
                                 removeFromWishlist(product._id);
                             } else {
                                 addToWishlist(product);
                             }
                         }}
-                        className={`flex h-11 w-11 items-center justify-center rounded-full border shadow-md transition-all duration-300 hover:scale-110 ${wishlisted
-                                ? "border-red-500 bg-red-500 text-white"
-                                : "border-gray-200 bg-white hover:bg-red-500 hover:text-white"
+                        className={`flex h-11 w-11 items-center justify-center rounded-full shadow-md transition-all duration-300 hover:scale-110 ${wishlisted
+                                ? "bg-red-500 text-white"
+                                : "border border-gray-200 bg-white hover:bg-red-500 hover:text-white"
                             }`}
                     >
                         <FaHeart />
                     </button>
 
-                    <button className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-all duration-300 hover:scale-110 hover:bg-blue-600 hover:text-white">
+                    <button
+                        type="button"
+                        className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-all duration-300 hover:scale-110 hover:bg-blue-600 hover:text-white"
+                    >
                         <FaEye />
                     </button>
 
@@ -158,14 +165,17 @@ const ProductCard = ({ product }) => {
                     {product.stock > 0 ? "In Stock" : "Out of Stock"}
                 </p>
 
-                {/* Add To Cart */}
-
-                <button className="mt-6 flex w-full items-center justify-center gap-3 rounded-2xl bg-blue-600 py-4 font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:bg-blue-700 active:scale-95" onClick={() => addToCart(product)}>
-
+                <button
+                    onClick={() => addToCart(product)}
+                    disabled={product.stock <= 0}
+                    className={`mt-6 flex w-full items-center justify-center gap-3 rounded-2xl py-4 font-semibold transition
+                       ${product.stock > 0
+                            ? "bg-blue-600 text-white hover:bg-blue-700"
+                            : "cursor-not-allowed bg-gray-300 text-gray-500"
+                        }`}
+                >
                     <FaShoppingCart />
-
-                    Add to Cart
-
+                    {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
                 </button>
 
             </div>

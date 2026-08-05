@@ -16,54 +16,61 @@ export const CartProvider = ({ children }) => {
 
     const addToCart = (product, quantity = 1) => {
 
-    setCartItems((prevItems) => {
+        setCartItems((prevItems) => {
 
-        const existingItem = prevItems.find(
-            (item) => item._id === product._id
-        );
-
-        if (existingItem) {
-
-            const newQuantity =
-                existingItem.quantity + quantity;
-
-            return prevItems.map((item) =>
-                item._id === product._id
-                    ? {
-                        ...item,
-                        quantity: Math.min(
-                            newQuantity,
-                            product.stock
-                        ),
-                    }
-                    : item
+            const existingItem = prevItems.find(
+                (item) => item._id === product._id
             );
-        }
 
-        return [
-            ...prevItems,
-            {
-                ...product,
-                quantity,
-            },
-        ];
-    });
+            if (existingItem) {
 
-    toast.success(
-        `${quantity} ${quantity === 1 ? "item" : "items"} added to cart`
-    );
-};
+                if (existingItem.quantity >= existingItem.stock) {
+                    toast.error("Maximum stock reached");
+                    return prevItems;
+                }
+
+                return prevItems.map((item) =>
+                    item._id === product._id
+                        ? {
+                            ...item,
+                            quantity: item.quantity + quantity,
+                        }
+                        : item
+                );
+            }
+
+            return [
+                ...prevItems,
+                {
+                    ...product,
+                    quantity,
+                },
+            ];
+        });
+
+        toast.success(
+            `${quantity} ${quantity === 1 ? "item" : "items"} added to cart`
+        );
+    };
 
     const increaseQuantity = (id) => {
         setCartItems((prevItems) =>
-            prevItems.map((item) =>
-                item._id === id
-                    ? {
+            prevItems.map((item) => {
+                if (item._id === id) {
+
+                    if (item.quantity >= item.stock) {
+                        toast.error("Maximum stock reached");
+                        return item;
+                    }
+
+                    return {
                         ...item,
                         quantity: item.quantity + 1,
-                    }
-                    : item
-            )
+                    };
+                }
+
+                return item;
+            })
         );
     };
 

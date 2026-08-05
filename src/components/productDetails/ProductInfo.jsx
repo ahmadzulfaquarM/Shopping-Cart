@@ -134,11 +134,15 @@ const ProductInfo = ({ product }) => {
             <div className="mt-8 space-y-4">
 
                 <button
-                    className="w-full rounded-2xl bg-blue-600 py-4 text-lg font-semibold text-white transition hover:bg-blue-700"
                     onClick={() => addToCart(product, quantity)}
                     disabled={product.stock <= 0}
+                    className={`w-full rounded-2xl py-4 text-lg font-semibold transition
+                      ${product.stock > 0
+                            ? "bg-blue-600 text-white hover:bg-blue-700"
+                            : "cursor-not-allowed bg-gray-300 text-gray-500"
+                        }`}
                 >
-                    Add To Cart
+                    {product.stock > 0 ? "Add To Cart" : "Out of Stock"}
                 </button>
 
                 <button
@@ -161,8 +165,8 @@ const ProductInfo = ({ product }) => {
                         }
                     }}
                     className={`flex w-full items-center justify-center gap-3 rounded-2xl border py-4 font-semibold transition ${wishlisted
-                            ? "border-red-500 bg-red-500 text-white"
-                            : "border-gray-300 hover:border-red-500 hover:text-red-500"
+                        ? "border-red-500 bg-red-500 text-white"
+                        : "border-gray-300 hover:border-red-500 hover:text-red-500"
                         }`}
                 >
                     <FaHeart />
