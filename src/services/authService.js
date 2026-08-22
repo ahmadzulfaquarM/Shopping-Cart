@@ -24,3 +24,11 @@ export const getUserProfile = async () => {
 
     return response.data;
 };
+
+export const updateUserProfile = async (name) => {
+    const response = await api.put("/auth/profile", {
+        name,
+    });
+
+    return response.data;
+};

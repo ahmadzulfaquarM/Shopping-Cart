@@ -108,5 +108,44 @@ export const getUserProfile = async (req, res) => {
 
 };
 
+export const updateUserProfile = async (req, res) => {
+
+    try {
+
+        const { name } = req.body;
+
+        if (!name || !name.trim()) {
+            return res.status(400).json({
+                message: "Name is required",
+            });
+        }
+
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+            });
+        }
+
+        user.name = name.trim();
+
+        const updatedUser = await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Profile updated successfully",
+            user: updatedUser,
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            message: error.message,
+        });
+
+    }
+};
+
 
 
