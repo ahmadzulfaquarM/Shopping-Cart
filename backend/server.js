@@ -1,3 +1,4 @@
+import orderRoutes from "./routes/orderRoutes.js";
 import addressRoutes from "./routes/addressRoutes.js"
 import productRoutes from "./routes/productRoutes.js";
 import authRoutes from "./routes/authRoutes.js"
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use("/api/auth",authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/addresses", addressRoutes);
+app.use("/api/orders", orderRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

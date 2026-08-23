@@ -104,7 +104,7 @@ const CheckoutAddress = ({
                                             <p className="text-sm text-gray-600">
                                                 {address.city},{" "}
                                                 {address.state} -{" "}
-                                                {address.pincode}
+                                                {address.postalCode}
                                             </p>
 
                                             <p className="mt-2 text-sm font-medium text-gray-700">
