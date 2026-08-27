@@ -98,6 +98,12 @@ export const CartProvider = ({ children }) => {
         toast.success("Removed from cart");
     };
 
+
+    const clearCart = () => {
+        setCartItems([]);
+        localStorage.removeItem("cart");
+    };
+
     useEffect(() => {
 
         localStorage.setItem(
@@ -122,6 +128,7 @@ export const CartProvider = ({ children }) => {
                 increaseQuantity,
                 decreaseQuantity,
                 removeFromCart,
+                clearCart,
             }}
         >
             {children}

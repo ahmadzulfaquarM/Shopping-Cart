@@ -16,6 +16,9 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import NotFound from "./pages/NotFound/NotFound";
 import Categories from "./pages/Categories/Categories";
 import Contact from "./pages/Contact/Contact";
+import Orders from "./pages/Orders/Orders";
+import OrderDetails from "./pages/OrderDetails/OrderDetails";
+
 
 // Layout
 import MainLayout from "./layouts/MainLayout";
@@ -91,6 +94,16 @@ function App() {
                     <Route
                         path="/profile"
                         element={<Profile />}
+                    />
+
+                    <Route
+                        path="/orders"
+                        element={<Orders />}
+                    />
+
+                    <Route
+                        path="/orders/:id"
+                        element={<OrderDetails />}
                     />
 
                     <Route

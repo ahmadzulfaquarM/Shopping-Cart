@@ -1,8 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import { useCart } from "../../context/CartContext";
 
 const Cart = () => {
+  const navigate = useNavigate();
 
   const {
     cartItems,
@@ -226,10 +228,18 @@ const Cart = () => {
 
             </div>
 
-            <button className="mt-10 w-full rounded-2xl bg-blue-600 py-4 font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-blue-700 hover:shadow-xl active:scale-95">
+            <button
+              onClick={() => {
+                if (!cartItems || cartItems.length === 0) {
+                  return;
+                }
 
+                navigate("/checkout");
+              }}
+              disabled={!cartItems || cartItems.length === 0}
+              className="w-full rounded-xl bg-blue-600 py-4 text-lg font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+            >
               Proceed to Checkout
-
             </button>
 
             {subtotal > 0 && shipping > 0 && (

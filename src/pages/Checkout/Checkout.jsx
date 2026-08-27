@@ -2,11 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import CheckoutAddress from "./CheckoutAddress";
-import { createOrder } from "../../services/orderService";
+import { createOrder, createRazorpayOrder, verifyRazorpayPayment } from "../../services/orderService";
 import { getAddresses } from "../../services/addressService";
+import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
-    const { cartItems } = useCart();
+    const navigate = useNavigate();
+    const {
+        cartItems,
+        clearCart,
+    } = useCart();
     const { user } = useAuth();
 
 
@@ -102,7 +107,11 @@ const Checkout = () => {
                 quantity: item.quantity,
             }));
 
-            // Create order
+
+            // ==================================================
+            // STEP 1: CREATE OUR DATABASE ORDER
+            // ==================================================
+
             const data = await createOrder(
                 orderItems,
                 selectedAddress._id,
@@ -111,18 +120,240 @@ const Checkout = () => {
 
             console.log("Order created:", data);
 
-            setMessage(
-                `Order placed successfully! Order ID: ${data.order._id}`
+            const order = data.order;
+
+
+            // ==================================================
+            // COD
+            // ==================================================
+
+            if (paymentMethod === "cod") {
+
+                clearCart();
+
+                setMessage(
+                    `Order placed successfully! Order ID: ${order._id}`
+                );
+
+                setLoading(false);
+
+                navigate(`/orders/${order._id}`);
+
+                return;
+            }
+
+
+            // ==================================================
+            // ONLINE PAYMENT
+            // ==================================================
+
+            // Create Razorpay order
+            const razorpayData =
+                await createRazorpayOrder(order._id);
+
+            console.log(
+                "Razorpay order created:",
+                razorpayData
             );
 
+
+            // Make sure Razorpay Checkout is loaded
+            if (!window.Razorpay) {
+
+                setError(
+                    "Razorpay Checkout failed to load. Please refresh and try again."
+                );
+
+                setLoading(false);
+
+                return;
+            }
+
+
+            // ==================================================
+            // RAZORPAY CHECKOUT OPTIONS
+            // ==================================================
+
+            const options = {
+
+                key: razorpayData.key,
+
+                amount: razorpayData.amount,
+
+                currency: razorpayData.currency,
+
+                name: "Shopping Cart",
+
+                description:
+                    `Order #${order._id}`,
+
+                order_id:
+                    razorpayData.razorpayOrderId,
+
+
+                // Customer information
+                prefill: {
+
+                    name:
+                        selectedAddress.fullName ||
+                        user.name ||
+                        "",
+
+                    email:
+                        user.email ||
+                        "",
+
+                    contact:
+                        selectedAddress.phone ||
+                        "",
+                },
+
+
+                // Brand color
+                theme: {
+                    color: "#2563EB",
+                },
+
+
+                // ==================================================
+                // PAYMENT SUCCESS
+                // ==================================================
+
+                handler: async function (response) {
+
+                    try {
+
+                        console.log(
+                            "Razorpay response:",
+                            response
+                        );
+
+
+                        // Verify payment on backend
+                        const verification =
+                            await verifyRazorpayPayment({
+
+                                orderId: order._id,
+
+                                razorpayOrderId:
+                                    response.razorpay_order_id,
+
+                                razorpayPaymentId:
+                                    response.razorpay_payment_id,
+
+                                razorpaySignature:
+                                    response.razorpay_signature,
+
+                            });
+
+
+                        console.log(
+                            "Payment verification:",
+                            verification
+                        );
+
+
+                        if (verification.success) {
+
+                            clearCart();
+
+                            setMessage(
+                                "Payment successful! Your order has been confirmed."
+                            );
+
+                            navigate(`/orders/${order._id}`);
+
+                        } else {
+
+                            setError(
+                                "Payment verification failed."
+                            );
+
+                        }
+
+                    } catch (error) {
+
+                        console.error(
+                            "Payment Verification Error:",
+                            error
+                        );
+
+                        setError(
+                            error.response?.data?.message ||
+                            "Payment verification failed. Please contact support."
+                        );
+
+                    } finally {
+
+                        setLoading(false);
+
+                    }
+
+                },
+
+
+                // ==================================================
+                // PAYMENT FAILED
+                // ==================================================
+
+                modal: {
+
+                    ondismiss: function () {
+
+                        setLoading(false);
+
+                        setError(
+                            "Payment was cancelled. You can try again."
+                        );
+
+                    },
+
+                },
+
+            };
+
+
+            // Create Razorpay instance
+            const razorpay =
+                new window.Razorpay(options);
+
+
+            // Razorpay payment failure event
+            razorpay.on(
+                "payment.failed",
+                function (response) {
+
+                    console.error(
+                        "Razorpay Payment Failed:",
+                        response
+                    );
+
+                    setLoading(false);
+
+                    setError(
+                        response.error?.description ||
+                        "Payment failed. Please try again."
+                    );
+
+                }
+            );
+
+
+            // Open Razorpay Checkout
+            razorpay.open();
+
         } catch (error) {
-            console.error("Place Order Error:", error);
+
+            console.error(
+                "Place Order Error:",
+                error
+            );
 
             setError(
                 error.response?.data?.message ||
                 "Failed to place order. Please try again."
             );
-        } finally {
+
             setLoading(false);
         }
     };

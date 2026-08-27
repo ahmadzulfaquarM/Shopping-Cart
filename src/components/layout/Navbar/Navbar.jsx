@@ -6,6 +6,7 @@ import WishlistIcon from "./WishlistIcon";
 import CartIcon from "./CartIcon";
 import UserMenu from "./UserMenu";
 import MobileMenu from "./MobileMenu";
+import MyOrdersIcon from "./MyOrdersIcon";
 
 const Navbar = () => {
     const {user,logout}=useAuth();
@@ -28,6 +29,7 @@ const Navbar = () => {
                         <SearchBar />
                         <WishlistIcon />
                         <CartIcon />
+                        <MyOrdersIcon />
                        <UserMenu user={user} logout={logout} />
                     </div>
 
