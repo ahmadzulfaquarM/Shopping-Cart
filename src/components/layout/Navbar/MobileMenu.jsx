@@ -12,6 +12,7 @@ const MobileMenu = () => {
     { name: "Contact", path: "/contact" },
     { name: "Wishlist", path: "/wishlist" },
     { name: "Cart", path: "/cart" },
+    { name: "My Orders", path: "/orders" },
     { name: "Login", path: "/login" },
   ];
 

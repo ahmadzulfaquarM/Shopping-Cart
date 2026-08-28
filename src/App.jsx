@@ -1,5 +1,10 @@
 import GuestRoute from "./components/auth/GuestRoutes";
 import ProtectedRoute from "./components/auth/ProtectedRoutes";
+import AdminRoute from "./components/admin/AdminRoute.jsx";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import AdminProducts from "./pages/Admin/AdminProducts";
+import AddProduct from "./pages/Admin/AddProduct/AddProduct";
+import AdminEditProduct from "./pages/Admin/AdminEditProduct/AdminEditProduct";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Pages
@@ -113,12 +118,31 @@ function App() {
 
                 </Route>
 
-                {/* Admin */}
+                {/* Admin Routes */}
 
-                <Route
-                    path="/dashboard"
-                    element={<Dashboard />}
-                />
+                <Route element={<AdminRoute />}>
+
+                    <Route
+                        path="/admin"
+                        element={<AdminDashboard />}
+                    />
+
+                    <Route
+                        path="/admin/products"
+                        element={<AdminProducts />}
+                    />
+
+                    <Route
+                        path="/admin/products/add"
+                        element={<AddProduct />}
+                    />
+
+                    <Route
+                        path="/admin/products/edit/:id"
+                        element={<AdminEditProduct />}
+                    />
+
+                </Route>
 
                 {/* 404 */}
 
