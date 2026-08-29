@@ -5,6 +5,10 @@ import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminProducts from "./pages/Admin/AdminProducts";
 import AddProduct from "./pages/Admin/AddProduct/AddProduct";
 import AdminEditProduct from "./pages/Admin/AdminEditProduct/AdminEditProduct";
+import AdminOrders from "./pages/Admin/AdminOrders/AdminOrders"
+import AdminOrderDetails from "./pages/Admin/AdminOrderDetails/AdminOrderDetails";
+import AdminUsers from "./pages/Admin/AdminUsers/AdminUsers";
+import AdminUserDetails from "./pages/Admin/AdminUserDetails/AdminUserDetails";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Pages
@@ -140,6 +144,26 @@ function App() {
                     <Route
                         path="/admin/products/edit/:id"
                         element={<AdminEditProduct />}
+                    />
+
+                    <Route
+                        path="/admin/orders"
+                        element={<AdminOrders />}
+                    />
+
+                    <Route
+                        path="/admin/orders/:id"
+                        element={<AdminOrderDetails />}
+                    />
+
+                    <Route
+                        path="/admin/users"
+                        element={<AdminUsers />}
+                    />
+
+                    <Route
+                        path="/admin/users/:id"
+                        element={<AdminUserDetails />}
                     />
 
                 </Route>

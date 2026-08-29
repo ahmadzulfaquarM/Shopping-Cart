@@ -1,3 +1,4 @@
+import adminRoutes from "./routes/adminRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import addressRoutes from "./routes/addressRoutes.js"
 import productRoutes from "./routes/productRoutes.js";
@@ -14,7 +15,7 @@ connectDB();
 const app=express();
 app.use(cors());
 app.use(express.json());
-
+app.use("/api/admin", adminRoutes);
 app.use("/api/auth",authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/addresses", addressRoutes);

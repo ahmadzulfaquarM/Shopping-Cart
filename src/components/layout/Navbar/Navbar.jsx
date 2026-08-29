@@ -7,7 +7,7 @@ import CartIcon from "./CartIcon";
 import UserMenu from "./UserMenu";
 import MobileMenu from "./MobileMenu";
 import MyOrdersIcon from "./MyOrdersIcon";
-
+import AdminIcon from "./AdminIcon";
 const Navbar = () => {
     const {user,logout}=useAuth();
     return (
@@ -30,6 +30,7 @@ const Navbar = () => {
                         <WishlistIcon />
                         <CartIcon />
                         <MyOrdersIcon />
+                        {user?.role === "admin" && <AdminIcon />}
                        <UserMenu user={user} logout={logout} />
                     </div>
 

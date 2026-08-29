@@ -7,9 +7,13 @@ import {
     cancelOrder,
     createRazorpayOrder,
     verifyRazorpayPayment,
+    getAllOrders,
+    updateOrderStatus,
+    getAdminOrderById,
 } from "../controllers/orderController.js";
 
 import { protect } from "../middleware/authMiddleware.js";
+import { admin } from "../middleware/adminMiddleware.js";
 
 const router = express.Router();
 
@@ -43,6 +47,35 @@ router.post(
 );
 
 
+// Get ALL orders
+
+router.get(
+    "/admin/all",
+    protect,
+    admin,
+    getAllOrders
+);
+
+// Get single order - ADMIN
+
+router.get(
+    "/admin/:id",
+    protect,
+    admin,
+    getAdminOrderById
+);
+
+
+// Update order status
+
+router.put(
+    "/admin/:id/status",
+    protect,
+    admin,
+    updateOrderStatus
+);
+
+
 // Get single order
 router.get(
     "/:id",
@@ -57,8 +90,6 @@ router.put(
     protect,
     cancelOrder
 );
-
-
 
 
 export default router;

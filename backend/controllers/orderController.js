@@ -334,6 +334,8 @@ export const cancelOrder = async (req, res) => {
 };
 
 
+
+
 export const createRazorpayOrder = async (req, res) => {
     try {
         const { orderId } = req.body;
@@ -555,5 +557,144 @@ export const verifyRazorpayPayment = async (req, res) => {
 
         });
 
+    }
+};
+
+
+// ======================================================
+// ADMIN - GET ALL ORDERS
+// ======================================================
+
+export const getAllOrders = async (req, res) => {
+    try {
+
+        const orders = await Order.find()
+            .populate(
+                "user",
+                "name email"
+            )
+            .sort({
+                createdAt: -1,
+            });
+
+        return res.status(200).json({
+            success: true,
+            count: orders.length,
+            orders,
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Get All Orders Error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
+
+// ======================================================
+// ADMIN - UPDATE ORDER STATUS
+// ======================================================
+
+export const updateOrderStatus = async (req, res) => {
+    try {
+
+        const { status } = req.body;
+
+        const allowedStatuses = [
+            "processing",
+            "confirmed",
+            "shipped",
+            "delivered",
+            "cancelled",
+        ];
+
+        if (!allowedStatuses.includes(status)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid order status",
+            });
+        }
+
+
+        const order = await Order.findById(
+            req.params.id
+        );
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: "Order not found",
+            });
+        }
+
+
+        order.orderStatus = status;
+
+        await order.save();
+
+
+        return res.status(200).json({
+            success: true,
+            message: "Order status updated successfully",
+            order,
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Update Order Status Error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
+export const getAdminOrderById = async (req, res) => {
+    try {
+
+        const order = await Order.findById(req.params.id)
+            .populate(
+                "user",
+                "name email"
+            )
+            .populate(
+                "items.product",
+                "name price image"
+            );
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: "Order not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            order,
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Get Admin Order Error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
     }
 };

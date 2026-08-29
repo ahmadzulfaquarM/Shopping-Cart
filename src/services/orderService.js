@@ -86,3 +86,46 @@ export const cancelOrder = async (id) => {
 
     return response.data;
 };
+
+
+
+// Get all orders
+
+export const getAllOrders = async () => {
+
+    const response = await api.get(
+        "/orders/admin/all"
+    );
+
+    return response.data;
+};
+
+// Admin
+// Update order status
+
+export const updateOrderStatus = async (
+    id,
+    status
+) => {
+
+    const response = await api.put(
+        `/orders/admin/${id}/status`,
+        {
+            status,
+        }
+    );
+
+    return response.data;
+};
+
+
+// Get single order - Admin
+
+export const getAdminOrderById = async (id) => {
+
+    const response = await api.get(
+        `/orders/admin/${id}`
+    );
+
+    return response.data;
+};
