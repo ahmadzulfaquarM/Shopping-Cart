@@ -16,7 +16,17 @@ import {
     toggleUserBlock,
 } from "../../../services/adminServices";
 
+import { useNavigate } from "react-router-dom";
+
+
 const AdminUsers = () => {
+
+    const navigate = useNavigate();
+
+
+    // ======================================================
+    // STATE
+    // ======================================================
 
     const [users, setUsers] = useState([]);
 
@@ -24,11 +34,11 @@ const AdminUsers = () => {
 
     const [error, setError] = useState("");
 
-    // Search
     const [search, setSearch] = useState("");
 
-    // Role filter
     const [roleFilter, setRoleFilter] = useState("all");
+
+    const [actionLoading, setActionLoading] = useState(null);
 
 
     // ======================================================
@@ -40,11 +50,16 @@ const AdminUsers = () => {
         try {
 
             setLoading(true);
+
             setError("");
 
             const data = await getAllUsers();
 
-            setUsers(data.users || []);
+            setUsers(
+                Array.isArray(data?.users)
+                    ? data.users
+                    : []
+            );
 
         } catch (error) {
 
@@ -67,7 +82,7 @@ const AdminUsers = () => {
 
 
     // ======================================================
-    // LOAD USERS
+    // INITIAL LOAD
     // ======================================================
 
     useEffect(() => {
@@ -78,48 +93,16 @@ const AdminUsers = () => {
 
 
     // ======================================================
-    // LOADING
+    // SEARCH + FILTER
     // ======================================================
 
-    if (loading) {
+    const searchText = search
+        .trim()
+        .toLowerCase();
 
-        return (
-            <div className="flex min-h-[60vh] items-center justify-center">
-
-                <p className="font-medium text-gray-600">
-                    Loading users...
-                </p>
-
-            </div>
-        );
-    }
-
-
-    // ======================================================
-    // ERROR
-    // ======================================================
-
-    if (error) {
-
-        return (
-            <div className="rounded-2xl bg-red-50 p-6 text-red-600">
-
-                <p className="font-semibold">
-                    {error}
-                </p>
-
-            </div>
-        );
-    }
-
-
-    // ======================================================
-    // SEARCH + ROLE FILTER
-    // ======================================================
 
     const filteredUsers = users.filter((user) => {
 
-        // Safely convert values to strings
         const name = String(
             user?.name || ""
         ).toLowerCase();
@@ -132,19 +115,11 @@ const AdminUsers = () => {
             user?.role || ""
         ).toLowerCase();
 
-        const searchText = search
-            .trim()
-            .toLowerCase();
-
-
-        // Search by name OR email
 
         const matchesSearch =
             name.includes(searchText) ||
             email.includes(searchText);
 
-
-        // Role filter
 
         const matchesRole =
             roleFilter === "all" ||
@@ -155,7 +130,23 @@ const AdminUsers = () => {
             matchesSearch &&
             matchesRole
         );
+
     });
+
+
+    // ======================================================
+    // VIEW USER
+    // ======================================================
+
+    const handleViewUser = (userId) => {
+
+        if (!userId) {
+            return;
+        }
+
+        navigate(`/admin/users/${userId}`);
+
+    };
 
 
     // ======================================================
@@ -164,10 +155,18 @@ const AdminUsers = () => {
 
     const handleDeleteUser = async (user) => {
 
-        if (user.role === "admin") {
+        // Prevent deleting admin
+        if (user?.role === "admin") {
 
-            alert("Admin accounts cannot be deleted.");
+            alert(
+                "Admin accounts cannot be deleted."
+            );
 
+            return;
+        }
+
+
+        if (!user?._id) {
             return;
         }
 
@@ -184,9 +183,24 @@ const AdminUsers = () => {
 
         try {
 
-            await deleteUser(user._id);
+            setActionLoading(
+                `delete-${user._id}`
+            );
 
-            await fetchUsers();
+
+            await deleteUser(
+                user._id
+            );
+
+
+            // Remove user immediately
+            setUsers((previousUsers) =>
+                previousUsers.filter(
+                    (item) =>
+                        item._id !== user._id
+                )
+            );
+
 
         } catch (error) {
 
@@ -195,25 +209,38 @@ const AdminUsers = () => {
                 error
             );
 
+
             alert(
                 error.response?.data?.message ||
                 "Failed to delete user"
             );
+
+        } finally {
+
+            setActionLoading(null);
+
         }
     };
 
 
-
     // ======================================================
-    // BLOCK / UNBLOCK
+    // BLOCK / UNBLOCK USER
     // ======================================================
 
     const handleToggleBlock = async (user) => {
 
-        if (user.role === "admin") {
+        // Prevent blocking admin
+        if (user?.role === "admin") {
 
-            alert("Admin accounts cannot be blocked.");
+            alert(
+                "Admin accounts cannot be blocked."
+            );
 
+            return;
+        }
+
+
+        if (!user?._id) {
             return;
         }
 
@@ -235,11 +262,35 @@ const AdminUsers = () => {
 
         try {
 
-            await toggleUserBlock(
-                user._id
+            setActionLoading(
+                `block-${user._id}`
             );
 
-            await fetchUsers();
+
+            const data =
+                await toggleUserBlock(
+                    user._id
+                );
+
+
+            /*
+             * Update only this user instead
+             * of fetching the complete list again.
+             */
+
+            setUsers((previousUsers) =>
+                previousUsers.map((item) =>
+                    item._id === user._id
+                        ? {
+                            ...item,
+                            isBlocked:
+                                data?.user?.isBlocked ??
+                                !item.isBlocked,
+                        }
+                        : item
+                )
+            );
+
 
         } catch (error) {
 
@@ -248,12 +299,73 @@ const AdminUsers = () => {
                 error
             );
 
+
             alert(
                 error.response?.data?.message ||
                 "Failed to update user"
             );
+
+        } finally {
+
+            setActionLoading(null);
+
         }
     };
+
+
+    // ======================================================
+    // LOADING
+    // ======================================================
+
+    if (loading) {
+
+        return (
+
+            <div className="flex min-h-[60vh] items-center justify-center">
+
+                <div className="text-center">
+
+                    <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600"></div>
+
+                    <p className="mt-4 font-medium text-gray-600">
+                        Loading users...
+                    </p>
+
+                </div>
+
+            </div>
+
+        );
+    }
+
+
+    // ======================================================
+    // ERROR
+    // ======================================================
+
+    if (error) {
+
+        return (
+
+            <div className="rounded-2xl bg-red-50 p-6">
+
+                <p className="font-semibold text-red-600">
+                    {error}
+                </p>
+
+
+                <button
+                    onClick={fetchUsers}
+                    className="mt-4 rounded-xl bg-blue-600 px-5 py-2.5 font-semibold text-white transition hover:bg-blue-700"
+                >
+                    Try Again
+                </button>
+
+            </div>
+
+        );
+    }
+
 
     // ======================================================
     // RETURN
@@ -262,6 +374,7 @@ const AdminUsers = () => {
     return (
 
         <div>
+
 
             {/* ==================================================
                 HEADER
@@ -278,6 +391,7 @@ const AdminUsers = () => {
                 </p>
 
             </div>
+
 
 
             {/* ==================================================
@@ -297,17 +411,21 @@ const AdminUsers = () => {
                             Search Users
                         </label>
 
+
                         <input
                             type="text"
                             value={search}
                             onChange={(e) =>
-                                setSearch(e.target.value)
+                                setSearch(
+                                    e.target.value
+                                )
                             }
                             placeholder="Search by name or email..."
                             className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                         />
 
                     </div>
+
 
 
                     {/* ROLE FILTER */}
@@ -318,10 +436,13 @@ const AdminUsers = () => {
                             Filter by Role
                         </label>
 
+
                         <select
                             value={roleFilter}
                             onChange={(e) =>
-                                setRoleFilter(e.target.value)
+                                setRoleFilter(
+                                    e.target.value
+                                )
                             }
                             className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                         >
@@ -345,6 +466,7 @@ const AdminUsers = () => {
                 </div>
 
             </div>
+
 
 
             {/* ==================================================
@@ -374,6 +496,7 @@ const AdminUsers = () => {
             </div>
 
 
+
             {/* ==================================================
                 USER TABLE
             ================================================== */}
@@ -382,10 +505,12 @@ const AdminUsers = () => {
 
                 <div className="overflow-x-auto">
 
-                    <table className="w-full min-w-[700px]">
+                    <table className="w-full min-w-[1000px]">
 
 
-                        {/* TABLE HEADER */}
+                        {/* ==================================================
+                            TABLE HEADER
+                        ================================================== */}
 
                         <thead className="border-b border-gray-200 bg-gray-50">
 
@@ -420,12 +545,17 @@ const AdminUsers = () => {
                         </thead>
 
 
-                        {/* TABLE BODY */}
+
+                        {/* ==================================================
+                            TABLE BODY
+                        ================================================== */}
 
                         <tbody className="divide-y divide-gray-100">
 
 
-                            {/* NO RESULTS */}
+                            {/* ==================================================
+                                NO RESULTS
+                            ================================================== */}
 
                             {filteredUsers.length === 0 ? (
 
@@ -433,16 +563,16 @@ const AdminUsers = () => {
 
                                     <td
                                         colSpan="6"
-                                        className="px-6 py-12 text-center"
+                                        className="px-6 py-16 text-center"
                                     >
 
-                                        <FaUser
-                                            className="mx-auto text-3xl text-gray-300"
-                                        />
+                                        <FaUser className="mx-auto text-4xl text-gray-300" />
 
-                                        <p className="mt-3 font-medium text-gray-600">
+
+                                        <p className="mt-4 font-semibold text-gray-600">
                                             No users found
                                         </p>
+
 
                                         <p className="mt-1 text-sm text-gray-400">
                                             Try changing your search or filter.
@@ -454,136 +584,313 @@ const AdminUsers = () => {
 
                             ) : (
 
-                                /* USERS */
 
-                                filteredUsers.map((user) => (
+                                /* ==================================================
+                                   USERS
+                                ================================================== */
 
-                                    <tr
-                                        key={user?._id}
-                                        className="transition hover:bg-gray-50"
-                                    >
+                                filteredUsers.map((user) => {
 
+                                    const isAdmin =
+                                        user?.role === "admin";
 
-                                        {/* ==================================================
-                                            USER
-                                        ================================================== */}
-
-                                        <td className="px-6 py-4">
-
-                                            <div className="flex items-center gap-4">
+                                    const isBlocked =
+                                        Boolean(
+                                            user?.isBlocked
+                                        );
 
 
-                                                {/* AVATAR */}
+                                    const deleteLoading =
+                                        actionLoading ===
+                                        `delete-${user._id}`;
 
-                                                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-100 text-blue-600">
 
-                                                    {user?.avatar ? (
+                                    const blockLoading =
+                                        actionLoading ===
+                                        `block-${user._id}`;
 
-                                                        <img
-                                                            src={user.avatar}
-                                                            alt={user?.name || "User"}
-                                                            className="h-11 w-11 rounded-full object-cover"
-                                                        />
 
-                                                    ) : (
+                                    return (
 
-                                                        <FaUser />
+                                        <tr
+                                            key={user?._id}
+                                            className="transition hover:bg-gray-50"
+                                        >
+
+
+                                            {/* ==================================================
+                                                USER
+                                            ================================================== */}
+
+                                            <td className="px-6 py-4">
+
+                                                <div className="flex items-center gap-4">
+
+
+                                                    {/* AVATAR */}
+
+                                                    <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-100 text-blue-600">
+
+                                                        {user?.avatar ? (
+
+                                                            <img
+                                                                src={user.avatar}
+                                                                alt={
+                                                                    user?.name ||
+                                                                    "User"
+                                                                }
+                                                                className="h-full w-full object-cover"
+                                                            />
+
+                                                        ) : (
+
+                                                            <FaUser />
+
+                                                        )}
+
+                                                    </div>
+
+
+                                                    {/* NAME */}
+
+                                                    <div>
+
+                                                        <p className="font-semibold text-gray-900">
+
+                                                            {user?.name ||
+                                                                "Unknown User"}
+
+                                                        </p>
+
+
+                                                        <p className="text-sm text-gray-500">
+
+                                                            {user?._id
+                                                                ? `#${user._id.slice(-8)}`
+                                                                : "No ID"}
+
+                                                        </p>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </td>
+
+
+
+                                            {/* ==================================================
+                                                EMAIL
+                                            ================================================== */}
+
+                                            <td className="px-6 py-4">
+
+                                                <div className="flex items-center gap-2 text-gray-600">
+
+                                                    <FaEnvelope className="shrink-0 text-sm text-gray-400" />
+
+                                                    <span className="truncate">
+                                                        {user?.email ||
+                                                            "No email"}
+                                                    </span>
+
+                                                </div>
+
+                                            </td>
+
+
+
+                                            {/* ==================================================
+                                                ROLE
+                                            ================================================== */}
+
+                                            <td className="px-6 py-4">
+
+                                                {isAdmin ? (
+
+                                                    <span className="inline-flex items-center gap-2 rounded-full bg-purple-100 px-3 py-1 text-sm font-semibold text-purple-700">
+
+                                                        <FaUserShield />
+
+                                                        Admin
+
+                                                    </span>
+
+                                                ) : (
+
+                                                    <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-700">
+
+                                                        User
+
+                                                    </span>
+
+                                                )}
+
+                                            </td>
+
+
+
+                                            {/* ==================================================
+                                                JOINED
+                                            ================================================== */}
+
+                                            <td className="px-6 py-4 text-sm text-gray-600">
+
+                                                {user?.createdAt
+                                                    ? new Date(
+                                                        user.createdAt
+                                                    ).toLocaleDateString()
+                                                    : "N/A"}
+
+                                            </td>
+
+
+
+                                            {/* ==================================================
+                                                STATUS
+                                            ================================================== */}
+
+                                            <td className="px-6 py-4">
+
+                                                {isAdmin ? (
+
+                                                    <span className="inline-flex items-center rounded-full bg-purple-100 px-3 py-1 text-sm font-semibold text-purple-700">
+                                                        Admin
+                                                    </span>
+
+                                                ) : isBlocked ? (
+
+                                                    <span className="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-sm font-semibold text-red-700">
+                                                        Blocked
+                                                    </span>
+
+                                                ) : (
+
+                                                    <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">
+                                                        Active
+                                                    </span>
+
+                                                )}
+
+                                            </td>
+
+
+
+                                            {/* ==================================================
+                                                ACTIONS
+                                            ================================================== */}
+
+                                            <td className="px-6 py-4">
+
+                                                <div className="flex items-center justify-end gap-2">
+
+
+                                                    {/* VIEW */}
+
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            handleViewUser(
+                                                                user?._id
+                                                            )
+                                                        }
+                                                        title="View User"
+                                                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600 transition hover:bg-blue-100"
+                                                    >
+
+                                                        <FaEye />
+
+                                                    </button>
+
+
+
+                                                    {/* BLOCK / UNBLOCK */}
+
+                                                    {!isAdmin && (
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                handleToggleBlock(
+                                                                    user
+                                                                )
+                                                            }
+                                                            disabled={
+                                                                blockLoading
+                                                            }
+                                                            title={
+                                                                isBlocked
+                                                                    ? "Unblock User"
+                                                                    : "Block User"
+                                                            }
+                                                            className={`inline-flex h-9 w-9 items-center justify-center rounded-lg transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                                                                isBlocked
+                                                                    ? "bg-green-50 text-green-600 hover:bg-green-100"
+                                                                    : "bg-yellow-50 text-yellow-600 hover:bg-yellow-100"
+                                                            }`}
+                                                        >
+
+                                                            {blockLoading ? (
+
+                                                                <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+
+                                                            ) : isBlocked ? (
+
+                                                                <FaUnlock />
+
+                                                            ) : (
+
+                                                                <FaBan />
+
+                                                            )}
+
+                                                        </button>
+
+                                                    )}
+
+
+
+                                                    {/* DELETE */}
+
+                                                    {!isAdmin && (
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                handleDeleteUser(
+                                                                    user
+                                                                )
+                                                            }
+                                                            disabled={
+                                                                deleteLoading
+                                                            }
+                                                            title="Delete User"
+                                                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-red-50 text-red-600 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
+                                                        >
+
+                                                            {deleteLoading ? (
+
+                                                                <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+
+                                                            ) : (
+
+                                                                <FaTrash />
+
+                                                            )}
+
+                                                        </button>
 
                                                     )}
 
                                                 </div>
 
+                                            </td>
 
-                                                {/* NAME */}
+                                        </tr>
 
-                                                <div>
+                                    );
 
-                                                    <p className="font-semibold text-gray-900">
-
-                                                        {user?.name ||
-                                                            "Unknown User"}
-
-                                                    </p>
-
-                                                    <p className="text-sm text-gray-500">
-
-                                                        {user?._id
-                                                            ? `#${user._id.slice(-8)}`
-                                                            : "No ID"}
-
-                                                    </p>
-
-                                                </div>
-
-                                            </div>
-
-                                        </td>
-
-
-                                        {/* ==================================================
-                                            EMAIL
-                                        ================================================== */}
-
-                                        <td className="px-6 py-4">
-
-                                            <div className="flex items-center gap-2 text-gray-600">
-
-                                                <FaEnvelope className="text-sm text-gray-400" />
-
-                                                {user?.email ||
-                                                    "No email"}
-
-                                            </div>
-
-                                        </td>
-
-
-                                        {/* ==================================================
-                                            ROLE
-                                        ================================================== */}
-
-                                        <td className="px-6 py-4">
-
-                                            {user?.role === "admin" ? (
-
-                                                <span className="inline-flex items-center gap-2 rounded-full bg-purple-100 px-3 py-1 text-sm font-semibold text-purple-700">
-
-                                                    <FaUserShield />
-
-                                                    Admin
-
-                                                </span>
-
-                                            ) : (
-
-                                                <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-700">
-
-                                                    User
-
-                                                </span>
-
-                                            )}
-
-                                        </td>
-
-
-                                        {/* ==================================================
-                                            JOINED
-                                        ================================================== */}
-
-                                        <td className="px-6 py-4 text-sm text-gray-600">
-
-                                            {user?.createdAt
-                                                ? new Date(
-                                                    user.createdAt
-                                                ).toLocaleDateString()
-                                                : "N/A"}
-
-                                        </td>
-
-                                    </tr>
-
-                                ))
+                                })
 
                             )}
 
@@ -594,6 +901,16 @@ const AdminUsers = () => {
                 </div>
 
             </div>
+
+
+
+            {/* ==================================================
+                MOBILE INFORMATION
+            ================================================== */}
+
+            <p className="mt-4 text-center text-xs text-gray-400 md:hidden">
+                Swipe horizontally to view all user information.
+            </p>
 
         </div>
     );

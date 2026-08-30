@@ -597,15 +597,16 @@ export const getAllOrders = async (req, res) => {
     }
 };
 
-
 // ======================================================
 // ADMIN - UPDATE ORDER STATUS
 // ======================================================
 
 export const updateOrderStatus = async (req, res) => {
+
     try {
 
         const { status } = req.body;
+
 
         const allowedStatuses = [
             "processing",
@@ -615,35 +616,133 @@ export const updateOrderStatus = async (req, res) => {
             "cancelled",
         ];
 
+
+        // ==================================================
+        // VALIDATE STATUS
+        // ==================================================
+
         if (!allowedStatuses.includes(status)) {
+
             return res.status(400).json({
+
                 success: false,
+
                 message: "Invalid order status",
+
             });
         }
 
 
-        const order = await Order.findById(
-            req.params.id
-        );
+        // ==================================================
+        // FIND ORDER
+        // ==================================================
+
+        const order =
+            await Order.findById(
+                req.params.id
+            );
+
 
         if (!order) {
+
             return res.status(404).json({
+
                 success: false,
+
                 message: "Order not found",
+
             });
         }
 
 
+        const currentStatus =
+            order.orderStatus;
+
+
+        // ==================================================
+        // STATUS TRANSITIONS
+        // ==================================================
+
+        const allowedTransitions = {
+
+            processing: [
+                "confirmed",
+                "cancelled",
+            ],
+
+            confirmed: [
+                "shipped",
+                "cancelled",
+            ],
+
+            shipped: [
+                "delivered",
+            ],
+
+            delivered: [],
+
+            cancelled: [],
+
+        };
+
+
+        const possibleStatuses =
+            allowedTransitions[
+                currentStatus
+            ] || [];
+
+
+        // Same status
+
+        if (currentStatus === status) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    `Order is already ${currentStatus}`,
+
+            });
+        }
+
+
+        // Invalid transition
+
+        if (
+            !possibleStatuses.includes(status)
+        ) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    `Cannot change order status from ${currentStatus} to ${status}`,
+
+            });
+        }
+
+
+        // ==================================================
+        // UPDATE
+        // ==================================================
+
         order.orderStatus = status;
+
 
         await order.save();
 
 
         return res.status(200).json({
+
             success: true,
-            message: "Order status updated successfully",
+
+            message:
+                "Order status updated successfully",
+
             order,
+
         });
 
     } catch (error) {
@@ -654,8 +753,11 @@ export const updateOrderStatus = async (req, res) => {
         );
 
         return res.status(500).json({
+
             success: false,
+
             message: error.message,
+
         });
     }
 };

@@ -1,7 +1,9 @@
 import api from "./api";
 
 
-// Get all products
+// ======================================================
+// GET ALL PRODUCTS
+// ======================================================
 
 export const getProducts = async (params = {}) => {
 
@@ -13,7 +15,9 @@ export const getProducts = async (params = {}) => {
 };
 
 
-// Get single product
+// ======================================================
+// GET SINGLE PRODUCT
+// ======================================================
 
 export const getProductById = async (id) => {
 
@@ -25,7 +29,9 @@ export const getProductById = async (id) => {
 };
 
 
-// Update product
+// ======================================================
+// UPDATE PRODUCT
+// ======================================================
 
 export const updateProduct = async (
     id,
@@ -40,7 +46,11 @@ export const updateProduct = async (
     return response.data;
 };
 
-// update Product
+
+// ======================================================
+// DELETE PRODUCT
+// ======================================================
+
 export const deleteProduct = async (id) => {
 
     const response = await api.delete(

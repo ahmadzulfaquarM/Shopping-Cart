@@ -2,10 +2,17 @@ import express from "express";
 
 import {
     getDashboardStats,
-    getAllUsers, 
+
+    getAllUsers,
     getUserById,
     deleteUser,
     toggleUserBlock,
+
+    getAllOrders,
+    getOrderStatistics,
+    updateOrderStatus,
+    getAdminOrderById,
+
 } from "../controllers/adminController.js";
 
 import { protect } from "../middleware/authMiddleware.js";
@@ -27,7 +34,7 @@ router.get(
 
 
 // ======================================================
-// ADMIN - GET ALL USERS
+// ADMIN - USERS
 // ======================================================
 
 router.get(
@@ -37,18 +44,12 @@ router.get(
     getAllUsers
 );
 
-
-// Get single user
-
 router.get(
     "/users/:id",
     protect,
     admin,
     getUserById
 );
-
-
-// Delete user
 
 router.delete(
     "/users/:id",
@@ -57,14 +58,44 @@ router.delete(
     deleteUser
 );
 
-
-// Block / Unblock user
-
 router.put(
     "/users/:id/block",
     protect,
     admin,
     toggleUserBlock
+);
+
+
+// ======================================================
+// ADMIN - ORDERS
+// ======================================================
+
+router.get(
+    "/orders",
+    protect,
+    admin,
+    getAllOrders
+);
+
+router.get(
+    "/orders/statistics",
+    protect,
+    admin,
+    getOrderStatistics
+);
+
+router.get(
+    "/orders/:id",
+    protect,
+    admin,
+    getAdminOrderById
+);
+
+router.put(
+    "/orders/:id/status",
+    protect,
+    admin,
+    updateOrderStatus
 );
 
 
