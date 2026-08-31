@@ -21,6 +21,9 @@ import Checkout from "./pages/Checkout/Checkout";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import Profile from "./pages/Profile/Profile";
+import VerifyEmail from "./pages/Auth/VerifyEmail.jsx";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import NotFound from "./pages/NotFound/NotFound";
 import Categories from "./pages/Categories/Categories";
@@ -94,7 +97,23 @@ function App() {
                         element={<Register />}
                     />
 
+                    <Route
+                        path="/forgot-password"
+                        element={<ForgotPassword />}
+                    />
+                    <Route
+                        path="/reset-password/:token"
+                        element={<ResetPassword />}
+                    />
+
                 </Route>
+
+                {/* Email Verification */}
+
+                <Route
+                    path="/verify-email/:token"
+                    element={<VerifyEmail />}
+                />
 
                 {/* Protected User Routes */}
 

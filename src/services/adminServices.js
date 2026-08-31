@@ -71,3 +71,70 @@ export const toggleUserBlock = async (id) => {
 
     return response.data;
 };
+
+
+// ======================================================
+// GET ADMIN ORDERS
+// ======================================================
+
+export const getAllOrders = async (params = {}) => {
+
+    const response = await api.get(
+        "/admin/orders",
+        {
+            params,
+        }
+    );
+
+    return response.data;
+};
+
+
+// ======================================================
+// GET ORDER STATISTICS
+// ======================================================
+
+export const getOrderStatistics = async () => {
+
+    const response = await api.get(
+        "/admin/orders/statistics"
+    );
+
+    return response.data;
+};
+
+
+// ======================================================
+// UPDATE ORDER STATUS
+// ======================================================
+
+export const updateOrderStatus = async (
+    id,
+    status
+) => {
+
+    const response = await api.put(
+        `/admin/orders/${id}/status`,
+        {
+            status,
+        }
+    );
+
+    return response.data;
+};
+
+
+// ======================================================
+// GET ADMIN ORDER BY ID
+// ======================================================
+
+export const getAdminOrderById = async (
+    id
+) => {
+
+    const response = await api.get(
+        `/admin/orders/${id}`
+    );
+
+    return response.data;
+};

@@ -1,17 +1,30 @@
-import { protect } from "../middleware/authMiddleware.js";
 import express from "express";
-import { registerUser, loginUser,getUserProfile,updateUserProfile } from "../controllers/authController.js";
+
+import {
+    registerUser,
+    loginUser,
+    getUserProfile,
+    updateUserProfile,
+    verifyEmail,
+    forgotPassword,
+    resetPassword
+} from "../controllers/authController.js";
+
+import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Register
 router.post("/register", registerUser);
 
-// Login
 router.post("/login", loginUser);
 
-// profile
-router.get("/profile",protect,getUserProfile);
+router.get("/verify-email/:token", verifyEmail);
+
+router.post("/forgot-password", forgotPassword);
+router.put("/reset-password/:token", resetPassword);
+
+router.get("/profile", protect, getUserProfile);
+
 router.put("/profile", protect, updateUserProfile);
 
 export default router;
