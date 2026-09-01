@@ -1,28 +1,79 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-export const protect= async(req, res,next)=>{
+export const protect = async (req, res, next) => {
+    try {
+        const authHeader = req.headers.authorization;
 
-    try{
-        const token=req.headers.authorization;
-        if(!token){
+        if (!authHeader) {
             return res.status(401).json({
-                success:false,
-                message:"No token provided",
+                success: false,
+                message: "Authentication required",
             });
         }
 
-        const jwtToken = token.split(" ")[1];
-        const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET);
-        req.user = await User.findById(decoded.id).select("-password");
+        if (!authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid authorization format",
+            });
+        }
+
+        const token = authHeader.split(" ")[1];
+
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: "Authentication token is missing",
+            });
+        }
+
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET
+        );
+
+        const user = await User.findById(decoded.id)
+            .select("-password");
+
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        if (user.isBlocked) {
+            return res.status(403).json({
+                success: false,
+                message: "Your account has been blocked",
+            });
+        }
+
+        req.user = user;
+
         next();
 
-    }catch(error){
+    } catch (error) {
+        console.error("Authentication Error:", error);
+
+        if (error.name === "TokenExpiredError") {
+            return res.status(401).json({
+                success: false,
+                message: "Token expired. Please login again",
+            });
+        }
+
+        if (error.name === "JsonWebTokenError") {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid authentication token",
+            });
+        }
 
         return res.status(401).json({
-            success:false,
-            message:"Not authorised",
+            success: false,
+            message: "Authentication failed",
         });
     }
-
-}
+};

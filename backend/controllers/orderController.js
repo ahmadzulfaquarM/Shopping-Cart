@@ -1,13 +1,8 @@
-import crypto from "crypto"
+import crypto from "crypto";
 import razorpay from "../config/razorpay.js";
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
 import Address from "../models/Address.js";
-
-
-// ======================================================
-// CREATE ORDER
-// ======================================================
 
 export const createOrder = async (req, res) => {
     try {
@@ -17,29 +12,39 @@ export const createOrder = async (req, res) => {
             paymentMethod,
         } = req.body;
 
-        // Validate cart
         if (!items || items.length === 0) {
             return res.status(400).json({
+                success: false,
                 message: "Cart is empty",
             });
         }
 
-        // Validate address
         if (!addressId) {
             return res.status(400).json({
+                success: false,
                 message: "Delivery address is required",
             });
         }
 
-        // Validate payment method
         if (!paymentMethod) {
             return res.status(400).json({
+                success: false,
                 message: "Payment method is required",
             });
         }
 
+        const allowedPaymentMethods = [
+            "cod",
+            "online",
+        ];
 
-        // Find address belonging to logged-in user
+        if (!allowedPaymentMethods.includes(paymentMethod)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid payment method",
+            });
+        }
+
         const address = await Address.findOne({
             _id: addressId,
             user: req.user._id,
@@ -47,18 +52,28 @@ export const createOrder = async (req, res) => {
 
         if (!address) {
             return res.status(404).json({
+                success: false,
                 message: "Address not found",
             });
         }
 
-
         const orderItems = [];
-
         let subtotal = 0;
 
-
-        // Validate every product
         for (const item of items) {
+            if (!item.product || !item.quantity) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid order item",
+                });
+            }
+
+            if (item.quantity < 1) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Product quantity must be at least 1",
+                });
+            }
 
             const product = await Product.findById(
                 item.product
@@ -66,26 +81,24 @@ export const createOrder = async (req, res) => {
 
             if (!product) {
                 return res.status(404).json({
+                    success: false,
                     message:
                         `Product not found: ${item.product}`,
                 });
             }
 
-
-            // Check stock
             if (product.stock < item.quantity) {
                 return res.status(400).json({
+                    success: false,
                     message:
                         `${product.name} does not have enough stock`,
                 });
             }
 
-
             const itemPrice =
                 product.price * item.quantity;
 
             subtotal += itemPrice;
-
 
             orderItems.push({
                 product: product._id,
@@ -96,17 +109,12 @@ export const createOrder = async (req, res) => {
             });
         }
 
-
-        // Free delivery
         const deliveryFee = 0;
 
         const totalPrice =
             subtotal + deliveryFee;
 
-
-        // Create order
         const order = await Order.create({
-
             user: req.user._id,
 
             items: orderItems,
@@ -133,10 +141,7 @@ export const createOrder = async (req, res) => {
             totalPrice,
         });
 
-
-        // Reduce stock
         for (const item of orderItems) {
-
             await Product.findByIdAndUpdate(
                 item.product,
                 {
@@ -147,7 +152,6 @@ export const createOrder = async (req, res) => {
             );
         }
 
-
         return res.status(201).json({
             success: true,
             message: "Order created successfully",
@@ -155,7 +159,6 @@ export const createOrder = async (req, res) => {
         });
 
     } catch (error) {
-
         console.error(
             "Create Order Error:",
             error
@@ -168,16 +171,8 @@ export const createOrder = async (req, res) => {
     }
 };
 
-
-
-// ======================================================
-// GET MY ORDERS
-// ======================================================
-
 export const getMyOrders = async (req, res) => {
-
     try {
-
         const orders = await Order.find({
             user: req.user._id,
         })
@@ -189,14 +184,12 @@ export const getMyOrders = async (req, res) => {
                 createdAt: -1,
             });
 
-
         return res.status(200).json({
             success: true,
             orders,
         });
 
     } catch (error) {
-
         console.error(
             "Get My Orders Error:",
             error
@@ -209,16 +202,8 @@ export const getMyOrders = async (req, res) => {
     }
 };
 
-
-
-// ======================================================
-// GET SINGLE ORDER
-// ======================================================
-
 export const getOrderById = async (req, res) => {
-
     try {
-
         const order = await Order.findOne({
             _id: req.params.id,
             user: req.user._id,
@@ -228,13 +213,12 @@ export const getOrderById = async (req, res) => {
                 "name price image"
             );
 
-
         if (!order) {
             return res.status(404).json({
+                success: false,
                 message: "Order not found",
             });
         }
-
 
         return res.status(200).json({
             success: true,
@@ -242,7 +226,6 @@ export const getOrderById = async (req, res) => {
         });
 
     } catch (error) {
-
         console.error(
             "Get Order Error:",
             error
@@ -255,46 +238,32 @@ export const getOrderById = async (req, res) => {
     }
 };
 
-
-
-// ======================================================
-// CANCEL ORDER
-// ======================================================
-
 export const cancelOrder = async (req, res) => {
-
     try {
-
         const order = await Order.findOne({
             _id: req.params.id,
             user: req.user._id,
         });
 
-
         if (!order) {
             return res.status(404).json({
+                success: false,
                 message: "Order not found",
             });
         }
 
-
-        // Only processing and confirmed
-        // orders can be cancelled
         if (
             order.orderStatus !== "processing" &&
             order.orderStatus !== "confirmed"
         ) {
-
             return res.status(400).json({
+                success: false,
                 message:
                     `Order cannot be cancelled because it is already ${order.orderStatus}`,
             });
         }
 
-
-        // Restore stock
         for (const item of order.items) {
-
             await Product.findByIdAndUpdate(
                 item.product,
                 {
@@ -305,13 +274,9 @@ export const cancelOrder = async (req, res) => {
             );
         }
 
-
-        // Update order status
         order.orderStatus = "cancelled";
 
-
         await order.save();
-
 
         return res.status(200).json({
             success: true,
@@ -320,7 +285,6 @@ export const cancelOrder = async (req, res) => {
         });
 
     } catch (error) {
-
         console.error(
             "Cancel Order Error:",
             error
@@ -333,15 +297,13 @@ export const cancelOrder = async (req, res) => {
     }
 };
 
-
-
-
 export const createRazorpayOrder = async (req, res) => {
     try {
         const { orderId } = req.body;
 
         if (!orderId) {
             return res.status(400).json({
+                success: false,
                 message: "Order ID is required",
             });
         }
@@ -353,43 +315,50 @@ export const createRazorpayOrder = async (req, res) => {
 
         if (!order) {
             return res.status(404).json({
+                success: false,
                 message: "Order not found",
             });
         }
 
         if (order.paymentMethod !== "online") {
             return res.status(400).json({
-                message: "This order is not an online payment order",
+                success: false,
+                message:
+                    "This order is not an online payment order",
             });
         }
 
         if (order.paymentStatus === "paid") {
             return res.status(400).json({
+                success: false,
                 message: "Order is already paid",
             });
         }
 
-        // Razorpay amount is in paise
         const amountInPaise = Math.round(
             order.totalPrice * 100
         );
 
-        const razorpayOrder = await razorpay.orders.create({
-            amount: amountInPaise,
-            currency: "INR",
-            receipt: order._id.toString(),
-        });
+        const razorpayOrder =
+            await razorpay.orders.create({
+                amount: amountInPaise,
+                currency: "INR",
+                receipt: order._id.toString(),
+            });
 
-        order.razorpayOrderId = razorpayOrder.id;
+        order.razorpayOrderId =
+            razorpayOrder.id;
 
         await order.save();
 
         return res.status(201).json({
             success: true,
-            razorpayOrderId: razorpayOrder.id,
+            razorpayOrderId:
+                razorpayOrder.id,
             amount: razorpayOrder.amount,
             currency: razorpayOrder.currency,
-            key: process.env.RAZORPAY_KEY_ID,
+            key:
+                process.env.RAZORPAY_KEY_ID,
         });
 
     } catch (error) {
@@ -405,13 +374,11 @@ export const createRazorpayOrder = async (req, res) => {
     }
 };
 
-
-// verify rozerpay payment
-
-export const verifyRazorpayPayment = async (req, res) => {
-
+export const verifyRazorpayPayment = async (
+    req,
+    res
+) => {
     try {
-
         const {
             orderId,
             razorpayOrderId,
@@ -419,71 +386,49 @@ export const verifyRazorpayPayment = async (req, res) => {
             razorpaySignature,
         } = req.body;
 
-
-        // Validate required fields
-
         if (
             !orderId ||
             !razorpayOrderId ||
             !razorpayPaymentId ||
             !razorpaySignature
         ) {
-
             return res.status(400).json({
                 success: false,
-                message: "Payment details are required",
+                message:
+                    "Payment details are required",
             });
-
         }
-
-
-        // Find user's order
 
         const order = await Order.findOne({
             _id: orderId,
             user: req.user._id,
         });
 
-
         if (!order) {
-
             return res.status(404).json({
                 success: false,
                 message: "Order not found",
             });
-
         }
-
-
-        // Make sure Razorpay order belongs
-        // to our MongoDB order
 
         if (
-            order.razorpayOrderId !== razorpayOrderId
+            order.razorpayOrderId !==
+            razorpayOrderId
         ) {
-
             return res.status(400).json({
                 success: false,
-                message: "Invalid Razorpay order",
+                message:
+                    "Invalid Razorpay order",
             });
-
         }
 
-
-        // Already paid
-
         if (order.paymentStatus === "paid") {
-
             return res.status(200).json({
                 success: true,
                 message: "Order is already paid",
                 order,
             });
-
         }
-
-
-        // Create signature
 
         const generatedSignature =
             crypto
@@ -492,30 +437,24 @@ export const verifyRazorpayPayment = async (req, res) => {
                     process.env.RAZORPAY_KEY_SECRET
                 )
                 .update(
-                     `${order.razorpayOrderId}|${razorpayPaymentId}`
+                    `${order.razorpayOrderId}|${razorpayPaymentId}`
                 )
                 .digest("hex");
 
-
-        // Compare signatures
-
         if (
-            generatedSignature !== razorpaySignature
+            generatedSignature !==
+            razorpaySignature
         ) {
-
             order.paymentStatus = "failed";
 
             await order.save();
 
             return res.status(400).json({
                 success: false,
-                message: "Payment signature verification failed",
+                message:
+                    "Payment signature verification failed",
             });
-
         }
-
-
-        // Payment verified successfully
 
         order.paymentStatus = "paid";
 
@@ -527,47 +466,33 @@ export const verifyRazorpayPayment = async (req, res) => {
 
         order.orderStatus = "confirmed";
 
-
         await order.save();
 
-
         return res.status(200).json({
-
             success: true,
-
             message:
                 "Payment verified successfully",
-
             order,
-
         });
 
     } catch (error) {
-
         console.error(
             "Verify Razorpay Payment Error:",
             error
         );
 
         return res.status(500).json({
-
             success: false,
-
             message: error.message,
-
         });
-
     }
 };
 
-
-// ======================================================
-// ADMIN - GET ALL ORDERS
-// ======================================================
-
-export const getAllOrders = async (req, res) => {
+export const getAllOrders = async (
+    req,
+    res
+) => {
     try {
-
         const orders = await Order.find()
             .populate(
                 "user",
@@ -584,7 +509,6 @@ export const getAllOrders = async (req, res) => {
         });
 
     } catch (error) {
-
         console.error(
             "Get All Orders Error:",
             error
@@ -597,16 +521,12 @@ export const getAllOrders = async (req, res) => {
     }
 };
 
-// ======================================================
-// ADMIN - UPDATE ORDER STATUS
-// ======================================================
-
-export const updateOrderStatus = async (req, res) => {
-
+export const updateOrderStatus = async (
+    req,
+    res
+) => {
     try {
-
         const { status } = req.body;
-
 
         const allowedStatuses = [
             "processing",
@@ -616,55 +536,29 @@ export const updateOrderStatus = async (req, res) => {
             "cancelled",
         ];
 
-
-        // ==================================================
-        // VALIDATE STATUS
-        // ==================================================
-
         if (!allowedStatuses.includes(status)) {
-
             return res.status(400).json({
-
                 success: false,
-
                 message: "Invalid order status",
-
             });
         }
-
-
-        // ==================================================
-        // FIND ORDER
-        // ==================================================
 
         const order =
             await Order.findById(
                 req.params.id
             );
 
-
         if (!order) {
-
             return res.status(404).json({
-
                 success: false,
-
                 message: "Order not found",
-
             });
         }
-
 
         const currentStatus =
             order.orderStatus;
 
-
-        // ==================================================
-        // STATUS TRANSITIONS
-        // ==================================================
-
         const allowedTransitions = {
-
             processing: [
                 "confirmed",
                 "cancelled",
@@ -682,98 +576,74 @@ export const updateOrderStatus = async (req, res) => {
             delivered: [],
 
             cancelled: [],
-
         };
-
 
         const possibleStatuses =
             allowedTransitions[
                 currentStatus
             ] || [];
 
-
-        // Same status
-
         if (currentStatus === status) {
-
             return res.status(400).json({
-
                 success: false,
-
                 message:
                     `Order is already ${currentStatus}`,
-
             });
         }
-
-
-        // Invalid transition
 
         if (
-            !possibleStatuses.includes(status)
+            !possibleStatuses.includes(
+                status
+            )
         ) {
-
             return res.status(400).json({
-
                 success: false,
-
                 message:
                     `Cannot change order status from ${currentStatus} to ${status}`,
-
             });
         }
-
-
-        // ==================================================
-        // UPDATE
-        // ==================================================
 
         order.orderStatus = status;
 
-
         await order.save();
 
-
         return res.status(200).json({
-
             success: true,
-
             message:
                 "Order status updated successfully",
-
             order,
-
         });
 
     } catch (error) {
-
         console.error(
             "Update Order Status Error:",
             error
         );
 
         return res.status(500).json({
-
             success: false,
-
             message: error.message,
-
         });
     }
 };
 
-export const getAdminOrderById = async (req, res) => {
+export const getAdminOrderById = async (
+    req,
+    res
+) => {
     try {
-
-        const order = await Order.findById(req.params.id)
-            .populate(
-                "user",
-                "name email"
+        const order =
+            await Order.findById(
+                req.params.id
             )
-            .populate(
-                "items.product",
-                "name price image"
-            );
+                .populate(
+                    "user",
+                    "name email"
+                )
+                .populate(
+                    "items.product",
+                    "name price image"
+                );
 
         if (!order) {
             return res.status(404).json({
@@ -788,7 +658,6 @@ export const getAdminOrderById = async (req, res) => {
         });
 
     } catch (error) {
-
         console.error(
             "Get Admin Order Error:",
             error

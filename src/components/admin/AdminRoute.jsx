@@ -16,15 +16,24 @@ const AdminRoute = () => {
         );
     }
 
+
     // Not logged in
     if (!user) {
         return <Navigate to="/login" replace />;
     }
 
+
+    // Blocked user
+    if (user.isBlocked) {
+        return <Navigate to="/" replace />;
+    }
+
+
     // Logged in but not admin
     if (user.role !== "admin") {
         return <Navigate to="/" replace />;
     }
+
 
     // Admin
     return <Outlet />;

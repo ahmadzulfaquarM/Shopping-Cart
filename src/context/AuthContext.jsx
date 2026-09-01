@@ -13,7 +13,9 @@ import {
 
 import { getUserProfile } from "../services/authService";
 
+
 const AuthContext = createContext();
+
 
 export const AuthProvider = ({ children }) => {
 
@@ -21,25 +23,38 @@ export const AuthProvider = ({ children }) => {
 
     const [loading, setLoading] = useState(true);
 
+
+    // ======================================================
+    // VERIFY USER ON PAGE LOAD
+    // ======================================================
+
     useEffect(() => {
 
         const verifyUser = async () => {
 
             const token = getToken();
 
-            // No token → no authenticated user
+
+            // No token → user is not logged in
             if (!token) {
+
                 setUser(null);
                 setLoading(false);
+
                 return;
             }
+
 
             try {
 
                 const data = await getUserProfile();
 
+
+                // Backend successfully verified JWT
                 setUser(data.user);
 
+
+                // Keep latest user data
                 localStorage.setItem(
                     "user",
                     JSON.stringify(data.user)
@@ -53,7 +68,10 @@ export const AuthProvider = ({ children }) => {
                     error.message
                 );
 
+
+                // Invalid/expired token
                 logoutUser();
+
                 setUser(null);
 
             } finally {
@@ -63,15 +81,20 @@ export const AuthProvider = ({ children }) => {
             }
         };
 
+
         verifyUser();
 
     }, []);
+
+
 
     const login = (userData) => {
 
         setUser(userData);
 
     };
+
+
 
     const logout = () => {
 
@@ -81,10 +104,20 @@ export const AuthProvider = ({ children }) => {
 
     };
 
+
+    
+
     const updateUser = (updatedUser) => {
-        localStorage.setItem("user", JSON.stringify(updatedUser));
+
+        localStorage.setItem(
+            "user",
+            JSON.stringify(updatedUser)
+        );
+
         setUser(updatedUser);
+
     };
+
 
     return (
         <AuthContext.Provider
@@ -99,11 +132,12 @@ export const AuthProvider = ({ children }) => {
             {children}
         </AuthContext.Provider>
     );
+
 };
+
 
 export const useAuth = () => {
 
     return useContext(AuthContext);
 
 };
-

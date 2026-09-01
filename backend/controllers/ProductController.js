@@ -196,61 +196,103 @@ export const getProductById = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
     try {
-        const product = await Product.findById(req.params.id);
+        const { id } = req.params;
 
-        if (!product) {
-            return res.status(404).json({
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
                 success: false,
-                message: "Product not found",
+                message: "Invalid product ID",
             });
         }
 
+        const {
+            name,
+            description,
+            price,
+            category,
+            brand,
+            image,
+            stock,
+            rating,
+            numReviews,
+            discount,
+        } = req.body;
+
         const updatedProduct = await Product.findByIdAndUpdate(
-            req.params.id,
-            req.body,
+            id,
+            {
+                name,
+                description,
+                price,
+                category,
+                brand,
+                image,
+                stock,
+                rating,
+                numReviews,
+                discount,
+            },
             {
                 new: true,
                 runValidators: true,
             }
         );
 
-        res.status(200).json({
-            success: true,
-            message: "Product updated successfully",
-            product: updatedProduct,
-        });
-
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message,
-        });
-    }
-};
-
-
-export const deleteProduct = async (req, res) => {
-    try {
-        const product = await Product.findById(req.params.id);
-
-        if (!product) {
+        if (!updatedProduct) {
             return res.status(404).json({
                 success: false,
                 message: "Product not found",
             });
         }
 
-        await Product.findByIdAndDelete(req.params.id);
+        return res.status(200).json({
+            success: true,
+            message: "Product updated successfully",
+            product: updatedProduct,
+        });
 
-        res.status(200).json({
+    } catch (error) {
+        console.error("Update Product Error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Server error",
+        });
+    }
+};
+
+export const deleteProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid product ID",
+            });
+        }
+
+        const deletedProduct =
+            await Product.findByIdAndDelete(id);
+
+        if (!deletedProduct) {
+            return res.status(404).json({
+                success: false,
+                message: "Product not found",
+            });
+        }
+
+        return res.status(200).json({
             success: true,
             message: "Product deleted successfully",
         });
 
     } catch (error) {
-        res.status(500).json({
+        console.error("Delete Product Error:", error);
+
+        return res.status(500).json({
             success: false,
-            message: error.message,
+            message: "Server error",
         });
     }
 };
