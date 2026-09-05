@@ -7,79 +7,114 @@ const CategoryCard = ({ category }) => {
             to={`/category/${category.slug}`}
             className="
                 group
-                block
                 relative
+                flex
+                min-h-[310px]
                 overflow-hidden
-                rounded-3xl
+                rounded-2xl
                 border
                 border-gray-200
                 bg-white
-                p-6
+                p-7
                 shadow-sm
                 transition-all
-                duration-500
-                hover:-translate-y-2
-                hover:border-blue-600
-                hover:shadow-[0_20px_50px_rgba(37,99,235,0.15)]
+                duration-300
+                hover:-translate-y-1
+                hover:border-blue-200
+                hover:shadow-xl
             "
         >
 
-            {/* Blue Background Glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+            {/* Background Glow */}
+            <div
+                className="
+                    absolute
+                    -right-16
+                    -top-16
+                    h-48
+                    w-48
+                    rounded-full
+                    bg-blue-50
+                    opacity-0
+                    transition-all
+                    duration-500
+                    group-hover:scale-150
+                    group-hover:opacity-100
+                "
+            ></div>
 
-            <div className="relative z-10">
+
+            {/* Content */}
+            <div className="relative z-10 flex w-full flex-col justify-between">
+
+                {/* Top */}
+                <div>
+
+                    <div className="flex items-start justify-between">
+
+                        <div>
+                            <h3 className="text-2xl font-bold text-gray-900">
+                                {category.name}
+                            </h3>
+
+                            <p className="mt-2 text-sm text-gray-500">
+                                {category.productCount}+ Products
+                            </p>
+                        </div>
+
+                        <div
+                            className="
+                                flex
+                                h-10
+                                w-10
+                                items-center
+                                justify-center
+                                rounded-full
+                                bg-gray-50
+                                text-gray-500
+                                transition-all
+                                duration-300
+                                group-hover:bg-blue-600
+                                group-hover:text-white
+                            "
+                        >
+                            <FaArrowRight className="text-sm transition-transform duration-300 group-hover:-rotate-45" />
+                        </div>
+
+                    </div>
+
+                </div>
+
 
                 {/* Image */}
-                <div className="flex justify-center">
+                <div className="mt-4 flex flex-1 items-center justify-center">
+
                     <img
                         src={category.image}
                         alt={category.name}
                         className="
-                            h-56
-                            w-56
+                            h-44
+                            w-52
                             object-contain
                             transition-all
                             duration-500
-                            group-hover:scale-105
-                            group-hover:-translate-y-2
+                            group-hover:scale-110
                         "
                     />
+
                 </div>
 
-                {/* Content */}
 
-                <div className="mt-6 text-center">
+                {/* Bottom */}
+                <div className="mt-4 flex items-center justify-between">
 
-                    <h3 className="text-2xl font-bold text-gray-900">
-                        {category.name}
-                    </h3>
-
-                    {/* Product Count */}
-
-                    <div className="mt-4">
-                        <span className="rounded-full bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600">
-                            {category.productCount}+ Products
-                        </span>
-                    </div>
-
-                    {/* Shop */}
-
-                    <div
-                        className="
-                            mt-7
-                            inline-flex
-                            items-center
-                            gap-2
-                            font-semibold
-                            text-blue-600
-                            transition-all
-                            duration-300
-                            group-hover:gap-4
-                        "
-                    >
+                    <span className="text-sm font-semibold text-gray-600 transition-colors duration-300 group-hover:text-blue-600">
                         Shop Collection
-                        <FaArrowRight />
-                    </div>
+                    </span>
+
+                    <span className="text-sm font-medium text-gray-400">
+                        →
+                    </span>
 
                 </div>
 

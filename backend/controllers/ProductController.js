@@ -1,3 +1,6 @@
+import streamifier from "streamifier";
+import cloudinary from "../config/cloudinary.js";
+
 import mongoose from "mongoose";
 import Product from "../models/Product.js";
 
@@ -10,34 +13,88 @@ export const createProduct = async (req, res) => {
             price,
             category,
             brand,
-            image,
             stock,
             rating,
             numReviews,
             discount,
         } = req.body;
 
+        // Validate required fields
+        if (
+            !name ||
+            !description ||
+            price === undefined ||
+            !category ||
+            !brand ||
+            stock === undefined
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide all required fields",
+            });
+        }
+
+        // Image required
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: "Product image is required",
+            });
+        }
+
+        // Upload image to Cloudinary
+        const uploadResult = await new Promise(
+            (resolve, reject) => {
+
+                const uploadStream =
+                    cloudinary.uploader.upload_stream(
+                        {
+                            folder: "shopping-cart/products",
+                        },
+                        (error, result) => {
+
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(result);
+                            }
+                        }
+                    );
+
+                streamifier
+                    .createReadStream(req.file.buffer)
+                    .pipe(uploadStream);
+            }
+        );
+
+        // Create product
         const product = await Product.create({
             name,
             description,
             price,
             category,
             brand,
-            image,
+            image: uploadResult.secure_url,
             stock,
             rating,
             numReviews,
             discount,
         });
 
-        res.status(201).json({
+        return res.status(201).json({
             success: true,
             message: "Product created successfully",
             product,
         });
 
     } catch (error) {
-        res.status(500).json({
+
+        console.error(
+            "Create Product Error:",
+            error
+        );
+
+        return res.status(500).json({
             success: false,
             message: error.message,
         });
@@ -198,10 +255,21 @@ export const updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
 
+        // Validate product ID
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({
                 success: false,
                 message: "Invalid product ID",
+            });
+        }
+
+        // Find product
+        const product = await Product.findById(id);
+
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: "Product not found",
             });
         }
 
@@ -211,39 +279,70 @@ export const updateProduct = async (req, res) => {
             price,
             category,
             brand,
-            image,
             stock,
             rating,
             numReviews,
             discount,
         } = req.body;
 
-        const updatedProduct = await Product.findByIdAndUpdate(
-            id,
-            {
-                name,
-                description,
-                price,
-                category,
-                brand,
-                image,
-                stock,
-                rating,
-                numReviews,
-                discount,
-            },
-            {
-                new: true,
-                runValidators: true,
-            }
-        );
+        let image = product.image;
 
-        if (!updatedProduct) {
-            return res.status(404).json({
-                success: false,
-                message: "Product not found",
-            });
+        // Upload new image only if selected
+        if (req.file) {
+
+            const uploadResult = await new Promise(
+                (resolve, reject) => {
+
+                    const uploadStream =
+                        cloudinary.uploader.upload_stream(
+                            {
+                                folder:
+                                    "shopping-cart/products",
+                            },
+                            (error, result) => {
+
+                                if (error) {
+                                    reject(error);
+                                } else {
+                                    resolve(result);
+                                }
+
+                            }
+                        );
+
+                    streamifier
+                        .createReadStream(
+                            req.file.buffer
+                        )
+                        .pipe(uploadStream);
+
+                }
+            );
+
+            image = uploadResult.secure_url;
         }
+
+        // Update product
+        const updatedProduct =
+            await Product.findByIdAndUpdate(
+                id,
+                {
+                    name,
+                    description,
+                    price,
+                    category,
+                    brand,
+                    image,
+                    stock,
+                    rating,
+                    numReviews,
+                    discount,
+                },
+                {
+                    new: true,
+                    runValidators: true,
+                }
+            );
 
         return res.status(200).json({
             success: true,
@@ -252,11 +351,15 @@ export const updateProduct = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Update Product Error:", error);
+
+        console.error(
+            "Update Product Error:",
+            error
+        );
 
         return res.status(500).json({
             success: false,
-            message: "Server error",
+            message: error.message,
         });
     }
 };

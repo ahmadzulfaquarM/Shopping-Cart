@@ -8,10 +8,10 @@ const AdminIcon = () => {
             to="/admin"
             title="Admin Dashboard"
             className={({ isActive }) =>
-                `relative flex items-center justify-center rounded-xl p-3 text-xl transition ${
+                `relative flex h-9 w-9 items-center justify-center rounded-sm text-lg transition ${
                     isActive
-                        ? "bg-blue-100 text-blue-600"
-                        : "text-gray-700 hover:bg-gray-100 hover:text-blue-600"
+                        ? "bg-white text-blue-600"
+                        : "text-white hover:bg-white/10"
                 }`
             }
         >

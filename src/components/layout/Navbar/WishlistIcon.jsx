@@ -10,15 +10,17 @@ const WishlistIcon = () => {
         <NavLink
             to="/wishlist"
             aria-label="Wishlist"
-            className="relative flex items-center justify-center text-2xl text-gray-700 transition-all duration-300 ease-in-out hover:scale-110 hover:text-red-500"
+            className="group relative flex h-9 w-9 items-center justify-center rounded-sm text-white transition hover:bg-white/10"
         >
-            <FaHeart />
+
+            <FaHeart className="text-base transition group-hover:scale-105" />
 
             {wishlistCount > 0 && (
-                <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-xs font-semibold text-white">
-                    {wishlistCount}
+                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-white px-1 text-[10px] font-bold text-blue-600">
+                    {wishlistCount > 99 ? "99+" : wishlistCount}
                 </span>
             )}
+
         </NavLink>
     );
 };

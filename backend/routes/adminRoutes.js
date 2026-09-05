@@ -19,24 +19,12 @@ import { protect } from "../middleware/authMiddleware.js";
 import { admin } from "../middleware/adminMiddleware.js";
 
 const router = express.Router();
-
-
-// ======================================================
-// ADMIN DASHBOARD
-// ======================================================
-
 router.get(
     "/dashboard",
     protect,
     admin,
     getDashboardStats
 );
-
-
-// ======================================================
-// ADMIN - USERS
-// ======================================================
-
 router.get(
     "/users",
     protect,

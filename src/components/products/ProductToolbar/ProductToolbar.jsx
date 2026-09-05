@@ -1,9 +1,4 @@
-import { FaSearch } from "react-icons/fa";
-
 const ProductToolbar = ({
-    searchInput,
-    setSearchInput,
-    handleSearch,
     productCount,
     sortOption,
     setSortOption,
@@ -11,54 +6,41 @@ const ProductToolbar = ({
     return (
         <div className="flex flex-col gap-4 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm md:flex-row md:items-center md:justify-between">
 
-            {/* Search */}
+            {/* Product Count */}
 
-            <div className="relative w-full md:max-w-md">
+            <div className="text-sm text-gray-600">
 
-                <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                Showing{" "}
 
-                <input
-                    type="text"
-                    placeholder="Search products..."
-                    value={searchInput}
-                    onChange={(e) => setSearchInput(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            handleSearch();
-                        }
-                    }}
-                    className="w-full rounded-2xl border border-gray-200 py-3 pl-12 pr-24 outline-none transition-all duration-300 focus:border-blue-600"
-                />
+                <span className="font-bold text-blue-600">
+                    {productCount}
+                </span>{" "}
 
-                <button
-                    type="button"
-                    onClick={handleSearch}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
-                >
-                    Search
-                </button>
+                products
 
             </div>
 
-            {/* Right Side */}
 
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            {/* Sort */}
 
-                {/* Product Count */}
+            <div className="flex items-center gap-3">
 
-                Showing
-                <span className="mx-1 font-bold text-blue-600">
-                    {productCount}
-                </span>
-                products
-
-                {/* Sort */}
+                <label
+                    htmlFor="sort"
+                    className="text-sm font-medium text-gray-600"
+                >
+                    Sort by:
+                </label>
 
                 <select
+                    id="sort"
                     value={sortOption}
-                    onChange={(e) => setSortOption(e.target.value)}
-                    className="rounded-2xl border border-gray-200 bg-white px-5 py-3 outline-none transition-all duration-300 focus:border-blue-600"
+                    onChange={(e) =>
+                        setSortOption(e.target.value)
+                    }
+                    className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 outline-none transition-all duration-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
                 >
+
                     <option value="featured">
                         Featured
                     </option>

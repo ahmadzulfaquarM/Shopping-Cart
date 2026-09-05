@@ -1,11 +1,53 @@
-import React from "react";
-import { FaCheckCircle, FaMapMarkerAlt, FaPlus } from "react-icons/fa";
+import { useState } from "react";
+import { FaCheckCircle, FaMapMarkerAlt, FaPlus, FaTimes } from "react-icons/fa";
+
+import { addAddress } from "../../services/addressService";
+import AddressForm from "../../components/address/AddressForm";
 
 const CheckoutAddress = ({
     addresses,
     selectedAddress,
     setSelectedAddress,
+    onAddressAdded,
 }) => {
+
+    const [showForm, setShowForm] = useState(false);
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState("");
+
+    const handleSaveNewAddress = async (formData) => {
+
+        try {
+
+            setSaving(true);
+            setError("");
+
+            const data = await addAddress(formData);
+
+            // Let the parent (checkout page) know so its address list
+            // stays in sync — it should append data.address to its state.
+            if (typeof onAddressAdded === "function") {
+                onAddressAdded(data.address);
+            }
+
+            setSelectedAddress(data.address);
+            setShowForm(false);
+
+        } catch (err) {
+
+            setError(
+                err.response?.data?.message ||
+                "Failed to save address"
+            );
+
+        } finally {
+
+            setSaving(false);
+
+        }
+
+    };
+
     return (
         <div className="rounded-2xl bg-white p-6 shadow-sm">
 
@@ -19,18 +61,50 @@ const CheckoutAddress = ({
 
                 <button
                     type="button"
+                    onClick={() => {
+                        setError("");
+                        setShowForm((prev) => !prev);
+                    }}
                     className="flex items-center gap-2 rounded-xl border border-blue-600 px-4 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-600 hover:text-white"
                 >
-                    <FaPlus />
-                    Add New
+                    {showForm ? (
+                        <>
+                            <FaTimes />
+                            Close
+                        </>
+                    ) : (
+                        <>
+                            <FaPlus />
+                            Add New
+                        </>
+                    )}
                 </button>
 
             </div>
 
 
+            {error && (
+                <div className="mb-5 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                    {error}
+                </div>
+            )}
+
+
+            {/* Inline add-address form */}
+
+            {showForm && (
+                <AddressForm
+                    address={null}
+                    onSave={handleSaveNewAddress}
+                    onCancel={() => setShowForm(false)}
+                    loading={saving}
+                />
+            )}
+
+
             {/* Addresses */}
 
-            {addresses.length === 0 ? (
+            {!showForm && addresses.length === 0 ? (
 
                 <div className="rounded-xl border border-dashed border-gray-300 p-8 text-center">
 
@@ -46,7 +120,7 @@ const CheckoutAddress = ({
 
                 </div>
 
-            ) : (
+            ) : !showForm && (
 
                 <div className="space-y-4">
 

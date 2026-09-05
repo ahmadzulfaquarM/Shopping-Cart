@@ -12,7 +12,7 @@ const AddProduct = () => {
         price: "",
         category: "",
         brand: "",
-        image: "",
+        image: null,
         stock: "",
         rating: "",
         numReviews: "",
@@ -22,9 +22,12 @@ const AddProduct = () => {
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
+
+        const { name, value, files } = e.target;
+
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value,
+            [name]: files ? files[0] : value,
         });
     };
 
@@ -32,25 +35,81 @@ const AddProduct = () => {
         e.preventDefault();
 
         try {
+
             setLoading(true);
 
-            const data = await api.post("/products", {
-                ...formData,
-                price: Number(formData.price),
-                stock: Number(formData.stock),
-                rating: Number(formData.rating) || 0,
-                numReviews: Number(formData.numReviews) || 0,
-                discount: Number(formData.discount) || 0,
-            });
+            const productData = new FormData();
+
+            productData.append(
+                "name",
+                formData.name
+            );
+
+            productData.append(
+                "description",
+                formData.description
+            );
+
+            productData.append(
+                "price",
+                Number(formData.price)
+            );
+
+            productData.append(
+                "category",
+                formData.category
+            );
+
+            productData.append(
+                "brand",
+                formData.brand
+            );
+
+            productData.append(
+                "stock",
+                Number(formData.stock)
+            );
+
+            productData.append(
+                "rating",
+                Number(formData.rating) || 0
+            );
+
+            productData.append(
+                "numReviews",
+                Number(formData.numReviews) || 0
+            );
+
+            productData.append(
+                "discount",
+                Number(formData.discount) || 0
+            );
+
+            productData.append(
+                "image",
+                formData.image
+            );
+
+            const data = await api.post(
+                "/products",
+                productData
+            );
 
             if (data.data.success) {
-                toast.success("Product added successfully");
+
+                toast.success(
+                    "Product added successfully"
+                );
 
                 navigate("/admin/products");
             }
 
         } catch (error) {
-            console.error("Add Product Error:", error);
+
+            console.error(
+                "Add Product Error:",
+                error
+            );
 
             toast.error(
                 error.response?.data?.message ||
@@ -58,7 +117,9 @@ const AddProduct = () => {
             );
 
         } finally {
+
             setLoading(false);
+
         }
     };
 
@@ -68,6 +129,7 @@ const AddProduct = () => {
             <div className="mx-auto max-w-4xl">
 
                 <div className="mb-8">
+
                     <h1 className="text-3xl font-bold text-gray-900">
                         Add Product
                     </h1>
@@ -75,6 +137,7 @@ const AddProduct = () => {
                     <p className="mt-2 text-gray-500">
                         Add a new product to your store
                     </p>
+
                 </div>
 
                 <form
@@ -85,7 +148,9 @@ const AddProduct = () => {
                     <div className="grid gap-6 md:grid-cols-2">
 
                         {/* Name */}
+
                         <div>
+
                             <label className="mb-2 block font-medium">
                                 Product Name
                             </label>
@@ -99,10 +164,13 @@ const AddProduct = () => {
                                 className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-600"
                                 placeholder="Enter product name"
                             />
+
                         </div>
 
                         {/* Brand */}
+
                         <div>
+
                             <label className="mb-2 block font-medium">
                                 Brand
                             </label>
@@ -116,10 +184,13 @@ const AddProduct = () => {
                                 className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-600"
                                 placeholder="Enter brand"
                             />
+
                         </div>
 
                         {/* Price */}
+
                         <div>
+
                             <label className="mb-2 block font-medium">
                                 Price
                             </label>
@@ -134,10 +205,13 @@ const AddProduct = () => {
                                 className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-600"
                                 placeholder="Enter price"
                             />
+
                         </div>
 
                         {/* Category */}
+
                         <div>
+
                             <label className="mb-2 block font-medium">
                                 Category
                             </label>
@@ -151,10 +225,13 @@ const AddProduct = () => {
                                 className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-600"
                                 placeholder="e.g. Shoes"
                             />
+
                         </div>
 
                         {/* Stock */}
+
                         <div>
+
                             <label className="mb-2 block font-medium">
                                 Stock
                             </label>
@@ -169,10 +246,13 @@ const AddProduct = () => {
                                 className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-600"
                                 placeholder="Enter stock"
                             />
+
                         </div>
 
                         {/* Discount */}
+
                         <div>
+
                             <label className="mb-2 block font-medium">
                                 Discount (%)
                             </label>
@@ -187,27 +267,39 @@ const AddProduct = () => {
                                 className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-600"
                                 placeholder="0"
                             />
+
                         </div>
 
                         {/* Image */}
+
                         <div className="md:col-span-2">
+
                             <label className="mb-2 block font-medium">
-                                Image URL
+                                Product Image
                             </label>
 
                             <input
-                                type="url"
+                                type="file"
                                 name="image"
-                                value={formData.image}
+                                accept="image/*"
                                 onChange={handleChange}
                                 required
-                                className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-600"
-                                placeholder="https://example.com/image.jpg"
+                                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none focus:border-blue-600"
                             />
+
+                            {formData.image && (
+                                <p className="mt-2 text-sm text-gray-500">
+                                    Selected:{" "}
+                                    {formData.image.name}
+                                </p>
+                            )}
+
                         </div>
 
                         {/* Description */}
+
                         <div className="md:col-span-2">
+
                             <label className="mb-2 block font-medium">
                                 Description
                             </label>
@@ -221,16 +313,22 @@ const AddProduct = () => {
                                 className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-600"
                                 placeholder="Enter product description"
                             />
+
                         </div>
 
                     </div>
 
                     {/* Buttons */}
+
                     <div className="mt-8 flex gap-4">
 
                         <button
                             type="button"
-                            onClick={() => navigate("/admin/products")}
+                            onClick={() =>
+                                navigate(
+                                    "/admin/products"
+                                )
+                            }
                             className="rounded-xl border border-gray-300 px-6 py-3 font-semibold text-gray-700 hover:bg-gray-100"
                         >
                             Cancel
@@ -242,7 +340,7 @@ const AddProduct = () => {
                             className="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700 disabled:bg-gray-400"
                         >
                             {loading
-                                ? "Adding Product..."
+                                ? "Uploading..."
                                 : "Add Product"}
                         </button>
 

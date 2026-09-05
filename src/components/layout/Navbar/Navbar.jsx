@@ -1,4 +1,5 @@
 import { useAuth } from "../../../context/AuthContext";
+
 import Logo from "../../common/Logo/Logo";
 import NavLinks from "./NavLinks";
 import SearchBar from "./SearchBar";
@@ -8,38 +9,99 @@ import UserMenu from "./UserMenu";
 import MobileMenu from "./MobileMenu";
 import MyOrdersIcon from "./MyOrdersIcon";
 import AdminIcon from "./AdminIcon";
+
 const Navbar = () => {
-    const {user,logout}=useAuth();
+    const { user, logout } = useAuth();
+
     return (
-        <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/95 shadow-sm backdrop-blur-md">
-            <div className="w-full px-4 md:px-8 lg:px-12 xl:px-16">
+        <header className="sticky top-0 z-50 w-full shadow-md">
 
-               <nav className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between px-4 md:px-8 lg:px-12">
+            {/* ================= TOP NAVBAR (solid brand blue, Flipkart style) ================= */}
 
-                    {/* Logo */}
-                    <Logo />
+            <div className="bg-blue-600">
 
-                    {/* Desktop Navigation */}
-                    <div className="hidden lg:flex items-center gap-10">
-                        <NavLinks />
+                <nav className="mx-auto flex h-[74px] max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8">
+
+                    {/* Logo (stacked with tagline like Flipkart's "Explore Plus") */}
+
+                    <div className="hidden shrink-0 lg:block">
+                        <Logo variant="light" />
+                        <p className="-mt-1 flex items-center gap-1 text-[11px] font-medium italic text-white/80">
+                            Explore
+                            <span className="font-bold not-italic text-yellow-400">
+                                Plus
+                            </span>
+                        </p>
                     </div>
+
+                    <div className="lg:hidden">
+                        <Logo variant="light" />
+                    </div>
+
+
+                    {/* Search */}
+
+                    <div className="hidden flex-1 lg:block">
+                        <SearchBar />
+                    </div>
+
 
                     {/* Desktop Actions */}
-                    <div className="hidden lg:flex items-center gap-6">
-                        <SearchBar />
-                        <WishlistIcon />
-                        <CartIcon />
+
+                    <div className="hidden items-center gap-2 lg:flex">
+
+                        <UserMenu
+                            user={user}
+                            logout={logout}
+                        />
+
                         <MyOrdersIcon />
-                        {user?.role === "admin" && <AdminIcon />}
-                       <UserMenu user={user} logout={logout} />
+
+                        <WishlistIcon />
+
+                        <CartIcon />
+
+                        {user?.role === "admin" && (
+                            <AdminIcon />
+                        )}
+
                     </div>
 
-                    {/* Mobile Menu */}
-                    <MobileMenu />
+
+                    {/* Mobile */}
+
+                    <div className="ml-auto lg:hidden">
+                        <MobileMenu />
+                    </div>
 
                 </nav>
 
             </div>
+
+
+            {/* ================= CATEGORY NAVIGATION ================= */}
+
+            <div className="hidden border-b border-gray-100 bg-white lg:block">
+
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+                    <div className="flex h-12 items-center justify-between">
+
+                        <NavLinks />
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {/* ================= MOBILE SEARCH ================= */}
+
+            <div className="bg-blue-600 px-4 pb-3 lg:hidden">
+                <SearchBar />
+            </div>
+
         </header>
     );
 };

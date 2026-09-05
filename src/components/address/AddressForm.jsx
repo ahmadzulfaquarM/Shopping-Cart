@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FaLocationArrow, FaSpinner } from "react-icons/fa";
 
 const initialForm = {
     fullName: "",
@@ -11,6 +12,25 @@ const initialForm = {
     isDefault: false,
 };
 
+// Free reverse-geocoding, no API key needed. Swap for Google Maps
+// Geocoding API if you already have a key set up elsewhere in the project.
+const reverseGeocode = async (lat, lon) => {
+    const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,
+        {
+            headers: {
+                Accept: "application/json",
+            },
+        }
+    );
+
+    if (!res.ok) {
+        throw new Error("Could not resolve address from location");
+    }
+
+    return res.json();
+};
+
 const AddressForm = ({
     address,
     onSave,
@@ -19,6 +39,9 @@ const AddressForm = ({
 }) => {
 
     const [form, setForm] = useState(initialForm);
+
+    const [locating, setLocating] = useState(false);
+    const [locationError, setLocationError] = useState("");
 
     useEffect(() => {
 
@@ -52,6 +75,83 @@ const AddressForm = ({
     };
 
 
+    const handleUseCurrentLocation = () => {
+
+        setLocationError("");
+
+        if (!navigator.geolocation) {
+            setLocationError("Location access isn't supported by your browser");
+            return;
+        }
+
+        setLocating(true);
+
+        navigator.geolocation.getCurrentPosition(
+
+            async (position) => {
+
+                try {
+
+                    const { latitude, longitude } = position.coords;
+
+                    const data = await reverseGeocode(latitude, longitude);
+
+                    const addr = data.address || {};
+
+                    setForm((prev) => ({
+                        ...prev,
+                        address:
+                            [addr.house_number, addr.road, addr.suburb]
+                                .filter(Boolean)
+                                .join(", ") || prev.address,
+                        city:
+                            addr.city ||
+                            addr.town ||
+                            addr.village ||
+                            addr.county ||
+                            prev.city,
+                        state: addr.state || prev.state,
+                        postalCode: addr.postcode || prev.postalCode,
+                        country: addr.country || prev.country,
+                    }));
+
+                } catch (err) {
+
+                    setLocationError(
+                        "Couldn't fetch your address, please enter it manually"
+                    );
+
+                } finally {
+
+                    setLocating(false);
+
+                }
+
+            },
+
+            (err) => {
+
+                setLocating(false);
+
+                if (err.code === err.PERMISSION_DENIED) {
+                    setLocationError(
+                        "Location permission denied — please enter your address manually"
+                    );
+                } else {
+                    setLocationError("Couldn't detect your location");
+                }
+
+            },
+
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+            }
+        );
+
+    };
+
+
     const handleSubmit = (e) => {
 
         e.preventDefault();
@@ -67,9 +167,38 @@ const AddressForm = ({
             className="mt-6 rounded-2xl border border-gray-200 bg-gray-50 p-6"
         >
 
-            <h3 className="mb-6 text-xl font-bold text-gray-800">
-                {address ? "Edit Address" : "Add New Address"}
-            </h3>
+            <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+
+                <h3 className="text-xl font-bold text-gray-800">
+                    {address ? "Edit Address" : "Add New Address"}
+                </h3>
+
+                <button
+                    type="button"
+                    onClick={handleUseCurrentLocation}
+                    disabled={locating}
+                    className="flex items-center justify-center gap-2 self-start rounded-xl border border-blue-200 bg-white px-4 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                    {locating ? (
+                        <>
+                            <FaSpinner className="animate-spin" />
+                            Detecting location...
+                        </>
+                    ) : (
+                        <>
+                            <FaLocationArrow />
+                            Use Current Location
+                        </>
+                    )}
+                </button>
+
+            </div>
+
+            {locationError && (
+                <div className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                    {locationError}
+                </div>
+            )}
 
 
             {/* Full Name */}

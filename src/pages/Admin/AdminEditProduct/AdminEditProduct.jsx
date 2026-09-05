@@ -1,20 +1,32 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, {
+    useEffect,
+    useState,
+} from "react";
+
+import {
+    useNavigate,
+    useParams,
+} from "react-router-dom";
+
 import {
     getProductById,
     updateProduct,
 } from "../../../services/productService";
 
+import toast from "react-hot-toast";
+
+
 const AdminEditProduct = () => {
 
     const { id } = useParams();
+
     const navigate = useNavigate();
 
+
     const [loading, setLoading] = useState(true);
+
     const [saving, setSaving] = useState(false);
 
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
 
     const [formData, setFormData] = useState({
         name: "",
@@ -22,13 +34,19 @@ const AdminEditProduct = () => {
         price: "",
         category: "",
         brand: "",
-        image: "",
         stock: "",
         discount: "",
     });
 
 
-    // Fetch product
+    const [image, setImage] = useState(null);
+
+    const [preview, setPreview] = useState("");
+
+
+    // ======================================================
+    // FETCH PRODUCT
+    // ======================================================
 
     useEffect(() => {
 
@@ -37,22 +55,44 @@ const AdminEditProduct = () => {
             try {
 
                 setLoading(true);
-                setError("");
 
-                const data = await getProductById(id);
+                const data =
+                    await getProductById(id);
 
                 const product = data.product;
 
+
                 setFormData({
+
                     name: product.name || "",
-                    description: product.description || "",
-                    price: product.price || "",
-                    category: product.category || "",
-                    brand: product.brand || "",
-                    image: product.image || "",
-                    stock: product.stock || "",
-                    discount: product.discount || "",
+
+                    description:
+                        product.description || "",
+
+                    price:
+                        product.price || "",
+
+                    category:
+                        product.category || "",
+
+                    brand:
+                        product.brand || "",
+
+                    stock:
+                        product.stock || "",
+
+                    discount:
+                        product.discount || "",
+
                 });
+
+
+                // Existing Cloudinary image
+
+                setPreview(
+                    product.image || ""
+                );
+
 
             } catch (error) {
 
@@ -61,7 +101,7 @@ const AdminEditProduct = () => {
                     error
                 );
 
-                setError(
+                toast.error(
                     error.response?.data?.message ||
                     "Failed to load product"
                 );
@@ -74,51 +114,175 @@ const AdminEditProduct = () => {
 
         };
 
+
         fetchProduct();
 
     }, [id]);
 
 
-    // Handle input
+    // ======================================================
+    // HANDLE INPUT
+    // ======================================================
 
     const handleChange = (e) => {
 
-        const { name, value } = e.target;
+        const {
+            name,
+            value,
+        } = e.target;
+
 
         setFormData((prev) => ({
+
             ...prev,
+
             [name]: value,
+
         }));
 
     };
 
 
-    // Submit
+    // ======================================================
+    // HANDLE IMAGE
+    // ======================================================
+
+    const handleImageChange = (e) => {
+
+        const file = e.target.files[0];
+
+
+        if (!file) {
+            return;
+        }
+
+
+        // Maximum 5MB
+
+        if (file.size > 5 * 1024 * 1024) {
+
+            toast.error(
+                "Image must be less than 5MB"
+            );
+
+            return;
+
+        }
+
+
+        // Only images
+
+        if (!file.type.startsWith("image/")) {
+
+            toast.error(
+                "Please select a valid image"
+            );
+
+            return;
+
+        }
+
+
+        setImage(file);
+
+
+        // Preview
+
+        const imageUrl =
+            URL.createObjectURL(file);
+
+        setPreview(imageUrl);
+
+    };
+
+
+    // ======================================================
+    // SUBMIT
+    // ======================================================
 
     const handleSubmit = async (e) => {
 
         e.preventDefault();
 
+
         try {
 
             setSaving(true);
-            setError("");
-            setSuccess("");
 
-            await updateProduct(id, {
-                ...formData,
-                price: Number(formData.price),
-                stock: Number(formData.stock),
-                discount: Number(formData.discount),
-            });
 
-            setSuccess(
-                "Product updated successfully."
+            const data =
+                new FormData();
+
+
+            // Product information
+
+            data.append(
+                "name",
+                formData.name
             );
 
+            data.append(
+                "description",
+                formData.description
+            );
+
+            data.append(
+                "price",
+                Number(formData.price)
+            );
+
+            data.append(
+                "category",
+                formData.category
+            );
+
+            data.append(
+                "brand",
+                formData.brand
+            );
+
+            data.append(
+                "stock",
+                Number(formData.stock)
+            );
+
+            data.append(
+                "discount",
+                Number(formData.discount) || 0
+            );
+
+
+            // New image
+
+            if (image) {
+
+                data.append(
+                    "image",
+                    image
+                );
+
+            }
+
+
+            await updateProduct(
+                id,
+                data
+            );
+
+
+            toast.success(
+                "Product updated successfully"
+            );
+
+
             setTimeout(() => {
-                navigate("/admin/products");
-            }, 1000);
+
+                navigate(
+                    "/admin/products"
+                );
+
+            }, 700);
+
 
         } catch (error) {
 
@@ -127,7 +291,8 @@ const AdminEditProduct = () => {
                 error
             );
 
-            setError(
+
+            toast.error(
                 error.response?.data?.message ||
                 "Failed to update product"
             );
@@ -141,61 +306,76 @@ const AdminEditProduct = () => {
     };
 
 
+    // ======================================================
+    // LOADING
+    // ======================================================
+
     if (loading) {
 
         return (
+
             <div className="rounded-2xl bg-white p-10 text-center shadow-sm">
+
                 <p className="font-medium text-gray-600">
+
                     Loading product...
+
                 </p>
+
             </div>
+
         );
 
     }
 
 
+    // ======================================================
+    // UI
+    // ======================================================
+
     return (
+
         <div className="max-w-4xl">
+
+
+            {/* HEADER */}
 
             <div className="mb-8">
 
                 <h1 className="text-2xl font-bold text-gray-900">
+
                     Edit Product
+
                 </h1>
 
+
                 <p className="mt-1 text-gray-500">
+
                     Update your product information
+
                 </p>
 
             </div>
 
 
-            {error && (
-                <div className="mb-6 rounded-xl bg-red-100 px-5 py-4 font-medium text-red-700">
-                    {error}
-                </div>
-            )}
-
-
-            {success && (
-                <div className="mb-6 rounded-xl bg-green-100 px-5 py-4 font-medium text-green-700">
-                    {success}
-                </div>
-            )}
-
+            {/* FORM */}
 
             <form
                 onSubmit={handleSubmit}
                 className="space-y-6 rounded-2xl bg-white p-6 shadow-sm"
             >
 
-                {/* Name */}
+
+                {/* PRODUCT NAME */}
 
                 <div>
 
                     <label className="mb-2 block font-semibold text-gray-700">
+
                         Product Name
+
                     </label>
+
 
                     <input
                         type="text"
@@ -203,19 +383,22 @@ const AdminEditProduct = () => {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-blue-500"
+                        className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-blue-500"
                     />
 
                 </div>
 
 
-                {/* Description */}
+                {/* DESCRIPTION */}
 
                 <div>
 
                     <label className="mb-2 block font-semibold text-gray-700">
+
                         Description
+
                     </label>
+
 
                     <textarea
                         name="description"
@@ -223,21 +406,25 @@ const AdminEditProduct = () => {
                         onChange={handleChange}
                         required
                         rows="4"
-                        className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-blue-500"
+                        className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-blue-500"
                     />
 
                 </div>
 
 
-                {/* Price + Stock */}
+                {/* PRICE + STOCK */}
 
                 <div className="grid gap-6 md:grid-cols-2">
+
 
                     <div>
 
                         <label className="mb-2 block font-semibold text-gray-700">
+
                             Price
+
                         </label>
+
 
                         <input
                             type="number"
@@ -255,8 +442,11 @@ const AdminEditProduct = () => {
                     <div>
 
                         <label className="mb-2 block font-semibold text-gray-700">
+
                             Stock
+
                         </label>
+
 
                         <input
                             type="number"
@@ -273,15 +463,19 @@ const AdminEditProduct = () => {
                 </div>
 
 
-                {/* Category + Brand */}
+                {/* CATEGORY + BRAND */}
 
                 <div className="grid gap-6 md:grid-cols-2">
+
 
                     <div>
 
                         <label className="mb-2 block font-semibold text-gray-700">
+
                             Category
+
                         </label>
+
 
                         <input
                             type="text"
@@ -289,6 +483,7 @@ const AdminEditProduct = () => {
                             value={formData.category}
                             onChange={handleChange}
                             required
+                            placeholder="e.g. T-Shirts"
                             className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-blue-500"
                         />
 
@@ -298,8 +493,11 @@ const AdminEditProduct = () => {
                     <div>
 
                         <label className="mb-2 block font-semibold text-gray-700">
+
                             Brand
+
                         </label>
+
 
                         <input
                             type="text"
@@ -315,33 +513,68 @@ const AdminEditProduct = () => {
                 </div>
 
 
-                {/* Image */}
+                {/* IMAGE */}
 
                 <div>
 
                     <label className="mb-2 block font-semibold text-gray-700">
-                        Image URL
+
+                        Product Image
+
                     </label>
 
+
                     <input
-                        type="url"
-                        name="image"
-                        value={formData.image}
-                        onChange={handleChange}
-                        required
-                        className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-blue-500"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="w-full cursor-pointer rounded-xl border border-gray-200 px-4 py-3 text-sm"
                     />
+
+
+                    <p className="mt-2 text-sm text-gray-500">
+
+                        Select a new image only if you want to replace the current image.
+
+                    </p>
+
+
+                    {/* IMAGE PREVIEW */}
+
+                    {preview && (
+
+                        <div className="mt-4">
+
+                            <p className="mb-2 text-sm font-semibold text-gray-700">
+
+                                Image Preview
+
+                            </p>
+
+
+                            <img
+                                src={preview}
+                                alt="Product preview"
+                                className="h-48 w-48 rounded-xl border border-gray-200 object-cover"
+                            />
+
+                        </div>
+
+                    )}
 
                 </div>
 
 
-                {/* Discount */}
+                {/* DISCOUNT */}
 
                 <div>
 
                     <label className="mb-2 block font-semibold text-gray-700">
+
                         Discount (%)
+
                     </label>
+
 
                     <input
                         type="number"
@@ -356,18 +589,23 @@ const AdminEditProduct = () => {
                 </div>
 
 
-                {/* Buttons */}
+                {/* BUTTONS */}
 
                 <div className="flex gap-4 pt-4">
+
 
                     <button
                         type="button"
                         onClick={() =>
-                            navigate("/admin/products")
+                            navigate(
+                                "/admin/products"
+                            )
                         }
                         className="rounded-xl border border-gray-300 px-6 py-3 font-semibold text-gray-700 transition hover:bg-gray-50"
                     >
+
                         Cancel
+
                     </button>
 
 
@@ -376,17 +614,23 @@ const AdminEditProduct = () => {
                         disabled={saving}
                         className="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
                     >
+
                         {saving
                             ? "Updating..."
                             : "Update Product"}
+
                     </button>
 
                 </div>
 
+
             </form>
 
         </div>
+
     );
+
 };
+
 
 export default AdminEditProduct;

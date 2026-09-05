@@ -5,29 +5,40 @@ const Categories = () => {
     return (
         <section className="bg-slate-50 py-24">
 
-            <div className="mx-auto max-w-7xl px-4 md:px-8 lg:px-12">
+            <div className="mx-auto max-w-[1440px] px-8 lg:px-12">
 
-                {/* Heading */}
-                <div className="mb-16 text-center">
+                {/* Section Header */}
+                <div className="mb-14 flex items-end justify-between">
 
-                    <span className="inline-block rounded-full border border-blue-600 bg-blue-50 px-6 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-blue-600">
-                        Shop by Category
-                    </span>
+                    <div>
+                        <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-blue-600">
+                            Shop by Category
+                        </p>
 
-                    <h2 className="mt-6 text-4xl font-extrabold text-gray-900 md:text-5xl">
-                        Explore Our Categories
-                    </h2>
+                        <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 lg:text-5xl">
+                            Find What You Love
+                        </h2>
 
-                    <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-gray-600">
-                        Discover premium collections curated for every lifestyle.
-                        Explore fashion, electronics, beauty, furniture,
-                        sports and more.
-                    </p>
+                        <p className="mt-4 max-w-2xl text-base leading-7 text-gray-500">
+                            Explore our wide range of products carefully selected
+                            for your everyday needs and lifestyle.
+                        </p>
+                    </div>
+
+                    {/* View All */}
+                    <a
+                        href="/categories"
+                        className="hidden items-center gap-2 font-semibold text-blue-600 transition-all duration-300 hover:gap-3 lg:flex"
+                    >
+                        View All Categories
+                        <span>→</span>
+                    </a>
 
                 </div>
 
-                {/* Cards */}
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+
+                {/* Category Grid */}
+                <div className="grid grid-cols-3 gap-6">
 
                     {categories.map((category) => (
                         <CategoryCard
@@ -35,6 +46,19 @@ const Categories = () => {
                             category={category}
                         />
                     ))}
+
+                </div>
+
+
+                {/* Mobile / Extra View All */}
+                <div className="mt-10 text-center lg:hidden">
+
+                    <a
+                        href="/categories"
+                        className="font-semibold text-blue-600"
+                    >
+                        View All Categories →
+                    </a>
 
                 </div>
 

@@ -1,57 +1,127 @@
-import { FaPaperPlane } from "react-icons/fa";
+import { useState } from "react";
+import { FaPaperPlane, FaCheck } from "react-icons/fa";
 
 const Newsletter = () => {
+
+    const [email, setEmail] = useState("");
+    const [subscribed, setSubscribed] = useState(false);
+
+    const handleSubmit = (e) => {
+
+        e.preventDefault();
+
+        if (!email.trim()) return;
+
+        setSubscribed(true);
+        setEmail("");
+
+    };
+
     return (
-        <section className="bg-white py-24">
+        <section className="bg-white py-20">
 
-            <div className="mx-auto max-w-7xl px-4 md:px-8 lg:px-12">
+            <div className="mx-auto max-w-7xl px-6 lg:px-12">
 
-                <div className="overflow-hidden rounded-[40px] bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 px-8 py-16 shadow-2xl md:px-16">
+                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 px-10 py-14 shadow-xl lg:px-16">
 
-                    <div className="mx-auto max-w-4xl text-center">
+                    {/* Decorative circles */}
+
+                    <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10" />
+
+                    <div className="absolute -bottom-32 -left-20 h-72 w-72 rounded-full bg-white/10" />
+
+
+                    <div className="relative z-10 mx-auto max-w-4xl text-center">
 
                         {/* Badge */}
 
-                        <span className="inline-block rounded-full bg-white/20 px-6 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-white backdrop-blur">
+                        <span className="inline-flex rounded-full bg-white/15 px-5 py-2 text-xs font-bold uppercase tracking-[0.18em] text-white">
                             Stay Updated
                         </span>
 
+
                         {/* Heading */}
 
-                        <h2 className="mt-6 text-4xl font-extrabold text-white md:text-5xl">
+                        <h2 className="mt-5 text-4xl font-extrabold tracking-tight text-white lg:text-5xl">
                             Never Miss{" "}
                             <span className="text-yellow-300">
                                 an Offer
                             </span>
                         </h2>
 
+
                         {/* Description */}
 
-                        <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-blue-100">
-                            Subscribe to receive exclusive discounts,
-                            new arrivals, limited-time offers, and premium shopping updates directly in your inbox.
+                        <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-blue-100">
+                            Subscribe for exclusive offers, new arrivals,
+                            special discounts and shopping updates.
                         </p>
+
 
                         {/* Form */}
 
-                        <form className="mx-auto mt-10 flex max-w-2xl flex-col gap-4 sm:flex-row">
+                        {!subscribed ? (
 
-                            <input
-                                type="email"
-                                placeholder="Enter your email address"
-                                className="flex-1 rounded-2xl border-0 bg-white px-6 py-4 text-gray-800 outline-none ring-0 placeholder:text-gray-400"
-                            />
-
-                            <button
-                                type="submit"
-                                className="flex items-center justify-center gap-3 rounded-2xl bg-gray-900 px-8 py-4 font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-black"
+                            <form
+                                onSubmit={handleSubmit}
+                                className="mx-auto mt-8 flex max-w-xl gap-3 rounded-2xl bg-white p-2"
                             >
-                                <FaPaperPlane />
 
-                                Subscribe
-                            </button>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) =>
+                                        setEmail(e.target.value)
+                                    }
+                                    placeholder="Enter your email address"
+                                    required
+                                    className="
+                                        min-w-0
+                                        flex-1
+                                        bg-transparent
+                                        px-4
+                                        py-3
+                                        text-gray-800
+                                        outline-none
+                                        placeholder:text-gray-400
+                                    "
+                                />
 
-                        </form>
+                                <button
+                                    type="submit"
+                                    className="
+                                        flex
+                                        shrink-0
+                                        items-center
+                                        gap-2
+                                        rounded-xl
+                                        bg-gray-900
+                                        px-6
+                                        py-3
+                                        font-semibold
+                                        text-white
+                                        transition
+                                        hover:bg-black
+                                    "
+                                >
+                                    <FaPaperPlane />
+
+                                    Subscribe
+                                </button>
+
+                            </form>
+
+                        ) : (
+
+                            <div className="mx-auto mt-8 flex max-w-xl items-center justify-center gap-3 rounded-2xl bg-white px-6 py-4 font-semibold text-green-600">
+
+                                <FaCheck />
+
+                                You're subscribed!
+
+                            </div>
+
+                        )}
 
                     </div>
 

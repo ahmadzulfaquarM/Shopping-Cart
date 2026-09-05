@@ -1,55 +1,120 @@
 import { FaArrowRight } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import promoBanner from "../../../assets/images/banner/promo-banner.png";
 
 const PromotionalBanner = () => {
     return (
         <section className="bg-slate-50 py-24">
-            <div className="mx-auto max-w-7xl px-4 md:px-8 lg:px-12">
 
-                <div className="overflow-hidden rounded-[40px] bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 shadow-2xl">
+            <div className="mx-auto max-w-[1440px] px-8 lg:px-12">
 
-                    <div className="grid items-center gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 shadow-xl">
 
-                        {/* Left Content */}
+                    {/* Decorative Circles */}
 
-                        <div className="p-10 md:p-14 lg:p-16">
+                    <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/10"></div>
 
-                            <span className="inline-block rounded-full bg-white/20 px-5 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-white backdrop-blur">
-                                Summer Sale 2026
+                    <div className="absolute -bottom-32 left-1/3 h-80 w-80 rounded-full bg-white/5"></div>
+
+
+                    <div className="relative grid min-h-[430px] grid-cols-[1fr_0.9fr] items-center">
+
+                        {/* ================= LEFT ================= */}
+
+                        <div className="px-12 py-16 lg:px-16 xl:px-20">
+
+                            {/* Small Label */}
+
+                            <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-5 py-2 text-xs font-bold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
+                                Limited Time Offer
                             </span>
 
-                            <h2 className="mt-6 text-4xl font-extrabold leading-tight text-white md:text-5xl xl:text-6xl">
-                                Up To
+
+                            {/* Heading */}
+
+                            <h2 className="mt-6 max-w-xl text-5xl font-extrabold leading-[1.05] tracking-tight text-white xl:text-6xl">
+
+                                Upgrade Your
                                 <span className="block text-yellow-300">
-                                    50% OFF
+                                    Lifestyle & Save
                                 </span>
+
                             </h2>
 
-                            <p className="mt-6 max-w-md text-lg leading-8 text-blue-100">
-                                Upgrade your lifestyle with premium fashion,
-                                electronics, shoes, furniture and more.
-                                Shop today and enjoy exclusive discounts on
-                                our best-selling collections.
+
+                            {/* Discount */}
+
+                            <div className="mt-5 flex items-baseline gap-3">
+
+                                <span className="text-4xl font-black text-white">
+                                    UP TO
+                                </span>
+
+                                <span className="text-5xl font-black text-yellow-300">
+                                    50% OFF
+                                </span>
+
+                            </div>
+
+
+                            {/* Description */}
+
+                            <p className="mt-5 max-w-lg text-base leading-7 text-blue-100">
+                                Discover amazing deals across fashion,
+                                electronics, footwear, furniture and more.
+                                Don't miss out on our exclusive offers.
                             </p>
 
-                            <button className="mt-10 flex items-center gap-3 rounded-2xl bg-white px-8 py-4 font-semibold text-blue-700 transition-all duration-300 hover:scale-105 hover:bg-blue-50">
 
-                                Shop Now
+                            {/* CTA */}
 
-                                <FaArrowRight />
+                            <Link
+                                to="/products"
+                                className="
+                                    mt-8
+                                    inline-flex
+                                    items-center
+                                    gap-3
+                                    rounded-xl
+                                    bg-white
+                                    px-7
+                                    py-3.5
+                                    font-bold
+                                    text-blue-700
+                                    shadow-lg
+                                    transition-all
+                                    duration-300
+                                    hover:-translate-y-1
+                                    hover:bg-gray-50
+                                    hover:shadow-xl
+                                "
+                            >
+                                Shop Deals
 
-                            </button>
+                                <FaArrowRight className="text-sm transition-transform duration-300 group-hover:translate-x-1" />
+
+                            </Link>
 
                         </div>
 
-                        {/* Right Image */}
 
-                        <div className="flex justify-center lg:justify-end lg:pr-14">
+                        {/* ================= RIGHT ================= */}
+
+                        <div className="relative flex h-full items-end justify-center">
 
                             <img
                                 src={promoBanner}
-                                alt="Summer Sale"
-                                className="w-full max-w-md transition-transform duration-500 hover:scale-105 md:max-w-lg lg:max-w-xl xl:max-w-2xl"
+                                alt="Exclusive shopping deals"
+                                className="
+                                    relative
+                                    z-10
+                                    w-full
+                                    max-w-[560px]
+                                    object-contain
+                                    transition-transform
+                                    duration-500
+                                    hover:scale-105
+                                "
                             />
 
                         </div>
@@ -59,6 +124,7 @@ const PromotionalBanner = () => {
                 </div>
 
             </div>
+
         </section>
     );
 };

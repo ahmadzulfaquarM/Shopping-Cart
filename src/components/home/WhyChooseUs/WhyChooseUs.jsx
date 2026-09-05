@@ -3,35 +3,33 @@ import FeatureCard from "./FeatureCard";
 
 const WhyChooseUs = () => {
     return (
-        <section className="bg-white py-24">
+        <section className="bg-slate-50 py-24">
 
-            <div className="mx-auto max-w-7xl px-4 md:px-8 lg:px-12">
+            <div className="mx-auto max-w-7xl px-6 lg:px-12">
 
-                {/* Heading */}
+                {/* Section Heading */}
+                <div className="mx-auto mb-14 max-w-3xl text-center">
 
-                <div className="mb-16 text-center">
-
-                    <span className="inline-block rounded-full border border-blue-600 bg-blue-50 px-6 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-blue-600">
+                    <span className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-5 py-2 text-xs font-bold uppercase tracking-[0.18em] text-blue-600">
                         Why Choose Us
                     </span>
 
-                    <h2 className="mt-6 text-4xl font-extrabold text-gray-900 md:text-5xl">
+                    <h2 className="mt-5 text-4xl font-extrabold tracking-tight text-gray-900 lg:text-5xl">
                         Shopping Made{" "}
                         <span className="text-blue-600">
                             Better
                         </span>
                     </h2>
 
-                    <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-gray-600">
-                        We provide a premium shopping experience with fast delivery,
-                        secure payments, dedicated support, and hassle-free returns.
+                    <p className="mt-5 text-base leading-7 text-gray-600 lg:text-lg">
+                        Everything you need for a simple, secure and
+                        enjoyable shopping experience.
                     </p>
 
                 </div>
 
                 {/* Feature Cards */}
-
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-4">
+                <div className="grid grid-cols-4 gap-5">
 
                     {features.map((feature) => (
                         <FeatureCard

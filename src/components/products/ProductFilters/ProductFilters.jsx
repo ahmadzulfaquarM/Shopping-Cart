@@ -12,18 +12,19 @@ const prices = [
         value: "under500",
     },
     {
-        label: "₹500 - ₹2000",
+        label: "₹500 - ₹2,000",
         value: "500-2000",
     },
     {
-        label: "₹2000 - ₹5000",
+        label: "₹2,000 - ₹5,000",
         value: "2000-5000",
     },
     {
-        label: "Above ₹5000",
+        label: "Above ₹5,000",
         value: "5000+",
     },
 ];
+
 
 const ProductFilters = ({
     selectedCategories,
@@ -33,6 +34,11 @@ const ProductFilters = ({
     inStockOnly,
     setInStockOnly,
 }) => {
+
+
+    // =====================================================
+    // CATEGORY
+    // =====================================================
 
     const handleCategoryChange = (category) => {
 
@@ -55,133 +61,278 @@ const ProductFilters = ({
 
     };
 
+
+    // =====================================================
+    // CLEAR FILTERS
+    // =====================================================
+
     const clearFilters = () => {
+
         setSelectedCategories([]);
+
         setSelectedPrice("");
+
         setInStockOnly(false);
+
     };
+
+
+    // =====================================================
+    // CHECK ACTIVE FILTERS
+    // =====================================================
+
+    const activeFilterCount =
+        selectedCategories.length +
+        (selectedPrice ? 1 : 0) +
+        (inStockOnly ? 1 : 0);
+
 
     return (
 
-        <aside className="h-fit rounded-3xl border border-gray-200 bg-white p-8 shadow-sm">
+        <aside className="h-fit rounded-2xl border border-gray-200 bg-white shadow-sm">
 
-            <h2 className="text-3xl font-bold text-gray-900">
-                Filters
-            </h2>
 
-            {/* Categories */}
+            {/* =================================================
+                HEADER
+            ================================================= */}
 
-            <div className="mt-10">
+            <div className="flex items-center justify-between border-b border-gray-100 px-6 py-5">
 
-                <h3 className="text-lg font-semibold text-gray-900">
-                    Categories
-                </h3>
+                <div>
 
-                <div className="mt-5 space-y-4">
+                    <h2 className="text-xl font-bold text-gray-900">
+                        Filters
+                    </h2>
 
-                    {categories.map((category) => (
+                    {activeFilterCount > 0 && (
 
-                        <label
-                            key={category}
-                            className="flex cursor-pointer items-center gap-3"
-                        >
+                        <p className="mt-1 text-xs text-gray-500">
 
-                            <input
-                                type="checkbox"
-                                checked={selectedCategories.includes(category)}
-                                onChange={() =>
-                                    handleCategoryChange(category)
-                                }
-                                className="h-4 w-4 accent-blue-600"
-                            />
+                            {activeFilterCount}{" "}
+                            {activeFilterCount === 1
+                                ? "filter"
+                                : "filters"}{" "}
+                            applied
 
-                            <span className="text-gray-700">
-                                {category}
-                            </span>
+                        </p>
 
-                        </label>
-
-                    ))}
+                    )}
 
                 </div>
 
+
+                {activeFilterCount > 0 && (
+
+                    <button
+                        type="button"
+                        onClick={clearFilters}
+                        className="text-sm font-semibold text-blue-600 transition hover:text-blue-700"
+                    >
+                        Clear All
+                    </button>
+
+                )}
+
             </div>
 
-            {/* Price */}
 
-            <div className="mt-10">
+            {/* =================================================
+                FILTER CONTENT
+            ================================================= */}
 
-                <h3 className="text-lg font-semibold text-gray-900">
-                    Price
-                </h3>
+            <div className="px-6 py-6">
 
-                <div className="mt-5 space-y-4">
 
-                    {prices.map((price) => (
+                {/* =================================================
+                    CATEGORIES
+                ================================================= */}
 
-                        <label
-                            key={price.value}
-                            className="flex cursor-pointer items-center gap-3"
-                        >
+                <div>
 
-                            <input
-                                type="radio"
-                                name="price"
-                                value={price.value}
-                                checked={selectedPrice === price.value}
-                                onChange={(e) =>
-                                    setSelectedPrice(e.target.value)
-                                }
-                                className="accent-blue-600"
-                            />
+                    <h3 className="text-sm font-bold uppercase tracking-wide text-gray-900">
+                        Categories
+                    </h3>
 
-                            <span className="text-gray-700">
-                                {price.label}
-                            </span>
 
-                        </label>
+                    <div className="mt-4 space-y-3">
 
-                    ))}
+                        {categories.map((category) => {
+
+                            const isSelected =
+                                selectedCategories.includes(
+                                    category
+                                );
+
+                            return (
+
+                                <label
+                                    key={category}
+                                    className="group flex cursor-pointer items-center justify-between"
+                                >
+
+                                    <div className="flex items-center gap-3">
+
+                                        <input
+                                            type="checkbox"
+                                            checked={isSelected}
+                                            onChange={() =>
+                                                handleCategoryChange(
+                                                    category
+                                                )
+                                            }
+                                            className="h-4 w-4 cursor-pointer rounded border-gray-300 accent-blue-600"
+                                        />
+
+                                        <span
+                                            className={`text-sm transition ${
+                                                isSelected
+                                                    ? "font-semibold text-blue-600"
+                                                    : "text-gray-600 group-hover:text-gray-900"
+                                            }`}
+                                        >
+                                            {category}
+                                        </span>
+
+                                    </div>
+
+                                </label>
+
+                            );
+
+                        })}
+
+                    </div>
 
                 </div>
 
+
+                {/* =================================================
+                    DIVIDER
+                ================================================= */}
+
+                <div className="my-7 border-t border-gray-100"></div>
+
+
+                {/* =================================================
+                    PRICE
+                ================================================= */}
+
+                <div>
+
+                    <h3 className="text-sm font-bold uppercase tracking-wide text-gray-900">
+                        Price
+                    </h3>
+
+
+                    <div className="mt-4 space-y-3">
+
+                        {prices.map((price) => {
+
+                            const isSelected =
+                                selectedPrice ===
+                                price.value;
+
+                            return (
+
+                                <label
+                                    key={price.value}
+                                    className="group flex cursor-pointer items-center gap-3"
+                                >
+
+                                    <input
+                                        type="radio"
+                                        name="price"
+                                        value={price.value}
+                                        checked={isSelected}
+                                        onChange={(e) =>
+                                            setSelectedPrice(
+                                                e.target.value
+                                            )
+                                        }
+                                        className="h-4 w-4 cursor-pointer accent-blue-600"
+                                    />
+
+                                    <span
+                                        className={`text-sm transition ${
+                                            isSelected
+                                                ? "font-semibold text-blue-600"
+                                                : "text-gray-600 group-hover:text-gray-900"
+                                        }`}
+                                    >
+                                        {price.label}
+                                    </span>
+
+                                </label>
+
+                            );
+
+                        })}
+
+                    </div>
+
+                </div>
+
+
+                {/* =================================================
+                    DIVIDER
+                ================================================= */}
+
+                <div className="my-7 border-t border-gray-100"></div>
+
+
+                {/* =================================================
+                    AVAILABILITY
+                ================================================= */}
+
+                <div>
+
+                    <h3 className="text-sm font-bold uppercase tracking-wide text-gray-900">
+                        Availability
+                    </h3>
+
+
+                    <label className="mt-4 flex cursor-pointer items-center gap-3">
+
+                        <input
+                            type="checkbox"
+                            checked={inStockOnly}
+                            onChange={() =>
+                                setInStockOnly(
+                                    !inStockOnly
+                                )
+                            }
+                            className="h-4 w-4 cursor-pointer rounded border-gray-300 accent-blue-600"
+                        />
+
+                        <span
+                            className={`text-sm ${
+                                inStockOnly
+                                    ? "font-semibold text-blue-600"
+                                    : "text-gray-600"
+                            }`}
+                        >
+                            In Stock Only
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+                {/* =================================================
+                    CLEAR BUTTON
+                ================================================= */}
+
+                <button
+                    type="button"
+                    onClick={clearFilters}
+                    disabled={activeFilterCount === 0}
+                    className="mt-8 w-full rounded-xl border border-gray-200 bg-gray-50 py-3 text-sm font-semibold text-gray-700 transition hover:border-blue-600 hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-gray-200 disabled:hover:bg-gray-50 disabled:hover:text-gray-700"
+                >
+                    Clear Filters
+                </button>
+
             </div>
-
-            {/* Availability */}
-
-            <div className="mt-10">
-
-                <h3 className="text-lg font-semibold text-gray-900">
-                    Availability
-                </h3>
-
-                <label className="mt-5 flex cursor-pointer items-center gap-3">
-
-                    <input
-                        type="checkbox"
-                        checked={inStockOnly}
-                        onChange={() =>
-                            setInStockOnly(!inStockOnly)
-                        }
-                        className="h-4 w-4 accent-blue-600"
-                    />
-
-                    <span className="text-gray-700">
-                        In Stock Only
-                    </span>
-
-                </label>
-
-            </div>
-
-            {/* Clear Filters */}
-
-            <button
-                onClick={clearFilters}
-                className="mt-12 w-full rounded-2xl border-2 border-blue-600 py-3 font-semibold text-blue-600 transition-all duration-300 hover:bg-blue-600 hover:text-white"
-            >
-                Clear Filters
-            </button>
 
         </aside>
 
