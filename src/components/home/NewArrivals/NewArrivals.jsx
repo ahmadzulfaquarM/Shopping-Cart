@@ -53,26 +53,79 @@ const NewArrivals = () => {
 
 
     return (
-        <section className="bg-slate-50 py-20">
+        <section className="bg-slate-50 py-14 sm:py-16 lg:py-20">
 
-            <div className="mx-auto max-w-7xl px-6 lg:px-12">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12">
 
-                {/* Heading */}
+                {/* ================= HEADING ================= */}
 
-                <div className="mb-14 text-center">
+                <div className="
+                    mb-9
+                    text-center
 
-                    <span className="inline-block rounded-full border border-blue-600 bg-blue-50 px-6 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-blue-600">
+                    sm:mb-11
+
+                    lg:mb-14
+                ">
+
+                    <span className="
+                        inline-block
+                        rounded-full
+                        border
+                        border-blue-600
+                        bg-blue-50
+                        px-3.5
+                        py-1.5
+                        text-[10px]
+                        font-semibold
+                        uppercase
+                        tracking-[0.16em]
+                        text-blue-600
+
+                        sm:px-6
+                        sm:py-2
+                        sm:text-sm
+                        sm:tracking-[0.18em]
+                    ">
                         New Arrivals
                     </span>
 
-                    <h2 className="mt-5 text-4xl font-extrabold text-gray-900 md:text-5xl">
+
+                    <h2 className="
+                        mt-4
+                        text-3xl
+                        font-extrabold
+                        leading-tight
+                        text-gray-900
+
+                        sm:mt-5
+                        sm:text-4xl
+
+                        md:text-5xl
+                    ">
                         Fresh Picks{" "}
+
                         <span className="text-blue-600">
                             Just For You
                         </span>
                     </h2>
 
-                    <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-gray-600">
+
+                    <p className="
+                        mx-auto
+                        mt-3
+                        max-w-3xl
+                        text-sm
+                        leading-6
+                        text-gray-600
+
+                        sm:mt-5
+                        sm:text-base
+                        sm:leading-7
+
+                        lg:text-lg
+                        lg:leading-8
+                    ">
                         Discover the latest products added to our
                         collection.
                     </p>
@@ -80,17 +133,36 @@ const NewArrivals = () => {
                 </div>
 
 
-                {/* Loading */}
+                {/* ================= LOADING ================= */}
 
                 {loading && (
 
-                    <div className="grid grid-cols-4 gap-6">
+                    <div className="
+                        grid
+                        grid-cols-2
+                        gap-3
+
+                        sm:gap-5
+
+                        lg:grid-cols-4
+                        lg:gap-6
+                    ">
 
                         {[...Array(4)].map((_, index) => (
 
                             <div
                                 key={index}
-                                className="h-[520px] animate-pulse rounded-3xl bg-gray-200"
+                                className="
+                                    h-[430px]
+                                    animate-pulse
+                                    rounded-2xl
+                                    bg-gray-200
+
+                                    sm:h-[470px]
+
+                                    lg:h-[520px]
+                                    lg:rounded-3xl
+                                "
                             />
 
                         ))}
@@ -100,11 +172,20 @@ const NewArrivals = () => {
                 )}
 
 
-                {/* Error */}
+                {/* ================= ERROR ================= */}
 
                 {!loading && error && (
 
-                    <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-center">
+                    <div className="
+                        rounded-2xl
+                        border
+                        border-red-200
+                        bg-red-50
+                        p-6
+                        text-center
+
+                        sm:p-8
+                    ">
 
                         <p className="font-medium text-red-600">
                             {error}
@@ -115,13 +196,22 @@ const NewArrivals = () => {
                 )}
 
 
-                {/* Products */}
+                {/* ================= PRODUCTS ================= */}
 
                 {!loading &&
                     !error &&
                     products.length > 0 && (
 
-                        <div className="grid grid-cols-4 gap-6">
+                        <div className="
+                            grid
+                            grid-cols-2
+                            gap-3
+
+                            sm:gap-5
+
+                            lg:grid-cols-4
+                            lg:gap-6
+                        ">
 
                             {products.map((product) => (
 
@@ -137,15 +227,22 @@ const NewArrivals = () => {
                     )}
 
 
-                {/* No Products */}
+                {/* ================= NO PRODUCTS ================= */}
 
                 {!loading &&
                     !error &&
                     products.length === 0 && (
 
-                        <div className="rounded-2xl bg-white p-12 text-center">
+                        <div className="
+                            rounded-2xl
+                            bg-white
+                            p-8
+                            text-center
 
-                            <p className="text-gray-500">
+                            sm:p-12
+                        ">
+
+                            <p className="text-sm text-gray-500 sm:text-base">
                                 No new products available.
                             </p>
 
@@ -154,17 +251,41 @@ const NewArrivals = () => {
                     )}
 
 
-                {/* View All */}
+                {/* ================= VIEW ALL ================= */}
 
                 {!loading &&
                     !error &&
                     products.length > 0 && (
 
-                        <div className="mt-12 flex justify-center">
+                        <div className="
+                            mt-8
+                            flex
+                            justify-center
+
+                            sm:mt-10
+
+                            lg:mt-12
+                        ">
 
                             <Link
                                 to="/products"
-                                className="rounded-xl border-2 border-blue-600 px-8 py-3 font-semibold text-blue-600 transition hover:bg-blue-600 hover:text-white"
+                                className="
+                                    rounded-xl
+                                    border-2
+                                    border-blue-600
+                                    px-5
+                                    py-2.5
+                                    text-sm
+                                    font-semibold
+                                    text-blue-600
+                                    transition
+                                    hover:bg-blue-600
+                                    hover:text-white
+
+                                    sm:px-8
+                                    sm:py-3
+                                    sm:text-base
+                                "
                             >
                                 View All Products
                             </Link>

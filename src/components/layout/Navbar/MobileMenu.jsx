@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+
 import {
     FaBars,
     FaTimes,
@@ -9,7 +10,6 @@ import {
     FaShoppingCart,
     FaHome,
     FaThLarge,
-    FaSearch,
 } from "react-icons/fa";
 
 import { useAuth } from "../../../context/AuthContext";
@@ -20,23 +20,10 @@ const MobileMenu = () => {
 
     const [isOpen, setIsOpen] = useState(false);
 
-    const navigate = useNavigate();
-
     const { user, logout } = useAuth();
     const { cartCount } = useCart();
     const { wishlistCount } = useWishlist();
 
-    const categories = [
-        "Fashion",
-        "Mobiles",
-        "Electronics",
-        "Beauty",
-        "Home",
-        "Appliances",
-        "Shoes",
-        "Furniture",
-        "Sports",
-    ];
 
     const menuItems = [
         {
@@ -66,211 +53,202 @@ const MobileMenu = () => {
         },
     ];
 
+
     return (
-        <div className="w-full">
+        <>
 
-            {/* ================= TOP HEADER (brand blue) ================= */}
+            {/* =================================================
+                MOBILE HEADER ACTIONS
+            ================================================= */}
 
-            <div className="flex h-14 items-center justify-between text-white">
+            <div className="flex items-center gap-3 text-white sm:gap-4">
 
-                {/* Logo */}
+
+                {/* ================= WISHLIST ================= */}
 
                 <NavLink
-                    to="/"
-                    className="flex items-center gap-2"
+                    to="/wishlist"
+                    aria-label="Wishlist"
+                    className="relative flex h-9 w-9 items-center justify-center rounded-full transition hover:bg-white/10 active:bg-white/20"
                 >
-                    <FaShoppingCart className="text-xl" />
 
-                    <span className="text-lg font-extrabold">
-                        Shopping Cart
-                    </span>
+                    <FaHeart className="text-lg" />
+
+                    {wishlistCount > 0 && (
+
+                        <span className="absolute right-0 top-0 flex h-4 min-w-4 -translate-y-1/4 translate-x-1/4 items-center justify-center rounded-full bg-white px-1 text-[9px] font-bold text-blue-600">
+
+                            {wishlistCount}
+
+                        </span>
+
+                    )}
+
                 </NavLink>
 
 
-                {/* Actions */}
+                {/* ================= CART ================= */}
 
-                <div className="flex items-center gap-4">
+                <NavLink
+                    to="/cart"
+                    aria-label="Cart"
+                    className="relative flex h-9 w-9 items-center justify-center rounded-full transition hover:bg-white/10 active:bg-white/20"
+                >
 
-                    {/* Wishlist */}
+                    <FaShoppingCart className="text-lg" />
 
-                    <NavLink
-                        to="/wishlist"
-                        className="relative text-xl"
-                    >
-                        <FaHeart />
+                    {cartCount > 0 && (
 
-                        {wishlistCount > 0 && (
-                            <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-white px-1 text-[10px] font-bold text-blue-600">
-                                {wishlistCount}
-                            </span>
-                        )}
-                    </NavLink>
+                        <span className="absolute right-0 top-0 flex h-4 min-w-4 -translate-y-1/4 translate-x-1/4 items-center justify-center rounded-full bg-white px-1 text-[9px] font-bold text-blue-600">
 
+                            {cartCount}
 
-                    {/* Cart */}
+                        </span>
 
-                    <NavLink
-                        to="/cart"
-                        className="relative text-xl"
-                    >
-                        <FaShoppingCart />
+                    )}
 
-                        {cartCount > 0 && (
-                            <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-white px-1 text-[10px] font-bold text-blue-600">
-                                {cartCount}
-                            </span>
-                        )}
-                    </NavLink>
+                </NavLink>
 
 
-                    {/* Menu */}
-
-                    <button
-                        onClick={() => setIsOpen(!isOpen)}
-                        className="text-xl"
-                        aria-label="Menu"
-                    >
-                        {isOpen ? <FaTimes /> : <FaBars />}
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            {/* ================= SEARCH BAR ================= */}
-
-            <div className="pb-3">
+                {/* ================= MENU ================= */}
 
                 <button
-                    onClick={() => navigate("/products")}
-                    className="flex h-11 w-full items-center rounded-sm bg-white px-4 text-left text-sm text-gray-500 shadow-sm"
+                    type="button"
+                    onClick={() => setIsOpen(true)}
+                    aria-label="Open menu"
+                    aria-expanded={isOpen}
+                    className="flex h-9 w-9 items-center justify-center rounded-full transition hover:bg-white/10 active:bg-white/20"
                 >
-                    <FaSearch className="mr-3 text-base text-gray-400" />
 
-                    <span>
-                        Search products, brands and more
-                    </span>
+                    <FaBars className="text-xl" />
+
                 </button>
 
             </div>
 
 
-            {/* ================= CATEGORY SCROLL ================= */}
-
-            <div className="overflow-x-auto pb-3 scrollbar-hide">
-
-                <div className="flex min-w-max gap-6">
-
-                    {categories.map((category) => (
-
-                        <button
-                            key={category}
-                            onClick={() =>
-                                navigate(
-                                    `/products?category=${encodeURIComponent(category)}`
-                                )
-                            }
-                            className="text-sm font-medium text-white/90 whitespace-nowrap"
-                        >
-                            {category}
-                        </button>
-
-                    ))}
-
-                </div>
-
-            </div>
-
-
-            {/* ================= SIDE MENU ================= */}
+            {/* =================================================
+                SIDE DRAWER
+            ================================================= */}
 
             {isOpen && (
 
                 <>
 
-                    {/* Overlay */}
+                    {/* ================= OVERLAY ================= */}
 
                     <div
-                        className="fixed inset-0 z-40 bg-black/30"
+                        className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-[1px]"
                         onClick={() => setIsOpen(false)}
                     />
 
 
-                    {/* Menu */}
+                    {/* ================= DRAWER ================= */}
 
-                    <div className="fixed right-0 top-0 z-50 h-full w-[82%] max-w-sm bg-white shadow-2xl">
+                    <aside
+                        className="fixed right-0 top-0 z-[70] flex h-full w-[86%] max-w-[360px] flex-col bg-white shadow-2xl"
+                        aria-label="Mobile navigation"
+                    >
 
-                        {/* Header */}
 
-                        <div className="flex items-center justify-between border-b bg-blue-600 px-5 py-5 text-white">
+                        {/* ================= DRAWER HEADER ================= */}
 
-                            <div>
+                        <div className="flex items-center justify-between bg-blue-600 px-5 py-5 text-white">
 
-                                <p className="text-lg font-bold">
+                            <div className="min-w-0">
+
+                                <p className="truncate text-lg font-bold">
+
                                     {user
                                         ? `Hello, ${user.name}`
                                         : "Welcome"}
+
                                 </p>
 
-                                <p className="text-sm text-white/80">
+                                <p className="mt-1 text-sm text-white/80">
+
                                     Explore Shopping Cart
+
                                 </p>
 
                             </div>
 
 
                             <button
+                                type="button"
                                 onClick={() => setIsOpen(false)}
-                                className="text-xl"
+                                aria-label="Close menu"
+                                className="ml-4 flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
                             >
-                                <FaTimes />
+
+                                <FaTimes className="text-xl" />
+
                             </button>
 
                         </div>
 
 
-                        {/* Menu Items */}
+                        {/* ================= MENU CONTENT ================= */}
 
-                        <div className="p-4">
-
-                            {menuItems.map((item) => (
-
-                                <NavLink
-                                    key={item.name}
-                                    to={item.path}
-                                    onClick={() => setIsOpen(false)}
-                                    className={({ isActive }) =>
-                                        `mb-2 flex items-center gap-4 rounded-xl px-4 py-4 font-medium ${
-                                            isActive
-                                                ? "bg-blue-50 text-blue-600"
-                                                : "text-gray-700 hover:bg-gray-50"
-                                        }`
-                                    }
-                                >
-
-                                    <span className="text-lg">
-                                        {item.icon}
-                                    </span>
-
-                                    {item.name}
-
-                                </NavLink>
-
-                            ))}
+                        <div className="flex-1 overflow-y-auto px-4 py-5">
 
 
-                            {/* Profile */}
+                            {/* ================= MAIN LINKS ================= */}
+
+                            <div className="space-y-1">
+
+                                {menuItems.map((item) => (
+
+                                    <NavLink
+                                        key={item.name}
+                                        to={item.path}
+                                        onClick={() => setIsOpen(false)}
+                                        className={({ isActive }) =>
+                                            `flex items-center gap-4 rounded-xl px-4 py-4 font-medium transition ${
+                                                isActive
+                                                    ? "bg-blue-50 text-blue-600"
+                                                    : "text-gray-700 hover:bg-gray-50"
+                                            }`
+                                        }
+                                    >
+
+                                        <span className="flex w-6 justify-center text-lg">
+
+                                            {item.icon}
+
+                                        </span>
+
+                                        <span>
+                                            {item.name}
+                                        </span>
+
+                                    </NavLink>
+
+                                ))}
+
+                            </div>
+
+
+                            {/* ================= DIVIDER ================= */}
+
+                            <div className="my-5 h-px bg-gray-100" />
+
+
+                            {/* ================= PROFILE ================= */}
 
                             {user && (
 
                                 <NavLink
                                     to="/profile"
                                     onClick={() => setIsOpen(false)}
-                                    className="mb-2 flex items-center gap-4 rounded-xl px-4 py-4 font-medium text-gray-700 hover:bg-gray-50"
+                                    className="flex items-center gap-4 rounded-xl px-4 py-4 font-medium text-gray-700 transition hover:bg-gray-50"
                                 >
 
-                                    <FaUser />
+                                    <span className="flex w-6 justify-center text-lg">
+
+                                        <FaUser />
+
+                                    </span>
 
                                     My Profile
 
@@ -279,18 +257,23 @@ const MobileMenu = () => {
                             )}
 
 
-                            {/* Login / Logout */}
+                            {/* ================= LOGIN / LOGOUT ================= */}
 
                             {user ? (
 
                                 <button
+                                    type="button"
                                     onClick={() => {
+
                                         logout();
                                         setIsOpen(false);
+
                                     }}
-                                    className="mt-4 w-full rounded-xl bg-red-50 px-4 py-4 text-left font-semibold text-red-600"
+                                    className="mt-4 w-full rounded-xl bg-red-50 px-4 py-4 text-left font-semibold text-red-600 transition hover:bg-red-100"
                                 >
+
                                     Logout
+
                                 </button>
 
                             ) : (
@@ -298,22 +281,37 @@ const MobileMenu = () => {
                                 <NavLink
                                     to="/login"
                                     onClick={() => setIsOpen(false)}
-                                    className="mt-4 block rounded-xl bg-blue-600 px-4 py-4 text-center font-semibold text-white"
+                                    className="mt-4 block rounded-xl bg-blue-600 px-4 py-4 text-center font-semibold text-white transition hover:bg-blue-700"
                                 >
+
                                     Login
+
                                 </NavLink>
 
                             )}
 
                         </div>
 
-                    </div>
+
+                        {/* ================= DRAWER FOOTER ================= */}
+
+                        <div className="border-t border-gray-100 px-5 py-4">
+
+                            <p className="text-center text-xs text-gray-400">
+
+                                Shopping Cart • Secure Shopping
+
+                            </p>
+
+                        </div>
+
+                    </aside>
 
                 </>
 
             )}
 
-        </div>
+        </>
     );
 };
 

@@ -16,39 +16,59 @@ const Navbar = () => {
     return (
         <header className="sticky top-0 z-50 w-full shadow-md">
 
-            {/* ================= TOP NAVBAR (solid brand blue, Flipkart style) ================= */}
+            {/* =====================================================
+                DESKTOP + MOBILE TOP NAVBAR
+            ===================================================== */}
 
             <div className="bg-blue-600">
 
-                <nav className="mx-auto flex h-[74px] max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8">
+                <nav className="mx-auto flex h-14 max-w-7xl items-center px-3 sm:h-16 sm:px-5 lg:h-[74px] lg:gap-6 lg:px-8">
 
-                    {/* Logo (stacked with tagline like Flipkart's "Explore Plus") */}
+                    {/* =================================================
+                        DESKTOP LOGO
+                    ================================================= */}
 
                     <div className="hidden shrink-0 lg:block">
+
                         <Logo variant="light" />
+
                         <p className="-mt-1 flex items-center gap-1 text-[11px] font-medium italic text-white/80">
                             Explore
                             <span className="font-bold not-italic text-yellow-400">
                                 Plus
                             </span>
                         </p>
+
                     </div>
 
-                    <div className="lg:hidden">
+
+                    {/* =================================================
+                        MOBILE LOGO
+                    ================================================= */}
+
+                    <div className="min-w-0 shrink lg:hidden">
+
                         <Logo variant="light" />
+
                     </div>
 
 
-                    {/* Search */}
+                    {/* =================================================
+                        DESKTOP SEARCH
+                    ================================================= */}
 
                     <div className="hidden flex-1 lg:block">
+
                         <SearchBar />
+
                     </div>
 
 
-                    {/* Desktop Actions */}
+                    {/* =================================================
+                        DESKTOP ACTIONS
+                    ================================================= */}
 
-                    <div className="hidden items-center gap-2 lg:flex">
+                    <div className="hidden shrink-0 items-center gap-2 lg:flex">
 
                         <UserMenu
                             user={user}
@@ -68,10 +88,14 @@ const Navbar = () => {
                     </div>
 
 
-                    {/* Mobile */}
+                    {/* =================================================
+                        MOBILE MENU
+                    ================================================= */}
 
-                    <div className="ml-auto lg:hidden">
+                    <div className="ml-auto shrink-0 lg:hidden">
+
                         <MobileMenu />
+
                     </div>
 
                 </nav>
@@ -79,7 +103,9 @@ const Navbar = () => {
             </div>
 
 
-            {/* ================= CATEGORY NAVIGATION ================= */}
+            {/* =====================================================
+                DESKTOP CATEGORY NAVIGATION
+            ===================================================== */}
 
             <div className="hidden border-b border-gray-100 bg-white lg:block">
 
@@ -96,10 +122,14 @@ const Navbar = () => {
             </div>
 
 
-            {/* ================= MOBILE SEARCH ================= */}
+            {/* =====================================================
+                MOBILE SEARCH
+            ===================================================== */}
 
-            <div className="bg-blue-600 px-4 pb-3 lg:hidden">
+            <div className="border-b border-blue-700 bg-blue-600 px-3 pb-3 pt-1 sm:px-4 lg:hidden">
+
                 <SearchBar />
+
             </div>
 
         </header>

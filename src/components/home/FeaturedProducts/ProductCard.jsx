@@ -37,7 +37,7 @@ const ProductCard = ({ product }) => {
             className="
                 group
                 overflow-hidden
-                rounded-2xl
+                rounded-xl
                 border
                 border-gray-200
                 bg-white
@@ -46,6 +46,8 @@ const ProductCard = ({ product }) => {
                 hover:-translate-y-1
                 hover:border-gray-300
                 hover:shadow-xl
+
+                sm:rounded-2xl
             "
         >
 
@@ -56,54 +58,79 @@ const ProductCard = ({ product }) => {
                     relative
                     overflow-hidden
                     bg-gray-50
-                    p-6
+                    p-3
+
+                    sm:p-4
+
+                    lg:p-6
                 "
             >
 
-                {/* Discount */}
+                {/* ================= DISCOUNT ================= */}
 
                 {product.discount > 0 && (
+
                     <span
                         className="
                             absolute
-                            left-4
-                            top-4
+                            left-2
+                            top-2
                             z-10
                             rounded-md
                             bg-blue-600
-                            px-3
-                            py-1.5
-                            text-xs
+                            px-2
+                            py-1
+                            text-[9px]
                             font-bold
                             text-white
+
+                            sm:left-3
+                            sm:top-3
+                            sm:px-2.5
+                            sm:text-[10px]
+
+                            lg:left-4
+                            lg:top-4
+                            lg:px-3
+                            lg:py-1.5
+                            lg:text-xs
                         "
                     >
                         {product.discount}% OFF
                     </span>
+
                 )}
 
 
-                {/* Actions */}
+                {/* ================= ACTIONS ================= */}
 
                 <div
                     className="
                         absolute
-                        right-4
-                        top-4
+                        right-2
+                        top-2
                         z-20
                         flex
                         flex-col
-                        gap-2
-                        opacity-0
-                        translate-x-2
-                        transition-all
-                        duration-300
-                        group-hover:translate-x-0
-                        group-hover:opacity-100
+                        gap-1.5
+                        opacity-100
+
+                        sm:right-3
+                        sm:top-3
+                        sm:gap-2
+
+                        lg:right-4
+                        lg:top-4
+                        lg:translate-x-2
+                        lg:opacity-0
+                        lg:transition-all
+                        lg:duration-300
+                        lg:group-hover:translate-x-0
+                        lg:group-hover:opacity-100
                     "
                 >
 
-                    {/* Wishlist */}
+                    {/* ================= WISHLIST ================= */}
 
                     <button
                         type="button"
@@ -122,8 +149,8 @@ const ProductCard = ({ product }) => {
                         }}
                         className={`
                             flex
-                            h-10
-                            w-10
+                            h-8
+                            w-8
                             items-center
                             justify-center
                             rounded-full
@@ -132,17 +159,25 @@ const ProductCard = ({ product }) => {
                             duration-300
                             hover:scale-110
 
+                            sm:h-9
+                            sm:w-9
+
+                            lg:h-10
+                            lg:w-10
+
                             ${wishlisted
                                 ? "bg-red-500 text-white"
                                 : "bg-white text-gray-600 hover:bg-red-500 hover:text-white"
                             }
                         `}
                     >
-                        <FaHeart className="text-sm" />
+
+                        <FaHeart className="text-[10px] sm:text-xs lg:text-sm" />
+
                     </button>
 
 
-                    {/* Quick View */}
+                    {/* ================= QUICK VIEW ================= */}
 
                     <Link
                         to={`/products/${product._id}`}
@@ -150,8 +185,8 @@ const ProductCard = ({ product }) => {
                         aria-label="View Product"
                         className="
                             flex
-                            h-10
-                            w-10
+                            h-8
+                            w-8
                             items-center
                             justify-center
                             rounded-full
@@ -163,19 +198,38 @@ const ProductCard = ({ product }) => {
                             hover:scale-110
                             hover:bg-blue-600
                             hover:text-white
+
+                            sm:h-9
+                            sm:w-9
+
+                            lg:h-10
+                            lg:w-10
                         "
                     >
-                        <FaEye className="text-sm" />
+
+                        <FaEye className="text-[10px] sm:text-xs lg:text-sm" />
+
                     </Link>
 
                 </div>
 
 
-                {/* Product Image */}
+                {/* ================= PRODUCT IMAGE ================= */}
 
                 <Link to={`/products/${product._id}`}>
 
-                    <div className="flex h-60 items-center justify-center">
+                    <div className="
+                        flex
+                        h-36
+                        items-center
+                        justify-center
+
+                        sm:h-44
+
+                        md:h-52
+
+                        lg:h-60
+                    ">
 
                         <img
                             src={product.image}
@@ -199,48 +253,76 @@ const ProductCard = ({ product }) => {
 
             {/* ================= CONTENT ================= */}
 
-            <div className="p-5">
+            <div className="
+                p-3
 
-                {/* Category */}
+                sm:p-4
+
+                lg:p-5
+            ">
+
+
+                {/* ================= CATEGORY ================= */}
 
                 <p
                     className="
-                        text-xs
+                        text-[9px]
                         font-bold
                         uppercase
                         tracking-wider
                         text-blue-600
+
+                        sm:text-[10px]
+
+                        lg:text-xs
                     "
                 >
+
                     {product.category}
+
                 </p>
 
 
-                {/* Product Name */}
+                {/* ================= PRODUCT NAME ================= */}
 
                 <Link to={`/products/${product._id}`}>
 
                     <h3
                         className="
-                            mt-2
+                            mt-1
                             line-clamp-1
-                            text-lg
+                            text-sm
                             font-bold
                             text-gray-900
                             transition-colors
                             duration-300
                             hover:text-blue-600
+
+                            sm:mt-2
+                            sm:text-base
+
+                            lg:text-lg
                         "
                     >
+
                         {product.name}
+
                     </h3>
 
                 </Link>
 
 
-                {/* Rating */}
+                {/* ================= RATING ================= */}
 
-                <div className="mt-2 flex items-center gap-2">
+                <div className="
+                    mt-1.5
+                    flex
+                    items-center
+                    gap-1
+
+                    sm:mt-2
+                    sm:gap-2
+                ">
 
                     <div className="flex items-center gap-0.5">
 
@@ -249,7 +331,10 @@ const ProductCard = ({ product }) => {
                             <FaStar
                                 key={index}
                                 className={`
-                                    text-xs
+                                    text-[9px]
+                                    sm:text-[10px]
+                                    lg:text-xs
+
                                     ${index < Math.floor(product.rating)
                                         ? "text-yellow-400"
                                         : "text-gray-300"
@@ -261,68 +346,127 @@ const ProductCard = ({ product }) => {
 
                     </div>
 
-                    <span className="text-xs text-gray-500">
+                    <span className="
+                        truncate
+                        text-[9px]
+                        text-gray-500
+
+                        sm:text-[10px]
+
+                        lg:text-xs
+                    ">
+
                         {product.rating} ({product.numReviews})
+
                     </span>
 
                 </div>
 
 
-                {/* Price */}
+                {/* ================= PRICE ================= */}
 
-                <div className="mt-4 flex items-center gap-2">
+                <div className="
+                    mt-2
+                    flex
+                    flex-wrap
+                    items-center
+                    gap-1.5
 
-                    <span className="text-xl font-extrabold text-gray-900">
+                    sm:mt-3
+                    sm:gap-2
+
+                    lg:mt-4
+                ">
+
+                    <span className="
+                        text-base
+                        font-extrabold
+                        text-gray-900
+
+                        sm:text-lg
+
+                        lg:text-xl
+                    ">
+
                         ₹{product.price}
+
                     </span>
 
+
                     {originalPrice && (
-                        <span className="text-sm text-gray-400 line-through">
+
+                        <span className="
+                            text-[10px]
+                            text-gray-400
+                            line-through
+
+                            sm:text-xs
+
+                            lg:text-sm
+                        ">
+
                             ₹{originalPrice}
+
                         </span>
+
                     )}
 
                 </div>
 
 
-                {/* Stock */}
+                {/* ================= STOCK ================= */}
 
                 <p
                     className={`
                         mt-1
-                        text-xs
+                        text-[9px]
                         font-semibold
+
+                        sm:text-[10px]
+
+                        lg:text-xs
+
                         ${product.stock > 0
                             ? "text-green-600"
                             : "text-red-500"
                         }
                     `}
                 >
+
                     {product.stock > 0
                         ? "✓ In Stock"
                         : "Out of Stock"
                     }
+
                 </p>
 
 
-                {/* Add To Cart */}
+                {/* ================= ADD TO CART ================= */}
 
                 <button
                     onClick={() => addToCart(product)}
                     disabled={product.stock <= 0}
                     className={`
-                        mt-4
+                        mt-3
                         flex
                         w-full
                         items-center
                         justify-center
-                        gap-2
-                        rounded-xl
-                        py-3
-                        text-sm
+                        gap-1.5
+                        rounded-lg
+                        py-2.5
+                        text-[11px]
                         font-bold
                         transition-all
                         duration-300
+
+                        sm:mt-4
+                        sm:gap-2
+                        sm:rounded-xl
+                        sm:py-3
+                        sm:text-xs
+
+                        lg:text-sm
 
                         ${product.stock > 0
                             ? `
@@ -339,7 +483,8 @@ const ProductCard = ({ product }) => {
                         }
                     `}
                 >
-                    <FaShoppingCart />
+
+                    <FaShoppingCart className="text-[10px] sm:text-xs lg:text-sm" />
 
                     {product.stock > 0
                         ? "Add to Cart"

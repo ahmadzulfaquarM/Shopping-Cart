@@ -18,53 +18,158 @@ const Newsletter = () => {
     };
 
     return (
-        <section className="bg-white py-20">
+        <section className="bg-white py-14 sm:py-16 lg:py-20">
 
-            <div className="mx-auto max-w-7xl px-6 lg:px-12">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12">
 
-                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 px-10 py-14 shadow-xl lg:px-16">
+                <div className="
+                    relative
+                    overflow-hidden
+                    rounded-2xl
+                    bg-gradient-to-r
+                    from-blue-700
+                    via-blue-600
+                    to-blue-500
+                    px-5
+                    py-10
+                    shadow-xl
 
-                    {/* Decorative circles */}
+                    sm:rounded-3xl
+                    sm:px-8
+                    sm:py-12
 
-                    <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10" />
+                    lg:px-16
+                    lg:py-14
+                ">
 
-                    <div className="absolute -bottom-32 -left-20 h-72 w-72 rounded-full bg-white/10" />
+                    {/* ================= DECORATIVE CIRCLES ================= */}
+
+                    <div className="
+                        absolute
+                        -right-16
+                        -top-16
+                        h-40
+                        w-40
+                        rounded-full
+                        bg-white/10
+
+                        sm:-right-20
+                        sm:-top-20
+                        sm:h-64
+                        sm:w-64
+                    " />
+
+                    <div className="
+                        absolute
+                        -bottom-20
+                        -left-16
+                        h-48
+                        w-48
+                        rounded-full
+                        bg-white/10
+
+                        sm:-bottom-32
+                        sm:-left-20
+                        sm:h-72
+                        sm:w-72
+                    " />
 
 
-                    <div className="relative z-10 mx-auto max-w-4xl text-center">
+                    <div className="
+                        relative
+                        z-10
+                        mx-auto
+                        max-w-4xl
+                        text-center
+                    ">
 
-                        {/* Badge */}
+                        {/* ================= BADGE ================= */}
 
-                        <span className="inline-flex rounded-full bg-white/15 px-5 py-2 text-xs font-bold uppercase tracking-[0.18em] text-white">
+                        <span className="
+                            inline-flex
+                            rounded-full
+                            bg-white/15
+                            px-3.5
+                            py-1.5
+                            text-[10px]
+                            font-bold
+                            uppercase
+                            tracking-[0.16em]
+                            text-white
+
+                            sm:px-5
+                            sm:py-2
+                            sm:text-xs
+                            sm:tracking-[0.18em]
+                        ">
                             Stay Updated
                         </span>
 
 
-                        {/* Heading */}
+                        {/* ================= HEADING ================= */}
 
-                        <h2 className="mt-5 text-4xl font-extrabold tracking-tight text-white lg:text-5xl">
+                        <h2 className="
+                            mt-4
+                            text-3xl
+                            font-extrabold
+                            leading-tight
+                            tracking-tight
+                            text-white
+
+                            sm:mt-5
+                            sm:text-4xl
+
+                            lg:text-5xl
+                        ">
                             Never Miss{" "}
+
                             <span className="text-yellow-300">
                                 an Offer
                             </span>
                         </h2>
 
 
-                        {/* Description */}
+                        {/* ================= DESCRIPTION ================= */}
 
-                        <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-blue-100">
+                        <p className="
+                            mx-auto
+                            mt-3
+                            max-w-2xl
+                            text-sm
+                            leading-6
+                            text-blue-100
+
+                            sm:mt-4
+                            sm:text-base
+                            sm:leading-7
+                        ">
                             Subscribe for exclusive offers, new arrivals,
                             special discounts and shopping updates.
                         </p>
 
 
-                        {/* Form */}
+                        {/* ================= FORM ================= */}
 
                         {!subscribed ? (
 
                             <form
                                 onSubmit={handleSubmit}
-                                className="mx-auto mt-8 flex max-w-xl gap-3 rounded-2xl bg-white p-2"
+                                className="
+                                    mx-auto
+                                    mt-6
+                                    flex
+                                    max-w-xl
+                                    flex-col
+                                    gap-2
+                                    rounded-xl
+                                    bg-white
+                                    p-2
+
+                                    sm:mt-8
+                                    sm:flex-row
+                                    sm:gap-3
+                                    sm:rounded-2xl
+                                "
                             >
 
                                 <input
@@ -77,31 +182,47 @@ const Newsletter = () => {
                                     required
                                     className="
                                         min-w-0
+                                        w-full
                                         flex-1
+                                        rounded-lg
                                         bg-transparent
-                                        px-4
-                                        py-3
+                                        px-3
+                                        py-2.5
+                                        text-sm
                                         text-gray-800
                                         outline-none
                                         placeholder:text-gray-400
+
+                                        sm:px-4
+                                        sm:py-3
                                     "
                                 />
+
 
                                 <button
                                     type="submit"
                                     className="
                                         flex
+                                        w-full
                                         shrink-0
                                         items-center
+                                        justify-center
                                         gap-2
-                                        rounded-xl
+                                        rounded-lg
                                         bg-gray-900
-                                        px-6
-                                        py-3
+                                        px-5
+                                        py-2.5
+                                        text-sm
                                         font-semibold
                                         text-white
                                         transition
                                         hover:bg-black
+
+                                        sm:w-auto
+                                        sm:rounded-xl
+                                        sm:px-6
+                                        sm:py-3
+                                        sm:text-base
                                     "
                                 >
                                     <FaPaperPlane />
@@ -113,7 +234,29 @@ const Newsletter = () => {
 
                         ) : (
 
-                            <div className="mx-auto mt-8 flex max-w-xl items-center justify-center gap-3 rounded-2xl bg-white px-6 py-4 font-semibold text-green-600">
+                            <div className="
+                                mx-auto
+                                mt-6
+                                flex
+                                max-w-xl
+                                items-center
+                                justify-center
+                                gap-2
+                                rounded-xl
+                                bg-white
+                                px-5
+                                py-3.5
+                                text-sm
+                                font-semibold
+                                text-green-600
+
+                                sm:mt-8
+                                sm:gap-3
+                                sm:rounded-2xl
+                                sm:px-6
+                                sm:py-4
+                                sm:text-base
+                            ">
 
                                 <FaCheck />
 

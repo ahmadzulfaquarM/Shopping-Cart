@@ -53,38 +53,65 @@ const FeaturedProducts = () => {
 
 
     return (
-        <section className="bg-white py-20">
+        <section className="bg-white py-14 sm:py-16 lg:py-20">
 
-            <div className="mx-auto max-w-7xl px-6 lg:px-12">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12">
 
                 <SectionHeading />
 
 
-                {/* Loading */}
+                {/* ================= LOADING ================= */}
 
                 {loading && (
-                    <div className="grid grid-cols-4 gap-6">
+
+                    <div className="
+                        grid
+                        grid-cols-2
+                        gap-3
+                        sm:gap-5
+                        lg:grid-cols-4
+                        lg:gap-6
+                    ">
 
                         {[...Array(4)].map((_, index) => (
 
                             <div
                                 key={index}
-                                className="h-[520px] animate-pulse rounded-3xl bg-gray-100"
+                                className="
+                                    h-[430px]
+                                    animate-pulse
+                                    rounded-2xl
+                                    bg-gray-100
+
+                                    sm:h-[470px]
+
+                                    lg:h-[520px]
+                                    lg:rounded-3xl
+                                "
                             />
 
                         ))}
 
                     </div>
+
                 )}
 
 
-                {/* Error */}
+                {/* ================= ERROR ================= */}
 
                 {!loading && error && (
 
-                    <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-center">
+                    <div className="
+                        rounded-2xl
+                        border
+                        border-red-200
+                        bg-red-50
+                        p-6
+                        text-center
+                        sm:p-8
+                    ">
 
-                        <p className="font-medium text-red-600">
+                        <p className="text-sm font-medium text-red-600 sm:text-base">
                             {error}
                         </p>
 
@@ -93,11 +120,20 @@ const FeaturedProducts = () => {
                 )}
 
 
-                {/* Products */}
+                {/* ================= PRODUCTS ================= */}
 
-                {!loading && !error && products.length > 0 && (
+                {!loading &&
+                    !error &&
+                    products.length > 0 && (
 
-                    <div className="grid grid-cols-4 gap-6">
+                    <div className="
+                        grid
+                        grid-cols-2
+                        gap-3
+                        sm:gap-5
+                        lg:grid-cols-4
+                        lg:gap-6
+                    ">
 
                         {products.map((product) => (
 
@@ -113,31 +149,58 @@ const FeaturedProducts = () => {
                 )}
 
 
-                {/* No Products */}
+                {/* ================= NO PRODUCTS ================= */}
 
                 {!loading &&
                     !error &&
                     products.length === 0 && (
 
-                        <div className="rounded-2xl border border-gray-200 bg-gray-50 p-12 text-center">
+                    <div className="
+                        rounded-2xl
+                        border
+                        border-gray-200
+                        bg-gray-50
+                        p-8
+                        text-center
+                        sm:p-12
+                    ">
 
-                            <p className="text-gray-500">
-                                No products available.
-                            </p>
+                        <p className="text-sm text-gray-500 sm:text-base">
+                            No products available.
+                        </p>
 
-                        </div>
-                    )}
+                    </div>
+
+                )}
 
 
-                {/* View All */}
+                {/* ================= VIEW ALL ================= */}
 
-                {!loading && !error && products.length > 0 && (
+                {!loading &&
+                    !error &&
+                    products.length > 0 && (
 
-                    <div className="mt-10 flex justify-center">
+                    <div className="mt-8 flex justify-center sm:mt-10">
 
                         <Link
                             to="/products"
-                            className="rounded-xl border-2 border-blue-600 px-8 py-3 font-semibold text-blue-600 transition hover:bg-blue-600 hover:text-white"
+                            className="
+                                rounded-xl
+                                border-2
+                                border-blue-600
+                                px-6
+                                py-2.5
+                                text-sm
+                                font-semibold
+                                text-blue-600
+                                transition
+                                hover:bg-blue-600
+                                hover:text-white
+
+                                sm:px-8
+                                sm:py-3
+                                sm:text-base
+                            "
                         >
                             View All Products
                         </Link>

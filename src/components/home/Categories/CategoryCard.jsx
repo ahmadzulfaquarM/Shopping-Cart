@@ -9,30 +9,38 @@ const CategoryCard = ({ category }) => {
                 group
                 relative
                 flex
-                min-h-[310px]
+                min-h-[250px]
                 overflow-hidden
-                rounded-2xl
+                rounded-xl
                 border
                 border-gray-200
                 bg-white
-                p-7
+                p-4
                 shadow-sm
                 transition-all
                 duration-300
                 hover:-translate-y-1
                 hover:border-blue-200
                 hover:shadow-xl
+
+                sm:min-h-[280px]
+                sm:rounded-2xl
+                sm:p-5
+
+                lg:min-h-[310px]
+                lg:p-7
             "
         >
 
-            {/* Background Glow */}
+            {/* ================= BACKGROUND GLOW ================= */}
+
             <div
                 className="
                     absolute
-                    -right-16
-                    -top-16
-                    h-48
-                    w-48
+                    -right-12
+                    -top-12
+                    h-32
+                    w-32
                     rounded-full
                     bg-blue-50
                     opacity-0
@@ -40,33 +48,68 @@ const CategoryCard = ({ category }) => {
                     duration-500
                     group-hover:scale-150
                     group-hover:opacity-100
+
+                    sm:-right-16
+                    sm:-top-16
+                    sm:h-48
+                    sm:w-48
                 "
-            ></div>
+            />
 
 
-            {/* Content */}
+            {/* ================= CONTENT ================= */}
+
             <div className="relative z-10 flex w-full flex-col justify-between">
 
-                {/* Top */}
+
+                {/* ================= TOP ================= */}
+
                 <div>
 
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-start justify-between gap-2">
 
-                        <div>
-                            <h3 className="text-2xl font-bold text-gray-900">
+                        <div className="min-w-0">
+
+                            <h3 className="
+                                truncate
+                                text-lg
+                                font-bold
+                                text-gray-900
+
+                                sm:text-xl
+
+                                lg:text-2xl
+                            ">
+
                                 {category.name}
+
                             </h3>
 
-                            <p className="mt-2 text-sm text-gray-500">
+
+                            <p className="
+                                mt-1
+                                text-[11px]
+                                text-gray-500
+
+                                sm:mt-2
+                                sm:text-sm
+                            ">
+
                                 {category.productCount}+ Products
+
                             </p>
+
                         </div>
+
+
+                        {/* ================= ARROW ================= */}
 
                         <div
                             className="
                                 flex
-                                h-10
-                                w-10
+                                h-8
+                                w-8
+                                shrink-0
                                 items-center
                                 justify-center
                                 rounded-full
@@ -76,9 +119,28 @@ const CategoryCard = ({ category }) => {
                                 duration-300
                                 group-hover:bg-blue-600
                                 group-hover:text-white
+
+                                sm:h-9
+                                sm:w-9
+
+                                lg:h-10
+                                lg:w-10
                             "
                         >
-                            <FaArrowRight className="text-sm transition-transform duration-300 group-hover:-rotate-45" />
+
+                            <FaArrowRight
+                                className="
+                                    text-[10px]
+                                    transition-transform
+                                    duration-300
+                                    group-hover:-rotate-45
+
+                                    sm:text-xs
+
+                                    lg:text-sm
+                                "
+                            />
+
                         </div>
 
                     </div>
@@ -86,34 +148,81 @@ const CategoryCard = ({ category }) => {
                 </div>
 
 
-                {/* Image */}
-                <div className="mt-4 flex flex-1 items-center justify-center">
+                {/* ================= IMAGE ================= */}
+
+                <div className="
+                    flex
+                    flex-1
+                    items-center
+                    justify-center
+                    py-3
+
+                    sm:py-4
+
+                    lg:mt-4
+                ">
 
                     <img
                         src={category.image}
                         alt={category.name}
                         className="
-                            h-44
-                            w-52
+                            h-24
+                            w-28
                             object-contain
                             transition-all
                             duration-500
                             group-hover:scale-110
+
+                            sm:h-32
+                            sm:w-36
+
+                            lg:h-44
+                            lg:w-52
                         "
                     />
 
                 </div>
 
 
-                {/* Bottom */}
-                <div className="mt-4 flex items-center justify-between">
+                {/* ================= BOTTOM ================= */}
 
-                    <span className="text-sm font-semibold text-gray-600 transition-colors duration-300 group-hover:text-blue-600">
+                <div className="
+                    mt-2
+                    flex
+                    items-center
+                    justify-between
+
+                    sm:mt-3
+
+                    lg:mt-4
+                ">
+
+                    <span className="
+                        text-[11px]
+                        font-semibold
+                        text-gray-600
+                        transition-colors
+                        duration-300
+                        group-hover:text-blue-600
+
+                        sm:text-sm
+                    ">
+
                         Shop Collection
+
                     </span>
 
-                    <span className="text-sm font-medium text-gray-400">
+
+                    <span className="
+                        text-xs
+                        font-medium
+                        text-gray-400
+
+                        sm:text-sm
+                    ">
+
                         →
+
                     </span>
 
                 </div>
