@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { FaStar } from "react-icons/fa";
+import ReviewList from "../reviews/ReviewList";
 
-const ProductTabs = () => {
+
+const ProductTabs = ({ product }) => {
     const [activeTab, setActiveTab] = useState("description");
 
     return (
@@ -13,33 +14,30 @@ const ProductTabs = () => {
 
                 <button
                     onClick={() => setActiveTab("description")}
-                    className={`px-8 py-5 text-lg font-semibold transition ${
-                        activeTab === "description"
+                    className={`px-8 py-5 text-lg font-semibold transition ${activeTab === "description"
                             ? "border-b-2 border-blue-600 text-blue-600"
                             : "text-gray-500 hover:text-blue-600"
-                    }`}
+                        }`}
                 >
                     Description
                 </button>
 
                 <button
                     onClick={() => setActiveTab("specifications")}
-                    className={`px-8 py-5 text-lg font-semibold transition ${
-                        activeTab === "specifications"
+                    className={`px-8 py-5 text-lg font-semibold transition ${activeTab === "specifications"
                             ? "border-b-2 border-blue-600 text-blue-600"
                             : "text-gray-500 hover:text-blue-600"
-                    }`}
+                        }`}
                 >
                     Specifications
                 </button>
 
                 <button
                     onClick={() => setActiveTab("reviews")}
-                    className={`px-8 py-5 text-lg font-semibold transition ${
-                        activeTab === "reviews"
+                    className={`px-8 py-5 text-lg font-semibold transition ${activeTab === "reviews"
                             ? "border-b-2 border-blue-600 text-blue-600"
                             : "text-gray-500 hover:text-blue-600"
-                    }`}
+                        }`}
                 >
                     Reviews
                 </button>
@@ -50,6 +48,8 @@ const ProductTabs = () => {
 
             <div className="p-8">
 
+                {/* Description */}
+
                 {activeTab === "description" && (
 
                     <div className="space-y-5">
@@ -59,16 +59,15 @@ const ProductTabs = () => {
                         </h3>
 
                         <p className="leading-8 text-gray-600">
-                            Experience premium quality with this product,
-                            designed using high-quality materials for
-                            durability, comfort, and modern style.
-                            Perfect for daily use with an elegant finish
-                            and outstanding performance.
+                            {product?.description ||
+                                "Experience premium quality with this product, designed using high-quality materials for durability, comfort, and modern style. Perfect for daily use with an elegant finish and outstanding performance."}
                         </p>
 
                     </div>
 
                 )}
+
+                {/* Specifications */}
 
                 {activeTab === "specifications" && (
 
@@ -81,7 +80,7 @@ const ProductTabs = () => {
                             </h4>
 
                             <p className="mt-2 text-gray-600">
-                                ShopEase
+                                {product?.brand || "ShopEase"}
                             </p>
 
                         </div>
@@ -89,11 +88,11 @@ const ProductTabs = () => {
                         <div className="rounded-xl bg-gray-50 p-5">
 
                             <h4 className="font-semibold">
-                                Material
+                                Category
                             </h4>
 
-                            <p className="mt-2 text-gray-600">
-                                Premium Quality
+                            <p className="mt-2 text-gray-600 capitalize">
+                                {product?.category || "N/A"}
                             </p>
 
                         </div>
@@ -126,59 +125,30 @@ const ProductTabs = () => {
 
                 )}
 
+                {/* Reviews */}
+
                 {activeTab === "reviews" && (
 
                     <div className="space-y-8">
 
-                        <div className="rounded-2xl border border-gray-200 p-6">
+                        <div>
 
-                            <div className="flex items-center justify-between">
+                            <h3 className="text-2xl font-bold text-gray-900">
+                                Customer Reviews
+                            </h3>
 
-                                <h4 className="text-lg font-semibold">
-                                    Rahul Sharma
-                                </h4>
-
-                                <div className="flex text-yellow-400">
-
-                                    {[...Array(5)].map((_, index) => (
-                                        <FaStar key={index} />
-                                    ))}
-
-                                </div>
-
-                            </div>
-
-                            <p className="mt-4 text-gray-600">
-                                Excellent product. Premium quality and
-                                fast delivery. Highly recommended.
+                            <p className="mt-2 text-gray-500">
+                                See what customers are saying about this product.
                             </p>
 
                         </div>
 
-                        <div className="rounded-2xl border border-gray-200 p-6">
+                        {/* Existing Reviews */}
 
-                            <div className="flex items-center justify-between">
+                        <ReviewList
+                            productId={product?._id}
+                        />
 
-                                <h4 className="text-lg font-semibold">
-                                    Priya Singh
-                                </h4>
-
-                                <div className="flex text-yellow-400">
-
-                                    {[...Array(5)].map((_, index) => (
-                                        <FaStar key={index} />
-                                    ))}
-
-                                </div>
-
-                            </div>
-
-                            <p className="mt-4 text-gray-600">
-                                Amazing experience. Looks exactly as shown.
-                                Worth every rupee.
-                            </p>
-
-                        </div>
 
                     </div>
 
