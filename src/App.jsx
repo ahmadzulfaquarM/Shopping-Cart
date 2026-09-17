@@ -9,6 +9,8 @@ import AdminOrders from "./pages/Admin/AdminOrders/AdminOrders"
 import AdminOrderDetails from "./pages/Admin/AdminOrderDetails/AdminOrderDetails";
 import AdminUsers from "./pages/Admin/AdminUsers/AdminUsers";
 import AdminUserDetails from "./pages/Admin/AdminUserDetails/AdminUserDetails";
+import AdminContacts from "./pages/Admin/Contacts/AdminContacts";
+import AdminContactDetails from "./pages/Admin/Contacts/AdminContactDetails";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Pages
@@ -28,6 +30,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import NotFound from "./pages/NotFound/NotFound";
 import Categories from "./pages/Categories/Categories";
 import Contact from "./pages/Contact/Contact";
+import VerifyContact from "./pages/Contact/VerifyContact";
 import Orders from "./pages/Orders/Orders";
 import OrderDetails from "./pages/OrderDetails/OrderDetails";
 
@@ -79,6 +82,10 @@ function App() {
                     <Route
                         path="/contact"
                         element={<Contact />}
+                    />
+                    <Route
+                        path="/verify-contact/:token"
+                        element={<VerifyContact />}
                     />
 
                 </Route>
@@ -183,6 +190,15 @@ function App() {
                     <Route
                         path="/admin/users/:id"
                         element={<AdminUserDetails />}
+                    />
+
+                    <Route
+                        path="/admin/contacts"
+                        element={<AdminContacts />}
+                    />
+                    <Route
+                        path="/admin/contacts/:id"
+                        element={<AdminContactDetails />}
                     />
 
                 </Route>

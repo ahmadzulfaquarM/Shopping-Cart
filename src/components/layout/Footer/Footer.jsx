@@ -14,8 +14,8 @@ import { Link } from "react-router-dom";
 const quickLinks = [
     { name: "Home", path: "/" },
     { name: "Products", path: "/products" },
-    { name: "About", path: "#" },
-    { name: "Contact", path: "#" },
+    { name: "Categories", path: "/categories" },
+    { name: "Contact", path: "/contact" },
     { name: "Login", path: "/login" },
 ];
 
@@ -28,78 +28,103 @@ const categories = [
 ];
 
 const customerCare = [
-    { name: "Contact Us", path: "#" },
-    { name: "FAQs", path: "#" },
-    { name: "Shipping", path: "#" },
-    { name: "Returns", path: "#" },
-    { name: "Privacy Policy", path: "#" },
+    { name: "Contact Us", path: "/contact" },
+    { name: "My Orders", path: "/orders" },
+    { name: "Wishlist", path: "/wishlist" },
+    { name: "Cart", path: "/cart" },
+    { name: "Profile", path: "/profile" },
+];
+
+const socialLinks = [
+    {
+        name: "Facebook",
+        icon: FaFacebookF,
+        url: "https://www.facebook.com/",
+    },
+    {
+        name: "Instagram",
+        icon: FaInstagram,
+        url: "https://www.instagram.com/",
+    },
+    {
+        name: "Twitter",
+        icon: FaTwitter,
+        url: "https://twitter.com/",
+    },
+    {
+        name: "LinkedIn",
+        icon: FaLinkedinIn,
+        url: "https://www.linkedin.com/",
+    },
 ];
 
 const Footer = () => {
     return (
         <footer className="bg-gray-950 text-gray-300">
-            <div className="mx-auto max-w-7xl px-4 py-20 md:px-8 lg:px-12">
 
-                <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+            <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-12 lg:py-20">
+
+                {/* Main Footer */}
+                <div className="grid gap-10 sm:grid-cols-2 sm:gap-12 lg:grid-cols-4">
 
                     {/* Brand */}
-
                     <div>
 
-                        <h2 className="text-3xl font-extrabold text-white">
-                            Shop
-                            <span className="text-blue-600">ify</span>
-                        </h2>
+                        <Link to="/" className="inline-block">
+                            <h2 className="text-3xl font-extrabold text-white">
+                                Shop
+                                <span className="text-blue-600">ify</span>
+                            </h2>
+                        </Link>
 
-                        <p className="mt-6 leading-8 text-gray-400">
+                        <p className="mt-5 text-sm leading-6 text-gray-400 sm:mt-6 sm:text-base sm:leading-8">
                             Premium shopping experience with fashion,
                             electronics, beauty, furniture, footwear
                             and much more.
                         </p>
 
-                        <div className="mt-8 flex gap-4">
+                        {/* Social Media */}
+                        <div className="mt-6 flex gap-3 sm:mt-8 sm:gap-4">
 
-                            {[FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn].map(
-                                (Icon, index) => (
+                            {socialLinks.map((social) => {
+                                const Icon = social.icon;
+
+                                return (
                                     <a
-                                        key={index}
-                                        href="#"
-                                        className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-800 transition-all duration-300 hover:bg-blue-600"
+                                        key={social.name}
+                                        href={social.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        aria-label={social.name}
+                                        className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-800 transition-all duration-300 hover:bg-blue-600 hover:text-white sm:h-11 sm:w-11"
                                     >
                                         <Icon />
                                     </a>
-                                )
-                            )}
+                                );
+                            })}
 
                         </div>
 
                     </div>
 
                     {/* Quick Links */}
-
                     <div>
 
-                        <h3 className="text-xl font-bold text-white">
+                        <h3 className="text-lg font-bold text-white sm:text-xl">
                             Quick Links
                         </h3>
 
-                        <ul className="mt-6 space-y-4">
+                        <ul className="mt-5 space-y-3 sm:mt-6 sm:space-y-4">
 
                             {quickLinks.map((item) => (
                                 <li key={item.name}>
 
-                                    {item.path === "#" ? (
-                                        <span className="cursor-not-allowed text-gray-500">
-                                            {item.name}
-                                        </span>
-                                    ) : (
-                                        <Link
-                                            to={item.path}
-                                            className="transition duration-300 hover:text-blue-400"
-                                        >
-                                            {item.name}
-                                        </Link>
-                                    )}
+                                    <Link
+                                        to={item.path}
+                                        className="text-sm transition duration-300 hover:text-blue-400 sm:text-base"
+                                    >
+                                        {item.name}
+                                    </Link>
 
                                 </li>
                             ))}
@@ -109,21 +134,20 @@ const Footer = () => {
                     </div>
 
                     {/* Categories */}
-
                     <div>
 
-                        <h3 className="text-xl font-bold text-white">
+                        <h3 className="text-lg font-bold text-white sm:text-xl">
                             Categories
                         </h3>
 
-                        <ul className="mt-6 space-y-4">
+                        <ul className="mt-5 space-y-3 sm:mt-6 sm:space-y-4">
 
                             {categories.map((item) => (
                                 <li key={item.name}>
 
                                     <Link
                                         to={item.path}
-                                        className="transition duration-300 hover:text-blue-400"
+                                        className="text-sm transition duration-300 hover:text-blue-400 sm:text-base"
                                     >
                                         {item.name}
                                     </Link>
@@ -136,21 +160,23 @@ const Footer = () => {
                     </div>
 
                     {/* Customer Care */}
-
                     <div>
 
-                        <h3 className="text-xl font-bold text-white">
+                        <h3 className="text-lg font-bold text-white sm:text-xl">
                             Customer Care
                         </h3>
 
-                        <ul className="mt-6 space-y-4">
+                        <ul className="mt-5 space-y-3 sm:mt-6 sm:space-y-4">
 
                             {customerCare.map((item) => (
                                 <li key={item.name}>
 
-                                    <span className="cursor-not-allowed text-gray-500">
+                                    <Link
+                                        to={item.path}
+                                        className="text-sm transition duration-300 hover:text-blue-400 sm:text-base"
+                                    >
                                         {item.name}
-                                    </span>
+                                    </Link>
 
                                 </li>
                             ))}
@@ -161,15 +187,18 @@ const Footer = () => {
 
                 </div>
 
-                <div className="my-12 border-t border-gray-800"></div>
+                {/* Divider */}
+                <div className="my-9 border-t border-gray-800 sm:my-12"></div>
 
-                <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
+                {/* Bottom Footer */}
+                <div className="flex flex-col items-center justify-between gap-5 text-center md:flex-row md:text-left">
 
-                    <p className="text-gray-500">
+                    <p className="text-xs text-gray-500 sm:text-sm">
                         © 2026 Shopify. All Rights Reserved.
                     </p>
 
-                    <div className="flex items-center gap-5 text-4xl text-gray-400">
+                    {/* Payment Methods */}
+                    <div className="flex items-center gap-4 text-3xl text-gray-400 sm:gap-5 sm:text-4xl">
 
                         <FaCcVisa />
                         <FaCcMastercard />
@@ -181,6 +210,7 @@ const Footer = () => {
                 </div>
 
             </div>
+
         </footer>
     );
 };

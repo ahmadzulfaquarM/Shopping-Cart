@@ -1,10 +1,21 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+
 import User from "../models/User.js";
-import { sendVerificationEmail, sendPasswordResetEmail } from "../services/emailService.js";
+
+import {
+    sendVerificationEmail,
+    sendPasswordResetEmail,
+} from "../services/emailService.js";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/*
+|--------------------------------------------------------------------------
+| Register User
+|--------------------------------------------------------------------------
+*/
 
 export const registerUser = async (req, res) => {
     try {
@@ -70,10 +81,12 @@ export const registerUser = async (req, res) => {
         });
 
         try {
+            const verificationUrl =
+                `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
+
             await sendVerificationEmail(
                 user.email,
-                user.name,
-                verificationToken
+                verificationUrl
             );
         } catch (emailError) {
             console.error(
@@ -124,6 +137,12 @@ export const registerUser = async (req, res) => {
     }
 };
 
+/*
+|--------------------------------------------------------------------------
+| Login User
+|--------------------------------------------------------------------------
+*/
+
 export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -131,8 +150,7 @@ export const loginUser = async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({
                 success: false,
-                message:
-                    "Email and Password are required",
+                message: "Email and Password are required",
             });
         }
 
@@ -154,8 +172,7 @@ export const loginUser = async (req, res) => {
         if (!user) {
             return res.status(400).json({
                 success: false,
-                message:
-                    "Invalid Email or Password",
+                message: "Invalid Email or Password",
             });
         }
 
@@ -175,8 +192,7 @@ export const loginUser = async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({
                 success: false,
-                message:
-                    "Invalid Email or Password",
+                message: "Invalid Email or Password",
             });
         }
 
@@ -227,12 +243,24 @@ export const loginUser = async (req, res) => {
     }
 };
 
+/*
+|--------------------------------------------------------------------------
+| Get User Profile
+|--------------------------------------------------------------------------
+*/
+
 export const getUserProfile = async (req, res) => {
     return res.status(200).json({
         success: true,
         user: req.user,
     });
 };
+
+/*
+|--------------------------------------------------------------------------
+| Update User Profile
+|--------------------------------------------------------------------------
+*/
 
 export const updateUserProfile = async (req, res) => {
     try {
@@ -289,6 +317,12 @@ export const updateUserProfile = async (req, res) => {
     }
 };
 
+/*
+|--------------------------------------------------------------------------
+| Verify Email
+|--------------------------------------------------------------------------
+*/
+
 export const verifyEmail = async (req, res) => {
     try {
         const { token } = req.params;
@@ -296,12 +330,16 @@ export const verifyEmail = async (req, res) => {
         if (!token) {
             return res.status(400).json({
                 success: false,
-                message: "Verification token is required",
+                message:
+                    "Verification token is required",
             });
         }
 
         const user = await User.findOne({
             emailVerificationToken: token,
+            emailVerificationExpires: {
+                $gt: Date.now(),
+            },
         });
 
         if (!user) {
@@ -345,11 +383,11 @@ export const verifyEmail = async (req, res) => {
                 email: user.email,
                 role: user.role,
                 isBlocked: user.isBlocked,
-                isEmailVerified: user.isEmailVerified,
+                isEmailVerified:
+                    user.isEmailVerified,
                 createdAt: user.createdAt,
             },
         });
-
     } catch (error) {
         console.error(
             "Verify Email Error:",
@@ -363,6 +401,12 @@ export const verifyEmail = async (req, res) => {
     }
 };
 
+/*
+|--------------------------------------------------------------------------
+| Forgot Password
+|--------------------------------------------------------------------------
+*/
+
 export const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -374,12 +418,14 @@ export const forgotPassword = async (req, res) => {
             });
         }
 
-        const normalizedEmail = email.trim().toLowerCase();
+        const normalizedEmail =
+            email.trim().toLowerCase();
 
         if (!emailRegex.test(normalizedEmail)) {
             return res.status(400).json({
                 success: false,
-                message: "Please enter a valid email address",
+                message:
+                    "Please enter a valid email address",
             });
         }
 
@@ -390,20 +436,21 @@ export const forgotPassword = async (req, res) => {
         if (!user) {
             return res.status(404).json({
                 success: false,
-                message: "No account found with this email",
+                message:
+                    "No account found with this email",
             });
         }
 
         if (!user.isEmailVerified) {
             return res.status(403).json({
                 success: false,
-                message: "Please verify your email first",
+                message:
+                    "Please verify your email first",
             });
         }
 
-        const resetToken = crypto
-            .randomBytes(32)
-            .toString("hex");
+        const resetToken =
+            crypto.randomBytes(32).toString("hex");
 
         user.passwordResetToken = resetToken;
 
@@ -413,10 +460,12 @@ export const forgotPassword = async (req, res) => {
         await user.save();
 
         try {
+            const resetUrl =
+                `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
             await sendPasswordResetEmail(
                 user.email,
-                user.name,
-                resetToken
+                resetUrl
             );
         } catch (emailError) {
             console.error(
@@ -441,7 +490,6 @@ export const forgotPassword = async (req, res) => {
             message:
                 "Password reset link has been sent to your email",
         });
-
     } catch (error) {
         console.error(
             "Forgot Password Error:",
@@ -455,6 +503,11 @@ export const forgotPassword = async (req, res) => {
     }
 };
 
+/*
+|--------------------------------------------------------------------------
+| Reset Password
+|--------------------------------------------------------------------------
+*/
 
 export const resetPassword = async (req, res) => {
     try {
@@ -478,7 +531,8 @@ export const resetPassword = async (req, res) => {
         if (password.length < 6) {
             return res.status(400).json({
                 success: false,
-                message: "Password must be at least 6 characters",
+                message:
+                    "Password must be at least 6 characters",
             });
         }
 
@@ -492,14 +546,13 @@ export const resetPassword = async (req, res) => {
         if (!user) {
             return res.status(400).json({
                 success: false,
-                message: "Invalid or expired reset link",
+                message:
+                    "Invalid or expired reset link",
             });
         }
 
-        const hashedPassword = await bcrypt.hash(
-            password,
-            10
-        );
+        const hashedPassword =
+            await bcrypt.hash(password, 10);
 
         user.password = hashedPassword;
 
@@ -513,7 +566,6 @@ export const resetPassword = async (req, res) => {
             message:
                 "Password reset successfully. You can now login.",
         });
-
     } catch (error) {
         console.error(
             "Reset Password Error:",

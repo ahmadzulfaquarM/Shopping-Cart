@@ -1,15 +1,16 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+
 import {
     FaTachometerAlt,
     FaBox,
     FaShoppingCart,
     FaUsers,
+    FaEnvelope,
     FaTimes,
 } from "react-icons/fa";
 
 const AdminSidebar = ({ isOpen, setIsOpen }) => {
-
     const navItems = [
         {
             name: "Dashboard",
@@ -31,6 +32,11 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
             path: "/admin/users",
             icon: FaUsers,
         },
+        {
+            name: "Contacts",
+            path: "/admin/contacts",
+            icon: FaEnvelope,
+        },
     ];
 
     return (
@@ -51,10 +57,8 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
                         : "-translate-x-full"
                 }`}
             >
-
                 {/* Header */}
                 <div className="flex h-20 items-center justify-between border-b border-gray-700 px-6">
-
                     <div>
                         <h2 className="text-xl font-bold">
                             Admin Panel
@@ -71,25 +75,21 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
                     >
                         <FaTimes />
                     </button>
-
                 </div>
-
 
                 {/* Navigation */}
                 <nav className="p-4">
-
                     <ul className="space-y-2">
-
                         {navItems.map((item) => {
-
                             const Icon = item.icon;
 
                             return (
                                 <li key={item.name}>
-
                                     <NavLink
                                         to={item.path}
-                                        onClick={() => setIsOpen(false)}
+                                        onClick={() =>
+                                            setIsOpen(false)
+                                        }
                                         className={({ isActive }) =>
                                             `flex items-center gap-4 rounded-xl px-4 py-3 font-medium transition ${
                                                 isActive
@@ -98,23 +98,17 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
                                             }`
                                         }
                                     >
-
                                         <Icon />
 
                                         <span>
                                             {item.name}
                                         </span>
-
                                     </NavLink>
-
                                 </li>
                             );
                         })}
-
                     </ul>
-
                 </nav>
-
             </aside>
         </>
     );

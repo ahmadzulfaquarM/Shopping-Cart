@@ -12,6 +12,11 @@ import {
     getAdminOrderById,
 } from "../controllers/orderController.js";
 
+import {
+    getOrderChatMessages,
+    sendOrderChatMessage,
+} from "../controllers/chatController.js";
+
 import { protect } from "../middleware/authMiddleware.js";
 import { admin } from "../middleware/adminMiddleware.js";
 
@@ -89,6 +94,21 @@ router.put(
     "/:id/cancel",
     protect,
     cancelOrder
+);
+
+
+// Get order chat messages
+router.get(
+    "/:id/chat",
+    protect,
+    getOrderChatMessages
+);
+
+// Send order chat message
+router.post(
+    "/:id/chat",
+    protect,
+    sendOrderChatMessage
 );
 
 
