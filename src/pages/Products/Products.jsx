@@ -11,6 +11,7 @@ const Products = () => {
     const [searchParams] = useSearchParams();
 
     const searchTerm = searchParams.get("search") || "";
+    const categoryFromUrl = searchParams.get("category") || "";
 
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -23,9 +24,26 @@ const Products = () => {
 
     const [sortOption, setSortOption] = useState("featured");
 
-    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [selectedCategories, setSelectedCategories] = useState(
+        categoryFromUrl ? [categoryFromUrl] : []
+    );
+
     const [selectedPrice, setSelectedPrice] = useState("");
     const [inStockOnly, setInStockOnly] = useState(false);
+
+    // =====================================================
+    // SYNC CATEGORY WITH URL
+    // =====================================================
+
+    useEffect(() => {
+        if (categoryFromUrl) {
+            setSelectedCategories([categoryFromUrl]);
+        } else {
+            setSelectedCategories([]);
+        }
+
+        setPage(1);
+    }, [categoryFromUrl]);
 
     // =====================================================
     // RESET PAGE WHEN SEARCH CHANGES
@@ -136,6 +154,7 @@ const Products = () => {
                 ================================================= */}
 
                 <div className="mt-5 min-w-0">
+
                     {searchTerm ? (
                         <>
                             <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl md:text-5xl">
@@ -147,6 +166,20 @@ const Products = () => {
                                 <span className="font-semibold text-blue-600">
                                     "{searchTerm}"
                                 </span>
+                            </p>
+                        </>
+                    ) : categoryFromUrl ? (
+                        <>
+                            <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl md:text-5xl">
+                                <span className="text-blue-600">
+                                    {categoryFromUrl}
+                                </span>{" "}
+                                Products
+                            </h1>
+
+                            <p className="mt-3 text-base text-gray-600 sm:mt-4 sm:text-lg">
+                                Explore our collection of{" "}
+                                {categoryFromUrl.toLowerCase()} products.
                             </p>
                         </>
                     ) : (
@@ -165,6 +198,7 @@ const Products = () => {
                             </p>
                         </>
                     )}
+
                 </div>
 
                 {/* =================================================
@@ -189,6 +223,7 @@ const Products = () => {
                     {/* PRODUCTS */}
 
                     <div className="min-w-0">
+
                         <ProductToolbar
                             productCount={products.length}
                             sortOption={sortOption}
@@ -203,6 +238,7 @@ const Products = () => {
                                 />
                             ) : (
                                 <div className="rounded-2xl bg-white p-8 text-center shadow-sm sm:p-12">
+
                                     <h2 className="text-xl font-bold text-gray-900 sm:text-2xl">
                                         No Products Found
                                     </h2>
@@ -211,6 +247,7 @@ const Products = () => {
                                         We couldn't find any products
                                         matching your search or filters.
                                     </p>
+
                                 </div>
                             )}
 
@@ -232,8 +269,10 @@ const Products = () => {
                                     </button>
 
                                     <div className="flex flex-wrap justify-center gap-2">
+
                                         {[...Array(totalPages)].map(
                                             (_, index) => {
+
                                                 const pageNumber =
                                                     index + 1;
 
@@ -257,6 +296,7 @@ const Products = () => {
                                                 );
                                             }
                                         )}
+
                                     </div>
 
                                     <button

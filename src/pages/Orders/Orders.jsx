@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaBoxOpen, FaEye } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getMyOrders } from "../../services/orderService";
 
 const Orders = () => {
@@ -48,11 +48,9 @@ const Orders = () => {
         return (
             <div className="min-h-screen bg-gray-50 px-4 py-10">
                 <div className="mx-auto max-w-4xl rounded-2xl bg-white p-8 text-center shadow-sm">
-
                     <p className="font-medium text-red-600">
                         {error}
                     </p>
-
                 </div>
             </div>
         );
@@ -178,11 +176,22 @@ const Orders = () => {
 
                                         <div className="flex min-w-0 items-center gap-4">
 
-                                            <img
-                                                src={item.image}
-                                                alt={item.name}
-                                                className="h-16 w-16 rounded-xl bg-gray-50 object-contain p-2"
-                                            />
+                                            {/* Clickable Product Image */}
+
+                                            <Link
+                                                to={`/products/${
+                                                    item.product?._id ||
+                                                    item.product
+                                                }`}
+                                                className="shrink-0"
+                                            >
+                                                <img
+                                                    src={item.image}
+                                                    alt={item.name}
+                                                    className="h-16 w-16 rounded-xl bg-gray-50 object-contain p-2 transition-transform duration-200 hover:scale-105"
+                                                />
+                                            </Link>
+
 
                                             <div className="min-w-0">
 

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
     FaArrowLeft,
     FaMapMarkerAlt,
@@ -65,11 +65,13 @@ const ItemTimeline = ({ order }) => {
     if (order.orderStatus === "cancelled") {
         return (
             <div className="flex items-center gap-3 rounded-xl bg-red-50 px-4 py-3 text-red-600">
+
                 <FaTimesCircle className="text-lg" />
 
                 <span className="font-semibold">
                     Order Cancelled
                 </span>
+
             </div>
         );
     }
@@ -111,8 +113,11 @@ const ItemTimeline = ({ order }) => {
 
     return (
         <div>
+
             <div className="space-y-0">
+
                 {visibleStages.map((stage, i) => {
+
                     const stageIndex =
                         STAGES.findIndex(
                             (s) =>
@@ -134,12 +139,15 @@ const ItemTimeline = ({ order }) => {
                             key={stage.key}
                             className="flex gap-3"
                         >
+
                             <div className="flex flex-col items-center">
+
                                 <span
-                                    className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] ${done
+                                    className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] ${
+                                        done
                                             ? "bg-green-500 text-white"
                                             : "border-2 border-gray-300 bg-white"
-                                        }`}
+                                    }`}
                                 >
                                     {done && (
                                         <FaCheckCircle className="text-[10px]" />
@@ -148,25 +156,29 @@ const ItemTimeline = ({ order }) => {
 
                                 {!isLast && (
                                     <span
-                                        className={`w-0.5 flex-1 ${done
+                                        className={`w-0.5 flex-1 ${
+                                            done
                                                 ? "bg-green-500"
                                                 : "bg-gray-200"
-                                            }`}
+                                        }`}
                                         style={{
-                                            minHeight:
-                                                "24px",
+                                            minHeight: "24px",
                                         }}
                                     />
                                 )}
+
                             </div>
 
                             <div className="pb-5">
+
                                 <p
-                                    className={`text-sm font-medium ${done
+                                    className={`text-sm font-medium ${
+                                        done
                                             ? "text-gray-900"
                                             : "text-gray-400"
-                                        }`}
+                                    }`}
                                 >
+
                                     {stage.label}
 
                                     {date && (
@@ -174,20 +186,27 @@ const ItemTimeline = ({ order }) => {
                                             , {date}
                                         </span>
                                     )}
+
                                 </p>
+
                             </div>
+
                         </div>
                     );
                 })}
+
             </div>
 
+
             {STAGES.length > 2 && (
+
                 <button
                     onClick={() =>
                         setShowAll((value) => !value)
                     }
                     className="flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-800"
                 >
+
                     {showAll
                         ? "Show less"
                         : "See All Updates"}
@@ -197,8 +216,11 @@ const ItemTimeline = ({ order }) => {
                     ) : (
                         <FaChevronDown className="text-xs" />
                     )}
+
                 </button>
+
             )}
+
         </div>
     );
 };
@@ -212,6 +234,7 @@ const RatingBlock = ({
     productId,
     orderId,
 }) => {
+
     const [rating, setRating] =
         useState(0);
 
@@ -232,42 +255,53 @@ const RatingBlock = ({
 
 
     const handleSubmit = async () => {
+
         setError("");
         setSuccess(false);
 
-        // Make sure product ID exists
+
         if (!productId) {
+
             setError(
                 "Product information is missing."
             );
+
             return;
         }
 
-        // Make sure order ID exists
+
         if (!orderId) {
+
             setError(
                 "Order information is missing."
             );
+
             return;
         }
 
-        // Rating validation
+
         if (rating === 0) {
+
             setError(
                 "Please select a rating."
             );
+
             return;
         }
 
-        // Comment validation
+
         if (comment.trim().length < 3) {
+
             setError(
                 "Please write at least 3 characters in your review."
             );
+
             return;
         }
 
+
         try {
+
             setSubmitting(true);
 
             await createReview({
@@ -277,15 +311,15 @@ const RatingBlock = ({
                 comment: comment.trim(),
             });
 
-            // Success
+
             setSuccess(true);
 
-            // Clear form
             setRating(0);
             setHovered(0);
             setComment("");
 
         } catch (error) {
+
             console.error(
                 "Submit Review Error:",
                 error
@@ -298,7 +332,9 @@ const RatingBlock = ({
             setError(message);
 
         } finally {
+
             setSubmitting(false);
+
         }
     };
 
@@ -319,6 +355,7 @@ const RatingBlock = ({
 
                     {[1, 2, 3, 4, 5].map(
                         (value) => (
+
                             <button
                                 key={value}
                                 type="button"
@@ -334,24 +371,31 @@ const RatingBlock = ({
                                 aria-label={`Rate ${value} stars`}
                                 className="transition-transform hover:scale-110"
                             >
+
                                 <FaStar
-                                    className={`text-xl transition ${(hovered ||
+                                    className={`text-xl transition ${
+                                        (hovered ||
                                             rating) >=
-                                            value
+                                        value
                                             ? "text-yellow-400"
                                             : "text-gray-300"
-                                        }`}
+                                    }`}
                                 />
+
                             </button>
+
                         )
                     )}
 
                 </div>
 
+
                 {rating > 0 && (
+
                     <span className="ml-2 text-sm font-medium text-gray-600">
                         {rating}/5
                     </span>
+
                 )}
 
             </div>
@@ -381,28 +425,35 @@ const RatingBlock = ({
             {/* Error */}
 
             {error && (
+
                 <div className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600">
                     {error}
                 </div>
+
             )}
 
 
             {/* Success */}
 
             {success && (
+
                 <div className="mt-3 flex items-center gap-2 rounded-lg bg-green-50 px-3 py-2 text-sm font-medium text-green-600">
+
                     <FaCheckCircle />
 
                     <span>
                         Your review has been submitted successfully!
                     </span>
+
                 </div>
+
             )}
 
 
             {/* Submit Button */}
 
             {!success && (
+
                 <button
                     type="button"
                     onClick={handleSubmit}
@@ -413,6 +464,7 @@ const RatingBlock = ({
                         ? "Submitting..."
                         : "Submit Review"}
                 </button>
+
             )}
 
         </div>
@@ -441,6 +493,7 @@ const ChatWithUs = ({
     item,
     onClose,
 }) => {
+
     const [messages, setMessages] =
         useState([
             {
@@ -463,8 +516,11 @@ const ChatWithUs = ({
 
 
     useEffect(() => {
+
         const loadHistory = async () => {
+
             try {
+
                 setLoadingHistory(true);
 
                 const data =
@@ -476,6 +532,7 @@ const ChatWithUs = ({
                     data.messages &&
                     data.messages.length > 0
                 ) {
+
                     setMessages(
                         data.messages.map(
                             (message) => ({
@@ -487,16 +544,20 @@ const ChatWithUs = ({
                             })
                         )
                     );
+
                 }
 
             } catch (error) {
+
                 console.error(
                     "Load Chat History Error:",
                     error
                 );
 
             } finally {
+
                 setLoadingHistory(false);
+
             }
         };
 
@@ -506,24 +567,29 @@ const ChatWithUs = ({
 
 
     useEffect(() => {
+
         scrollRef.current?.scrollIntoView({
             behavior: "smooth",
         });
+
     }, [messages]);
 
 
     const handleSend = async (text) => {
+
         const trimmed = text.trim();
 
         if (!trimmed || sending) {
             return;
         }
 
+
         const optimisticMessage = {
             id: `local-${Date.now()}`,
             sender: "user",
             text: trimmed,
         };
+
 
         setMessages((prev) => [
             ...prev,
@@ -533,12 +599,15 @@ const ChatWithUs = ({
         setInput("");
         setSending(true);
 
+
         try {
+
             const data =
                 await sendOrderChatMessage(
                     order._id,
                     trimmed
                 );
+
 
             setMessages((prev) => [
                 ...prev,
@@ -550,10 +619,12 @@ const ChatWithUs = ({
             ]);
 
         } catch (error) {
+
             console.error(
                 "Send Chat Message Error:",
                 error
             );
+
 
             setMessages((prev) => [
                 ...prev,
@@ -565,7 +636,9 @@ const ChatWithUs = ({
             ]);
 
         } finally {
+
             setSending(false);
+
         }
     };
 
@@ -577,6 +650,7 @@ const ChatWithUs = ({
                 className="absolute inset-0 bg-black/30 sm:hidden"
                 onClick={onClose}
             />
+
 
             <div className="relative z-10 flex h-[80vh] w-full max-w-md flex-col overflow-hidden rounded-t-2xl bg-white shadow-2xl sm:h-[560px] sm:rounded-2xl">
 
@@ -605,6 +679,7 @@ const ChatWithUs = ({
 
                     </div>
 
+
                     <button
                         onClick={onClose}
                         className="rounded-full p-1.5 hover:bg-white/10"
@@ -621,35 +696,45 @@ const ChatWithUs = ({
                 <div className="flex-1 space-y-3 overflow-y-auto bg-gray-50 px-4 py-4">
 
                     {loadingHistory && (
+
                         <p className="text-center text-xs text-gray-400">
                             Loading conversation...
                         </p>
+
                     )}
+
 
                     {messages.map(
                         (message) => (
+
                             <div
                                 key={message.id}
-                                className={`flex ${message.sender ===
-                                        "user"
+                                className={`flex ${
+                                    message.sender === "user"
                                         ? "justify-end"
                                         : "justify-start"
-                                    }`}
+                                }`}
                             >
+
                                 <div
-                                    className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${message.sender ===
-                                            "user"
+                                    className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${
+                                        message.sender ===
+                                        "user"
                                             ? "rounded-br-sm bg-blue-600 text-white"
                                             : "rounded-bl-sm bg-white text-gray-800 shadow-sm"
-                                        }`}
+                                    }`}
                                 >
                                     {message.text}
                                 </div>
+
                             </div>
+
                         )
                     )}
 
+
                     {sending && (
+
                         <div className="flex justify-start">
 
                             <div className="rounded-2xl rounded-bl-sm bg-white px-4 py-2.5 text-sm text-gray-400 shadow-sm">
@@ -657,7 +742,9 @@ const ChatWithUs = ({
                             </div>
 
                         </div>
+
                     )}
+
 
                     <div ref={scrollRef} />
 
@@ -670,6 +757,7 @@ const ChatWithUs = ({
 
                     {QUICK_REPLIES.map(
                         (reply) => (
+
                             <button
                                 key={reply}
                                 onClick={() =>
@@ -679,6 +767,7 @@ const ChatWithUs = ({
                             >
                                 {reply}
                             </button>
+
                         )
                     )}
 
@@ -689,8 +778,11 @@ const ChatWithUs = ({
 
                 <form
                     onSubmit={(e) => {
+
                         e.preventDefault();
+
                         handleSend(input);
+
                     }}
                     className="flex items-center gap-2 border-t border-gray-100 bg-white px-4 py-3"
                 >
@@ -704,6 +796,7 @@ const ChatWithUs = ({
                         placeholder="Type your message..."
                         className="flex-1 rounded-full border border-gray-300 px-4 py-2 text-sm outline-none focus:border-blue-600"
                     />
+
 
                     <button
                         type="submit"
@@ -720,6 +813,7 @@ const ChatWithUs = ({
                 </form>
 
             </div>
+
         </div>
     );
 };
@@ -730,8 +824,11 @@ const ChatWithUs = ({
 // --------------------------------------------------
 
 const OrderDetails = () => {
+
     const { id } = useParams();
+
     const navigate = useNavigate();
+
 
     const [order, setOrder] =
         useState(null);
@@ -757,8 +854,11 @@ const OrderDetails = () => {
     // --------------------------------------------------
 
     useEffect(() => {
+
         const fetchOrder = async () => {
+
             try {
+
                 setLoading(true);
                 setError("");
 
@@ -768,6 +868,7 @@ const OrderDetails = () => {
                 setOrder(data.order);
 
             } catch (error) {
+
                 console.error(
                     "Get Order Details Error:",
                     error
@@ -779,7 +880,9 @@ const OrderDetails = () => {
                 );
 
             } finally {
+
                 setLoading(false);
+
             }
         };
 
@@ -793,6 +896,7 @@ const OrderDetails = () => {
     // --------------------------------------------------
 
     if (loading) {
+
         return (
             <div className="flex min-h-screen items-center justify-center bg-gray-50">
 
@@ -810,6 +914,7 @@ const OrderDetails = () => {
     // --------------------------------------------------
 
     if (error) {
+
         return (
             <div className="min-h-screen bg-gray-50 px-4 py-10">
 
@@ -818,6 +923,7 @@ const OrderDetails = () => {
                     <p className="font-medium text-red-600">
                         {error}
                     </p>
+
 
                     <button
                         onClick={() =>
@@ -845,6 +951,7 @@ const OrderDetails = () => {
     // --------------------------------------------------
 
     const handleCancelOrder = async () => {
+
         const confirmed =
             window.confirm(
                 "Are you sure you want to cancel this order?"
@@ -854,7 +961,9 @@ const OrderDetails = () => {
             return;
         }
 
+
         try {
+
             setCancelling(true);
             setError("");
             setCancelMessage("");
@@ -871,6 +980,7 @@ const OrderDetails = () => {
             );
 
         } catch (error) {
+
             console.error(
                 "Cancel Order Error:",
                 error
@@ -882,7 +992,9 @@ const OrderDetails = () => {
             );
 
         } finally {
+
             setCancelling(false);
+
         }
     };
 
@@ -961,9 +1073,11 @@ const OrderDetails = () => {
                 {/* Cancel Success */}
 
                 {cancelMessage && (
+
                     <div className="mb-6 rounded-xl bg-green-100 px-4 py-3 font-medium text-green-700">
                         {cancelMessage}
                     </div>
+
                 )}
 
 
@@ -999,11 +1113,22 @@ const OrderDetails = () => {
 
                                         </div>
 
-                                        <img
-                                            src={item.image}
-                                            alt={item.name}
-                                            className="h-16 w-16 shrink-0 rounded-lg bg-gray-50 object-contain p-1"
-                                        />
+
+                                        {/* Clickable Product Image */}
+
+                                        <Link
+                                            to={`/products/${
+                                                item.product?._id ||
+                                                item.product
+                                            }`}
+                                            className="shrink-0"
+                                        >
+                                            <img
+                                                src={item.image}
+                                                alt={item.name}
+                                                className="h-16 w-16 rounded-lg bg-gray-50 object-contain p-1 transition-transform duration-200 hover:scale-105"
+                                            />
+                                        </Link>
 
                                     </div>
 
@@ -1016,6 +1141,7 @@ const OrderDetails = () => {
 
 
                                     <p className="mb-5 text-xs text-gray-400">
+
                                         Order placed on{" "}
 
                                         {new Date(
@@ -1050,7 +1176,8 @@ const OrderDetails = () => {
 
                                             <RatingBlock
                                                 productId={
-                                                    item.product?._id || item.product
+                                                    item.product?._id ||
+                                                    item.product
                                                 }
                                                 orderId={
                                                     order._id
@@ -1073,6 +1200,7 @@ const OrderDetails = () => {
                         {/* Mobile Cancel */}
 
                         {canCancel && (
+
                             <button
                                 onClick={
                                     handleCancelOrder
@@ -1086,6 +1214,7 @@ const OrderDetails = () => {
                                     ? "Cancelling..."
                                     : "Cancel Order"}
                             </button>
+
                         )}
 
                     </div>
@@ -1105,15 +1234,18 @@ const OrderDetails = () => {
                                 Delivery details
                             </h2>
 
+
                             <div className="flex items-start gap-3 border-b border-gray-100 pb-4">
 
                                 <FaMapMarkerAlt className="mt-0.5 text-gray-400" />
+
 
                                 <div className="min-w-0">
 
                                     <p className="text-sm font-semibold text-gray-900">
                                         Home
                                     </p>
+
 
                                     <p className="truncate text-sm text-gray-500">
 
@@ -1141,6 +1273,7 @@ const OrderDetails = () => {
                             <div className="flex items-center gap-3 pt-4">
 
                                 <FaUser className="text-gray-400" />
+
 
                                 <p className="text-sm text-gray-700">
 
@@ -1266,6 +1399,7 @@ const OrderDetails = () => {
                         {/* Desktop Cancel */}
 
                         {canCancel && (
+
                             <button
                                 onClick={
                                     handleCancelOrder
@@ -1279,6 +1413,7 @@ const OrderDetails = () => {
                                     ? "Cancelling..."
                                     : "Cancel Order"}
                             </button>
+
                         )}
 
                     </div>
@@ -1291,6 +1426,7 @@ const OrderDetails = () => {
             {/* Chat */}
 
             {chatItem && (
+
                 <ChatWithUs
                     order={order}
                     item={chatItem}
@@ -1298,6 +1434,7 @@ const OrderDetails = () => {
                         setChatItem(null)
                     }
                 />
+
             )}
 
         </div>
