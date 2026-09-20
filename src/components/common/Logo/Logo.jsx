@@ -1,19 +1,30 @@
 import { NavLink } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 
-const Logo = () => {
-  return (
-    <NavLink
-      to="/"
-     className="flex items-center gap-2 transition-all duration-300 hover:scale-105"
-    >
-      <FaShoppingCart className="text-3xl text-blue-600" />
+const Logo = ({ variant = "dark" }) => {
+    const isLight = variant === "light";
 
-      <h1 className="text-2xl font-extrabold text-blue-600">
-        Shopping Cart
-      </h1>
-    </NavLink>
-  );
+    return (
+        <NavLink
+            to="/"
+            aria-label="Shopify Home"
+            className="flex items-center gap-2 transition-transform duration-200 hover:scale-[1.02]"
+        >
+            <FaShoppingCart
+                className={`text-3xl ${
+                    isLight ? "text-white" : "text-blue-600"
+                }`}
+            />
+
+            <h1
+                className={`text-2xl font-extrabold tracking-tight ${
+                    isLight ? "text-white" : "text-blue-600"
+                }`}
+            >
+                Shopify
+            </h1>
+        </NavLink>
+    );
 };
 
 export default Logo;

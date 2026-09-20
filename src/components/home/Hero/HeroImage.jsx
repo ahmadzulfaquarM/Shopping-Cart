@@ -3,9 +3,7 @@ import heroImage from "../../../assets/images/hero/hero-banner.png";
 const HeroImage = () => {
     return (
         <div className="relative flex w-full items-center justify-center overflow-visible">
-
-            {/* ================= BACKGROUND CIRCLE ================= */}
-
+            {/* BACKGROUND CIRCLE */}
             <div
                 className="
                     absolute
@@ -13,6 +11,8 @@ const HeroImage = () => {
                     w-[300px]
                     rounded-full
                     bg-blue-50
+                    transition-transform
+                    duration-700
                     sm:h-[380px]
                     sm:w-[380px]
                     md:h-[420px]
@@ -22,9 +22,7 @@ const HeroImage = () => {
                 "
             />
 
-
-            {/* ================= TOP DECORATION ================= */}
-
+            {/* TOP DECORATION */}
             <div
                 className="
                     absolute
@@ -43,9 +41,7 @@ const HeroImage = () => {
                 "
             />
 
-
-            {/* ================= BOTTOM DECORATION ================= */}
-
+            {/* BOTTOM DECORATION */}
             <div
                 className="
                     absolute
@@ -62,12 +58,11 @@ const HeroImage = () => {
                 "
             />
 
-
-            {/* ================= PRODUCT IMAGE ================= */}
-
+            {/* PRODUCT IMAGE */}
             <img
                 src={heroImage}
-                alt="Premium Shopping Collection"
+                alt="Premium shopping collection"
+                loading="eager"
                 className="
                     relative
                     z-10
@@ -77,13 +72,12 @@ const HeroImage = () => {
                     drop-shadow-2xl
                     transition-transform
                     duration-500
-                    hover:scale-[1.02]
+                    hover:scale-[1.03]
                     sm:max-w-[420px]
                     md:max-w-[500px]
                     lg:max-w-[600px]
                 "
             />
-
         </div>
     );
 };

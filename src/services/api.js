@@ -1,15 +1,12 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:5000/api",
+    baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
 });
 
-
-// request interceptor
-
+// Request interceptor
 api.interceptors.request.use(
     (config) => {
-
         const token = localStorage.getItem("token");
 
         if (token) {
@@ -24,10 +21,8 @@ api.interceptors.request.use(
     }
 );
 
-
-// response interceptor
+// Response interceptor
 api.interceptors.response.use(
-
     // Successful response
     (response) => {
         return response;
@@ -35,9 +30,7 @@ api.interceptors.response.use(
 
     // Error response
     (error) => {
-
         if (error.response?.status === 401) {
-
             // Remove invalid/expired authentication
             localStorage.removeItem("token");
             localStorage.removeItem("user");
@@ -49,6 +42,5 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
-
 
 export default api;

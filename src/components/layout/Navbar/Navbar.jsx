@@ -14,22 +14,18 @@ const Navbar = () => {
     const { user, logout } = useAuth();
 
     return (
-        <header className="sticky top-0 z-50 w-full shadow-md">
+        <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
 
             {/* =====================================================
-                DESKTOP + MOBILE TOP NAVBAR
+                MAIN NAVBAR
             ===================================================== */}
 
             <div className="bg-blue-600">
-
                 <nav className="mx-auto flex h-14 max-w-7xl items-center px-3 sm:h-16 sm:px-5 lg:h-[74px] lg:gap-6 lg:px-8">
 
-                    {/* =================================================
-                        DESKTOP LOGO
-                    ================================================= */}
+                    {/* Desktop Logo */}
 
                     <div className="hidden shrink-0 lg:block">
-
                         <Logo variant="light" />
 
                         <p className="-mt-1 flex items-center gap-1 text-[11px] font-medium italic text-white/80">
@@ -38,38 +34,23 @@ const Navbar = () => {
                                 Plus
                             </span>
                         </p>
-
                     </div>
 
-
-                    {/* =================================================
-                        MOBILE LOGO
-                    ================================================= */}
+                    {/* Mobile Logo */}
 
                     <div className="min-w-0 shrink lg:hidden">
-
                         <Logo variant="light" />
-
                     </div>
 
+                    {/* Desktop Search */}
 
-                    {/* =================================================
-                        DESKTOP SEARCH
-                    ================================================= */}
-
-                    <div className="hidden flex-1 lg:block">
-
+                    <div className="hidden min-w-0 flex-1 lg:block">
                         <SearchBar />
-
                     </div>
 
+                    {/* Desktop Actions */}
 
-                    {/* =================================================
-                        DESKTOP ACTIONS
-                    ================================================= */}
-
-                    <div className="hidden shrink-0 items-center gap-2 lg:flex">
-
+                    <div className="hidden shrink-0 items-center gap-1.5 lg:flex">
                         <UserMenu
                             user={user}
                             logout={logout}
@@ -81,57 +62,36 @@ const Navbar = () => {
 
                         <CartIcon />
 
-                        {user?.role === "admin" && (
-                            <AdminIcon />
-                        )}
-
+                        {user?.role === "admin" && <AdminIcon />}
                     </div>
 
-
-                    {/* =================================================
-                        MOBILE MENU
-                    ================================================= */}
+                    {/* Mobile Menu */}
 
                     <div className="ml-auto shrink-0 lg:hidden">
-
                         <MobileMenu />
-
                     </div>
-
                 </nav>
-
             </div>
-
 
             {/* =====================================================
-                DESKTOP CATEGORY NAVIGATION
+                DESKTOP NAVIGATION
             ===================================================== */}
 
-            <div className="hidden border-b border-gray-100 bg-white lg:block">
-
+            <div className="hidden border-b border-gray-200 bg-white lg:block">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
-                    <div className="flex h-12 items-center justify-between">
-
+                    <div className="flex h-12 items-center justify-center">
                         <NavLinks />
-
                     </div>
-
                 </div>
-
             </div>
-
 
             {/* =====================================================
                 MOBILE SEARCH
             ===================================================== */}
 
             <div className="border-b border-blue-700 bg-blue-600 px-3 pb-3 pt-1 sm:px-4 lg:hidden">
-
                 <SearchBar />
-
             </div>
-
         </header>
     );
 };
