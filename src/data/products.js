@@ -1,9 +1,9 @@
-import runningShoes from "../assets/images/products/running-shoes.png";
-import laptop from "../assets/images/products/laptop.png";
-import smartwatch from "../assets/images/products/smartwatch.png";
-import perfume from "../assets/images/products/perfume.png";
-import hoodie from "../assets/images/products/hoodie.png";
-import sofa from "../assets/images/products/sofa.png";
+import runningShoes from "../assets/images-optimized/products/running-shoes.webp";
+import laptop from "../assets/images-optimized/products/laptop.webp";
+import smartwatch from "../assets/images-optimized/products/smartwatch.webp";
+import perfume from "../assets/images-optimized/products/perfume.webp";
+import hoodie from "../assets/images-optimized/products/hoodie.webp";
+import sofa from "../assets/images-optimized/products/sofa.webp";
 
 const products = [
   {

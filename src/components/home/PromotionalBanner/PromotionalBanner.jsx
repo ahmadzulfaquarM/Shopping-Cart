@@ -1,6 +1,6 @@
 import { FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import promoBanner from "../../../assets/images/banner/promo-banner.png";
+import promoBanner from "../../../assets/images-optimized/banner/promo-banner.webp";
 
 const PromotionalBanner = () => {
     return (

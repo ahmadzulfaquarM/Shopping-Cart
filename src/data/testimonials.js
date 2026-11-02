@@ -1,6 +1,6 @@
-import avatar1 from "../assets/images/testimonials/avatar-1.png";
-import avatar2 from "../assets/images/testimonials/avatar-2.png";
-import avatar3 from "../assets/images/testimonials/avatar-3.png";
+import avatar1 from "../assets/images-optimized/testimonials/avatar-1.webp";
+import avatar2 from "../assets/images-optimized/testimonials/avatar-2.webp";
+import avatar3 from "../assets/images-optimized/testimonials/avatar-3.webp";
 const testimonials = [
     {
         id: 1,
